@@ -1,8 +1,17 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { rateLimit } from "@/lib/rateLimit";
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req) {
+  const { allowed, minutesLeft } = rateLimit(req, "jobs", 10, 60);
+  if (!allowed) {
+    return Response.json(
+      { error: `Too many requests. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
+      { status: 429 }
+    );
+  }
+
   try {
     const { skills, role, experience, missing } = await req.json();
 

@@ -1,6 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { rateLimit } from "@/lib/rateLimit";
 
 export async function POST(req) {
+  const { allowed, minutesLeft } = rateLimit(req, "analyze", 3, 60);
+  if (!allowed) {
+    return Response.json(
+      { error: `Too many requests. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
+      { status: 429 }
+    );
+  }
+
   try {
     const formData = await req.formData();
     const file = formData.get("resume");
