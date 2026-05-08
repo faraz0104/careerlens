@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect, useRef, useCallback } from "react";
 
 /* ── FONTS & GLOBAL STYLES ─────────────────────────────────── */
@@ -1524,8 +1525,16 @@ function Footer({ setPage }) {
 }
 
 /* ── ROOT APP ────────────────────────────────────── */
-export default function App() {
-  const [page, setPage] = useState("home");
+export default function App({ defaultTab = "home" } = {}) {
+  const [page, setPage] = useState(defaultTab);
+
+  const navigate = (id) => {
+    setPage(id);
+    if (typeof window !== "undefined") {
+      const path = id === "home" ? "/" : `/${id}`;
+      window.history.pushState(null, "", path);
+    }
+  };
   const [resumeData, setResumeData] = useState(null);
   const [isPro, setIsPro] = useState(false);
   const [toast, setToast] = useState(null);
@@ -1561,35 +1570,35 @@ export default function App() {
       <style>{STYLES}</style>
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <nav className="nav">
-          <a className="nav-logo" onClick={() => setPage("home")}>
+          <a className="nav-logo" onClick={() => navigate("home")} style={{ cursor: "pointer" }}>
             <div className="nav-logo-icon">C</div>CareerLens
           </a>
           <div className="nav-links">
             {NAV_ITEMS.map(n => (
-              <a key={n.id} className={`nav-link ${page === n.id ? "active" : ""}`} onClick={() => setPage(n.id)}>{n.label}</a>
+              <a key={n.id} className={`nav-link ${page === n.id ? "active" : ""}`} onClick={() => navigate(n.id)} style={{ cursor: "pointer" }}>{n.label}</a>
             ))}
           </div>
           <div className="nav-right">
             {isPro ? (
               <span className="pro-badge">PRO ✦</span>
             ) : (
-              <button className="btn btn-primary btn-sm" onClick={() => setPage("pricing")}>Upgrade to Pro</button>
+              <button className="btn btn-primary btn-sm" onClick={() => navigate("pricing")}>Upgrade to Pro</button>
             )}
           </div>
         </nav>
 
         <main style={{ flex: 1 }}>
-          {page === "home" && <HomePage setPage={setPage} setResumeData={setResumeData} />}
+          {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} />}
           {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} />}
-          {page === "jobs" && <JobsPage resumeData={resumeData} isPro={isPro} setPage={setPage} />}
-          {page === "interview" && <InterviewPage isPro={isPro} setPage={setPage} />}
+          {page === "jobs" && <JobsPage resumeData={resumeData} isPro={isPro} setPage={navigate} />}
+          {page === "interview" && <InterviewPage isPro={isPro} setPage={navigate} />}
           {page === "coding" && <CodingPage isPro={isPro} />}
           {page === "salary" && <SalaryPage resumeData={resumeData} isPro={isPro} showToast={showToast} />}
           {page === "roadmap" && <RoadmapPage resumeData={resumeData} isPro={isPro} showToast={showToast} />}
           {page === "pricing" && <PricingPage isPro={isPro} setIsPro={setIsPro} showToast={showToast} />}
         </main>
 
-        <Footer setPage={setPage} />
+        <Footer setPage={navigate} />
         {toast && <Toast msg={toast} onDone={() => setToast(null)} />}
       </div>
     </>
