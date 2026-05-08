@@ -1857,27 +1857,39 @@ function PricingPage({ isPro, setIsPro, showToast }) {
         {[
           { name:"Free", who:"Getting started", price:"₹0", trial:"Always free", features:["3 resume scans/month","10 job matches","20 interview questions","Basic company questions","5 coding problems"], locked:["AI mock interview","Salary negotiation script","Cold email generator","Resume tailoring per job","Career roadmap","Unlimited everything"], plan:"free" },
           { name:"Pro", who:"Active job seekers", price:"₹299", trial:"Billed monthly", features:["Unlimited resume scans","Unlimited job matches","All interview questions","AI model answers","Live code review","Salary negotiation script","Cold email generator","Resume tailoring per JD","Career roadmap","Priority support"], locked:[], plan:"pro", featured:true },
-          { name:"Team", who:"Bootcamps & colleges", price:"₹199", trial:"Per student/month", features:["Everything in Pro","Team dashboard","Progress tracking","Bulk student reports","Custom company list","Dedicated support","White-label option"], locked:[], plan:"team" },
+          { name:"Team", who:"Colleges & bootcamps", price:"₹149", trial:"Per student/month", features:["Everything in Pro","Team admin dashboard","Student progress tracking","Bulk resume analysis reports","Placement success analytics","AI mock interview simulator","Custom company question banks","Referral & cold email templates","1-on-1 placement coaching","Dedicated account manager","White-label option","API access"], locked:[], plan:"team", comingSoon:true },
         ].map(p => (
-          <div key={p.name} className={`price-card ${p.featured ? "featured" : ""}`}>
+          <div key={p.name} className={`price-card ${p.featured ? "featured" : ""}`} style={p.comingSoon ? { opacity: 0.85, position: "relative" } : {}}>
             {p.featured && <div className="price-badge">MOST POPULAR</div>}
+            {p.comingSoon && (
+              <div style={{ position: "absolute", top: -12, right: 16, background: "#a855f7", color: "#fff", fontSize: ".65rem", fontWeight: 800, padding: "3px 12px", borderRadius: "99px", letterSpacing: ".06em" }}>COMING SOON</div>
+            )}
             <div className="price-name">{p.name}</div>
             <div className="price-who">{p.who}</div>
             <div className="price-amount">{p.price}{p.price !== "₹0" && <span>/mo</span>}</div>
-            <div className="price-trial" style={{ color: p.plan === "free" ? "var(--green)" : "var(--amber)" }}>{p.trial}</div>
+            <div className="price-trial" style={{ color: p.plan === "free" ? "var(--green)" : p.comingSoon ? "#a855f7" : "var(--amber)" }}>{p.trial}</div>
             <div className="price-features">
               {p.features.map(f => <div key={f} className="price-feature">{f}</div>)}
               {p.locked.map(f => <div key={f} className="price-feature no">{f}</div>)}
             </div>
-            <button
-              className={`btn w-full ${p.featured ? "btn-primary" : p.plan === "free" ? "btn-ghost" : "btn-dark"}`}
-              onClick={() => handleBuy(p.plan)}
-              disabled={loading === p.plan || (p.plan !== "free" && isPro)}
-            >
-              {loading === p.plan ? <><span className="spin" />Processing...</> :
-               isPro && p.plan === "pro" ? "✓ Current plan" :
-               p.plan === "free" ? "Start for free" : p.plan === "pro" ? "Upgrade to Pro" : "Get Team Plan"}
-            </button>
+            {p.comingSoon ? (
+              <div>
+                <button className="btn w-full" style={{ background: "#a855f7", color: "#fff", opacity: 0.9, cursor: "not-allowed" }} disabled>
+                  Notify me when available
+                </button>
+                <div style={{ textAlign: "center", fontSize: ".72rem", color: "var(--ink3)", marginTop: 8 }}>Expected Q3 2025 · Join waitlist →</div>
+              </div>
+            ) : (
+              <button
+                className={`btn w-full ${p.featured ? "btn-primary" : p.plan === "free" ? "btn-ghost" : "btn-dark"}`}
+                onClick={() => handleBuy(p.plan)}
+                disabled={loading === p.plan || (p.plan !== "free" && isPro)}
+              >
+                {loading === p.plan ? <><span className="spin" />Processing...</> :
+                 isPro && p.plan === "pro" ? "✓ Current plan" :
+                 p.plan === "free" ? "Start for free" : "Upgrade to Pro"}
+              </button>
+            )}
           </div>
         ))}
       </div>
