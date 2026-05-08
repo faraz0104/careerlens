@@ -1856,7 +1856,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
       <div className="pricing-grid">
         {[
           { name:"Free", who:"Getting started", price:"₹0", trial:"Always free", features:["3 resume scans/month","10 job matches","20 interview questions","Basic company questions","5 coding problems"], locked:["AI mock interview","Salary negotiation script","Cold email generator","Resume tailoring per job","Career roadmap","Unlimited everything"], plan:"free" },
-          { name:"Pro", who:"Active job seekers", price:"₹299", trial:"14-day free trial", features:["Unlimited resume scans","Unlimited job matches","All interview questions","AI model answers","Live code review","Salary negotiation script","Cold email generator","Resume tailoring per JD","Career roadmap","Priority support"], locked:[], plan:"pro", featured:true },
+          { name:"Pro", who:"Active job seekers", price:"₹299", trial:"Billed monthly", features:["Unlimited resume scans","Unlimited job matches","All interview questions","AI model answers","Live code review","Salary negotiation script","Cold email generator","Resume tailoring per JD","Career roadmap","Priority support"], locked:[], plan:"pro", featured:true },
           { name:"Team", who:"Bootcamps & colleges", price:"₹199", trial:"Per student/month", features:["Everything in Pro","Team dashboard","Progress tracking","Bulk student reports","Custom company list","Dedicated support","White-label option"], locked:[], plan:"team" },
         ].map(p => (
           <div key={p.name} className={`price-card ${p.featured ? "featured" : ""}`}>
