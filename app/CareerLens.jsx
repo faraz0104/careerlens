@@ -583,7 +583,48 @@ function HomePage({ setPage, setResumeData }) {
 function ResumePage({ resumeData, setResumeData, showToast, isPro }) {
   const [loading, setLoading] = useState(false);
   const [aiTip, setAiTip] = useState("");
+  const [jd, setJd] = useState("");
+  const [tailored, setTailored] = useState("");
+  const [tailoring, setTailoring] = useState(false);
   const fileRef = useRef();
+
+  const tailorResume = async () => {
+    if (!jd.trim()) return showToast("Paste a job description first");
+    setTailoring(true);
+    setTailored("");
+    const result = await callClaude(
+      "You are an expert resume writer and ATS specialist. Rewrite resume content to perfectly match a job description. Be specific, use numbers/metrics where possible, and mirror the JD's exact keywords.",
+      `My resume:
+Name: ${resumeData.name}
+Role: ${resumeData.role}
+Experience: ${resumeData.experience}
+Skills: ${resumeData.skills.join(", ")}
+Summary: ${resumeData.summary}
+
+Job Description I am applying to:
+${jd.slice(0, 3000)}
+
+Rewrite my resume profile for this specific JD. Output in this format:
+
+**Tailored Summary (2 sentences):**
+[rewritten summary using JD keywords]
+
+**Top 5 Bullet Points for this Role:**
+• [bullet 1 — quantified, JD keyword matched]
+• [bullet 2]
+• [bullet 3]
+• [bullet 4]
+• [bullet 5]
+
+**Keywords to Add:**
+[comma-separated list of keywords from JD I should add to my resume]
+
+**Match Score:** [X/10] — [one sentence on how well my background fits]`,
+      1200
+    );
+    setTailored(result);
+    setTailoring(false);
+  };
 
   const getAITip = async () => {
     if (!resumeData) return;
@@ -712,10 +753,46 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro }) {
             </div>
           </div>
 
-          {!isPro && (
-            <div className="info-box info-accent" style={{ marginBottom: 16 }}>
-              <span>✦</span>
-              <span style={{ fontSize: ".8rem" }}><strong>Pro feature:</strong> Resume tailoring per job description. Paste any JD → AI rewrites your bullets to match perfectly. <button className="btn btn-sm btn-primary" style={{ marginLeft: 8 }}>Upgrade to Pro</button></span>
+          {isPro ? (
+            <div className="card mb-4">
+              <div className="card-head">
+                <div className="card-title">✦ Tailor Resume to Job Description</div>
+                <span className="pro-badge">PRO</span>
+              </div>
+              <div className="card-body">
+                <div className="input-group" style={{ marginBottom: 10 }}>
+                  <label className="input-label">Paste the Job Description</label>
+                  <textarea
+                    className="input"
+                    rows={6}
+                    placeholder="Paste the full job description here — the AI will rewrite your resume bullets to match it perfectly..."
+                    value={jd}
+                    onChange={e => setJd(e.target.value)}
+                    style={{ resize: "vertical", fontFamily: "var(--font-body)", fontSize: ".82rem" }}
+                  />
+                </div>
+                <button className="btn btn-primary w-full" onClick={tailorResume} disabled={tailoring || !jd.trim()}>
+                  {tailoring ? <><span className="spin" />Tailoring your resume...</> : "Tailor my resume to this JD →"}
+                </button>
+                {tailored && (
+                  <div style={{ marginTop: 16, padding: "14px", background: "var(--bg)", borderRadius: "var(--r)", border: "1px solid var(--border)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                      <span style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: ".88rem" }}>Your tailored resume</span>
+                      <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(tailored); showToast("Copied to clipboard!"); }}>Copy</button>
+                    </div>
+                    <div style={{ fontSize: ".8rem", lineHeight: 1.8, color: "var(--ink)", whiteSpace: "pre-wrap" }}>{tailored}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="card mb-4" style={{ border: "1.5px dashed var(--border2)" }}>
+              <div className="card-body" style={{ textAlign: "center", padding: "20px" }}>
+                <div style={{ fontSize: "1.5rem", marginBottom: 8 }}>✦</div>
+                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", marginBottom: 6 }}>Tailor Resume to Any Job Description</div>
+                <div style={{ fontSize: ".78rem", color: "var(--ink2)", marginBottom: 14, lineHeight: 1.6 }}>Paste any JD → AI rewrites your bullets with exact keywords to beat ATS and impress hiring managers.</div>
+                <span className="pro-badge" style={{ fontSize: ".75rem" }}>PRO FEATURE</span>
+              </div>
             </div>
           )}
         </div>
