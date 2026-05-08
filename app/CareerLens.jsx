@@ -2017,7 +2017,7 @@ function ContactPage({ showToast }) {
         <div style={{ fontSize: ".78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "var(--ink3)" }}>Other ways to reach me</div>
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
           <a href="mailto:khan97faraz@gmail.com" style={{ color: "var(--accent)", fontSize: ".85rem", fontWeight: 600, textDecoration: "none" }}>✉ khan97faraz@gmail.com</a>
-          <a href="https://linkedin.com/in/faraz0104" target="_blank" rel="noopener noreferrer" style={{ color: "var(--blue)", fontSize: ".85rem", fontWeight: 600, textDecoration: "none" }}>in LinkedIn</a>
+          <a href="https://www.linkedin.com/in/faraz-yar-khan-a4a948156/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--blue)", fontSize: ".85rem", fontWeight: 600, textDecoration: "none" }}>in LinkedIn</a>
         </div>
       </div>
     </div>
