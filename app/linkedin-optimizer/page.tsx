@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     "LinkedIn profile for freshers India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/linkedin-optimizer",
+    canonical: "https://www.carrerlens.com/linkedin-optimizer",
   },
   openGraph: {
     title: "Free LinkedIn Profile Optimizer India – More Recruiter Views",
     description:
       "AI rewrites your LinkedIn About section with recruiter-search keywords so you get found by the right people. Free to try.",
-    url: "https://carrerlens.com/linkedin-optimizer",
+    url: "https://www.carrerlens.com/linkedin-optimizer",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
@@ -41,7 +41,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: "CareerLens LinkedIn Profile Optimizer",
-  url: "https://carrerlens.com/linkedin-optimizer",
+  url: "https://www.carrerlens.com/linkedin-optimizer",
   description:
     "AI-powered LinkedIn profile optimizer that rewrites your About section to rank higher in recruiter searches in India",
   applicationCategory: "BusinessApplication",

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://carrerlens.com"),
+  metadataBase: new URL("https://www.carrerlens.com"),
   title: {
     template: "%s | CareerLens",
     default: "CareerLens – Free AI Resume Analyzer, Cover Letter, Job Matching & Interview Prep India",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://carrerlens.com",
+    url: "https://www.carrerlens.com",
     siteName: "CareerLens",
     title: "CareerLens – Free AI Resume, Cover Letter, Jobs & Interview Prep India",
     description:
@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
   alternates: {
-    canonical: "https://carrerlens.com",
+    canonical: "https://www.carrerlens.com",
   },
 };
 
@@ -90,8 +90,8 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "CareerLens",
-  url: "https://carrerlens.com",
-  logo: "https://carrerlens.com/logo.png",
+  url: "https://www.carrerlens.com",
+  logo: "https://www.carrerlens.com/logo.png",
   description: "AI-powered career intelligence platform for India",
 };
 
@@ -99,7 +99,7 @@ const webAppJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "CareerLens",
-  url: "https://carrerlens.com",
+  url: "https://www.carrerlens.com",
   description:
     "Free AI career platform with resume analysis, cover letter generator, LinkedIn optimizer, cold email writer, job matching, interview prep, salary calculator and career roadmap for India",
   applicationCategory: "BusinessApplication",

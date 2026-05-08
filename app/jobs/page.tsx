@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     "startup jobs India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/jobs",
+    canonical: "https://www.carrerlens.com/jobs",
   },
   openGraph: {
     title: "AI Job Matching India – Personalised Jobs + Cold Email Generator",
     description:
       "AI matches jobs to your resume with a match score. Then write a cold email to the hiring manager in one click. Free to try.",
-    url: "https://carrerlens.com/jobs",
+    url: "https://www.carrerlens.com/jobs",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
 };
@@ -35,14 +35,14 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   name: "AI Job Matching – CareerLens",
-  url: "https://carrerlens.com/jobs",
+  url: "https://www.carrerlens.com/jobs",
   description:
     "AI-powered job matching with cold email generator for Indian job seekers",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://carrerlens.com" },
-      { "@type": "ListItem", position: 2, name: "Jobs", item: "https://carrerlens.com/jobs" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.carrerlens.com" },
+      { "@type": "ListItem", position: 2, name: "Jobs", item: "https://www.carrerlens.com/jobs" },
     ],
   },
 };

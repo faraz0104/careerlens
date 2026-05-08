@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import App from "./CareerLens";
 
 export const metadata: Metadata = {
-  title: "CareerLens – Free AI Resume Analyzer, Job Matching & Interview Prep India",
+  title: "CareerLens – Free AI Resume Analyzer & Career Tools India",
   description:
-    "Upload your resume and get instant AI analysis, personalised job matches, company-specific interview questions, salary insights and a career roadmap. 100% free for Indian job seekers.",
+    "Free AI resume analyzer with ATS score, job matching, interview questions, salary calculator & career roadmap. No signup needed. Built for Indian job seekers.",
   alternates: {
-    canonical: "https://carrerlens.com",
+    canonical: "https://www.carrerlens.com",
   },
 };
 

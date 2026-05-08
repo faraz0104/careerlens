@@ -18,13 +18,13 @@ export const metadata: Metadata = {
     "career planning India 2024",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/roadmap",
+    canonical: "https://www.carrerlens.com/roadmap",
   },
   openGraph: {
     title: "Career Roadmap India – Personalised AI-Powered Career Path",
     description:
       "Get a step-by-step personalised career roadmap based on your current skills. AI identifies gaps and creates a learning path to reach your dream role in India.",
-    url: "https://carrerlens.com/roadmap",
+    url: "https://www.carrerlens.com/roadmap",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
 };
@@ -33,14 +33,14 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   name: "AI Career Roadmap – CareerLens",
-  url: "https://carrerlens.com/roadmap",
+  url: "https://www.carrerlens.com/roadmap",
   description:
     "Personalised AI-generated career roadmap for IT professionals in India based on current skills and target role",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://carrerlens.com" },
-      { "@type": "ListItem", position: 2, name: "Roadmap", item: "https://carrerlens.com/roadmap" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.carrerlens.com" },
+      { "@type": "ListItem", position: 2, name: "Roadmap", item: "https://www.carrerlens.com/roadmap" },
     ],
   },
 };

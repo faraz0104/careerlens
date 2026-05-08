@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     "best resume analyzer India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/resume",
+    canonical: "https://www.carrerlens.com/resume",
   },
   openGraph: {
     title: "Free AI Resume Analyzer India – ATS Score, Cover Letter & LinkedIn",
     description:
       "Get your resume ATS score, AI cover letter for any job, LinkedIn bio optimizer, and tailored resume bullets. All in one place. Free.",
-    url: "https://carrerlens.com/resume",
+    url: "https://www.carrerlens.com/resume",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
 };
@@ -35,7 +35,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: "CareerLens Resume Analyzer",
-  url: "https://carrerlens.com/resume",
+  url: "https://www.carrerlens.com/resume",
   description:
     "Free AI resume analyzer with ATS scoring, cover letter generation, LinkedIn optimizer and resume tailoring for Indian job seekers",
   applicationCategory: "BusinessApplication",

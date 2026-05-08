@@ -2001,12 +2001,12 @@ export default function App({ defaultTab = "home" } = {}) {
       <style>{STYLES}</style>
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <nav className="nav">
-          <a className="nav-logo" onClick={() => navigate("home")} style={{ cursor: "pointer" }}>
+          <a href="/" className="nav-logo" onClick={(e) => { e.preventDefault(); navigate("home"); }}>
             <div className="nav-logo-icon">C</div><span>CareerLens</span>
           </a>
           <div className="nav-links">
             {NAV_ITEMS.map(n => (
-              <a key={n.id} className={`nav-link ${page === n.id ? "active" : ""}`} onClick={() => navigate(n.id)} style={{ cursor: "pointer" }}>{n.label}</a>
+              <a key={n.id} href={n.id === "home" ? "/" : `/${n.id}`} className={`nav-link ${page === n.id ? "active" : ""}`} onClick={(e) => { e.preventDefault(); navigate(n.id); }}>{n.label}</a>
             ))}
           </div>
           <div className="nav-right">

@@ -18,13 +18,13 @@ export const metadata: Metadata = {
     "how much do software engineers earn India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/salary",
+    canonical: "https://www.carrerlens.com/salary",
   },
   openGraph: {
     title: "IT Salary Calculator India 2024 – Find Your Market Rate",
     description:
       "Discover your market salary for software engineering, data science, product management and other IT roles across Indian cities. AI-powered insights based on real market data.",
-    url: "https://carrerlens.com/salary",
+    url: "https://www.carrerlens.com/salary",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
 };
@@ -33,14 +33,14 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   name: "IT Salary Calculator India – CareerLens",
-  url: "https://carrerlens.com/salary",
+  url: "https://www.carrerlens.com/salary",
   description:
     "Free salary calculator for IT professionals in India. Get accurate salary benchmarks for software engineers, data scientists, and product managers.",
   breadcrumb: {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://carrerlens.com" },
-      { "@type": "ListItem", position: 2, name: "Salary", item: "https://carrerlens.com/salary" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.carrerlens.com" },
+      { "@type": "ListItem", position: 2, name: "Salary", item: "https://www.carrerlens.com/salary" },
     ],
   },
 };

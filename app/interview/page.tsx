@@ -22,13 +22,13 @@ export const metadata: Metadata = {
     "FAANG interview India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/interview",
+    canonical: "https://www.carrerlens.com/interview",
   },
   openGraph: {
     title: "Interview Questions India – Google, Amazon, TCS, Infosys & 20+ Companies",
     description:
       "Prepare for interviews at top Indian and global companies with AI-generated company-specific questions covering behavioral, technical, and coding rounds.",
-    url: "https://carrerlens.com/interview",
+    url: "https://www.carrerlens.com/interview",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
 };

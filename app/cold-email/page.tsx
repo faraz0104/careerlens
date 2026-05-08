@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     "how to contact hiring manager LinkedIn India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/cold-email",
+    canonical: "https://www.carrerlens.com/cold-email",
   },
   openGraph: {
     title: "Cold Email Generator India – Email Hiring Managers & Get Interviews",
     description:
       "AI writes a 4-line cold email to any hiring manager. No templates. Personalised to the company and role. Gets replies.",
-    url: "https://carrerlens.com/cold-email",
+    url: "https://www.carrerlens.com/cold-email",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
@@ -42,7 +42,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: "CareerLens Cold Email Generator",
-  url: "https://carrerlens.com/cold-email",
+  url: "https://www.carrerlens.com/cold-email",
   description:
     "AI-powered cold email generator that writes personalised outreach emails to hiring managers at any company in India",
   applicationCategory: "BusinessApplication",

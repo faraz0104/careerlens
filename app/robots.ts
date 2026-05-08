@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
     ],
-    sitemap: "https://carrerlens.com/sitemap.xml",
-    host: "https://carrerlens.com",
+    sitemap: "https://www.carrerlens.com/sitemap.xml",
+    host: "https://www.carrerlens.com",
   };
 }

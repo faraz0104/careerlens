@@ -11,13 +11,13 @@ export const metadata: Metadata = {
     "career intelligence subscription India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/pricing",
+    canonical: "https://www.carrerlens.com/pricing",
   },
   openGraph: {
     title: "CareerLens Pro – Pricing Plans India",
     description:
       "Get full access to AI resume analysis, unlimited job matches, all interview questions, salary insights and career roadmap for just ₹299.",
-    url: "https://carrerlens.com/pricing",
+    url: "https://www.carrerlens.com/pricing",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
 };

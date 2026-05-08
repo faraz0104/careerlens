@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     "cover letter for product manager India",
   ],
   alternates: {
-    canonical: "https://carrerlens.com/cover-letter",
+    canonical: "https://www.carrerlens.com/cover-letter",
   },
   openGraph: {
     title: "Free AI Cover Letter Generator India – Personalised in 10 Seconds",
     description:
       "Paste any job description and get a personalised cover letter instantly. No templates, no fluff — sounds like you, not a robot.",
-    url: "https://carrerlens.com/cover-letter",
+    url: "https://www.carrerlens.com/cover-letter",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
@@ -42,7 +42,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: "CareerLens AI Cover Letter Generator",
-  url: "https://carrerlens.com/cover-letter",
+  url: "https://www.carrerlens.com/cover-letter",
   description:
     "Free AI-powered cover letter generator for Indian job seekers. Paste any job description and get a personalised, professional cover letter in seconds.",
   applicationCategory: "BusinessApplication",
