@@ -586,6 +586,13 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro }) {
   const [jd, setJd] = useState("");
   const [tailored, setTailored] = useState("");
   const [tailoring, setTailoring] = useState(false);
+  const [coverJd, setCoverJd] = useState("");
+  const [coverLetter, setCoverLetter] = useState("");
+  const [coverLoading, setCoverLoading] = useState(false);
+  const [linkedinBio, setLinkedinBio] = useState("");
+  const [linkedinOut, setLinkedinOut] = useState("");
+  const [linkedinLoading, setLinkedinLoading] = useState(false);
+  const [activeProTab, setActiveProTab] = useState("tailor");
   const fileRef = useRef();
 
   const tailorResume = async () => {
@@ -626,6 +633,65 @@ Rewrite my resume profile for this specific JD. Output in this format:
     setTailoring(false);
   };
 
+  const generateCoverLetter = async () => {
+    if (!coverJd.trim()) return showToast("Paste a job description first");
+    setCoverLoading(true);
+    setCoverLetter("");
+    const result = await callClaude(
+      "You are an expert cover letter writer. Write compelling, specific, non-generic cover letters that hiring managers actually read.",
+      `Write a professional cover letter for this candidate applying to this job.
+
+Candidate:
+Name: ${resumeData.name}
+Role: ${resumeData.role}
+Experience: ${resumeData.experience}
+Skills: ${resumeData.skills.join(", ")}
+Summary: ${resumeData.summary}
+
+Job Description:
+${coverJd.slice(0, 2500)}
+
+Write a 3-paragraph cover letter:
+- Para 1: Hook — specific reason why this role and company excite them (reference JD details)
+- Para 2: Proof — 2 specific achievements that match JD requirements
+- Para 3: Close — confident call to action
+
+Keep it under 250 words. No clichés like "I am writing to express my interest". Sound human and confident.`,
+      1000
+    );
+    setCoverLetter(result);
+    setCoverLoading(false);
+  };
+
+  const optimizeLinkedin = async () => {
+    if (!linkedinBio.trim()) return showToast("Paste your LinkedIn About section first");
+    setLinkedinLoading(true);
+    setLinkedinOut("");
+    const result = await callClaude(
+      "You are a LinkedIn profile optimization expert. Rewrite LinkedIn About sections to rank in recruiter searches and get more profile views.",
+      `Rewrite this LinkedIn About section to maximize recruiter visibility and profile views.
+
+Current About section:
+${linkedinBio.slice(0, 1500)}
+
+Candidate profile:
+Role: ${resumeData.role} | Skills: ${resumeData.skills.slice(0, 6).join(", ")} | Experience: ${resumeData.experience}
+
+Rewrite with:
+- Hook in first 2 lines (visible before "see more")
+- ATS keywords naturally woven in
+- 1 specific achievement with numbers
+- Skills recruiters search for
+- Clear call to action at end
+- Under 220 words (LinkedIn limit)
+
+Output the rewritten About section only, ready to paste into LinkedIn.`,
+      800
+    );
+    setLinkedinOut(result);
+    setLinkedinLoading(false);
+  };
+
   const getAITip = async () => {
     if (!resumeData) return;
     setLoading(true);
@@ -637,10 +703,37 @@ Rewrite my resume profile for this specific JD. Output in this format:
     setLoading(false);
   };
 
+  const getScanData = () => {
+    try {
+      const raw = localStorage.getItem("cl_scan_data");
+      if (!raw) return { count: 0, month: "" };
+      return JSON.parse(raw);
+    } catch { return { count: 0, month: "" }; }
+  };
+
+  const incrementScan = () => {
+    const now = new Date();
+    const month = `${now.getFullYear()}-${now.getMonth()}`;
+    const data = getScanData();
+    const count = data.month === month ? data.count + 1 : 1;
+    localStorage.setItem("cl_scan_data", JSON.stringify({ count, month }));
+  };
+
   const handleFile = async (file) => {
     if (!file) return;
-    setLoading(true);
 
+    if (!isPro) {
+      const now = new Date();
+      const month = `${now.getFullYear()}-${now.getMonth()}`;
+      const data = getScanData();
+      const used = data.month === month ? data.count : 0;
+      if (used >= 3) {
+        showToast("Free limit reached — 3 scans/month. Upgrade to Pro for unlimited scans.");
+        return;
+      }
+    }
+
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("resume", file);
@@ -669,6 +762,7 @@ Rewrite my resume profile for this specific JD. Output in this format:
         improvements: data.improvements,
       });
 
+      if (!isPro) incrementScan();
       showToast("Resume analysed successfully!");
     } catch (error) {
       showToast("Error analyzing resume: " + error.message);
@@ -678,24 +772,49 @@ Rewrite my resume profile for this specific JD. Output in this format:
     }
   };
 
-  if (!resumeData) return (
-    <div className="page">
-      <div className="page-header">
-        <div className="page-title">Resume Analyser</div>
-        <div className="page-sub">Get your score, fix your weaknesses, land more interviews</div>
-      </div>
-      <AdSlot type="leaderboard" />
-      <label style={{ cursor: "pointer" }}>
-        <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" style={{ display: "none" }} onChange={e => handleFile(e.target.files[0])} />
-        <div className="upload-zone">
-          <div className="upload-icon">📄</div>
-          <div className="upload-title">Drop your resume here or click to upload</div>
-          <div className="upload-sub">Supports PDF, DOC, DOCX — analysed in under 10 seconds</div>
-          {loading && <div style={{ marginTop: 12 }}><span className="spin" style={{ color: "var(--accent)" }} /> &nbsp;Analysing...</div>}
+  if (!resumeData) {
+    const scanData = getScanData();
+    const now = new Date();
+    const month = `${now.getFullYear()}-${now.getMonth()}`;
+    const usedScans = !isPro && scanData.month === month ? scanData.count : 0;
+    const remaining = Math.max(0, 3 - usedScans);
+
+    return (
+      <div className="page">
+        <div className="page-header">
+          <div className="page-title">Resume Analyser</div>
+          <div className="page-sub">Get your ATS score, fix weaknesses, land more interviews</div>
         </div>
-      </label>
-    </div>
-  );
+        <AdSlot type="leaderboard" />
+        {!isPro && (
+          <div style={{ display: "flex", gap: 8, marginBottom: 14, padding: "10px 14px", background: remaining === 0 ? "var(--red-dim)" : "var(--bg2)", borderRadius: "var(--r)", border: `1px solid ${remaining === 0 ? "rgba(197,48,48,.2)" : "var(--border)"}`, alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: ".8rem", color: remaining === 0 ? "var(--red)" : "var(--ink2)" }}>
+              {remaining === 0 ? "⛔ Monthly scan limit reached — upgrade to Pro for unlimited scans" : `📊 ${remaining} free scan${remaining !== 1 ? "s" : ""} remaining this month`}
+            </span>
+            {remaining === 0 && <button className="btn btn-primary btn-sm" onClick={() => showToast("Go to Pricing to upgrade!")}>Upgrade to Pro</button>}
+          </div>
+        )}
+        <label style={{ cursor: remaining === 0 && !isPro ? "not-allowed" : "pointer" }}>
+          <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" style={{ display: "none" }} onChange={e => handleFile(e.target.files[0])} disabled={remaining === 0 && !isPro} />
+          <div className="upload-zone" style={{ opacity: remaining === 0 && !isPro ? 0.5 : 1 }}>
+            <div className="upload-icon">📄</div>
+            <div className="upload-title">Drop your resume here or click to upload</div>
+            <div className="upload-sub">Supports PDF — analysed in under 10 seconds by Claude AI</div>
+            {loading && <div style={{ marginTop: 12 }}><span className="spin" style={{ color: "var(--accent)" }} /> &nbsp;Analysing...</div>}
+          </div>
+        </label>
+        {!isPro && (
+          <div className="card" style={{ marginTop: 20, background: "linear-gradient(135deg, #1a1916 0%, #2d2c28 100%)", border: "none", color: "#fff" }}>
+            <div className="card-body" style={{ padding: "20px" }}>
+              <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1rem", marginBottom: 8 }}>✦ Pro users get unlimited scans</div>
+              <div style={{ fontSize: ".8rem", color: "rgba(247,246,242,.7)", lineHeight: 1.6, marginBottom: 14 }}>Plus: Cover letter generator, resume tailoring per JD, cold email to hiring manager, LinkedIn optimizer, salary negotiation script, unlimited job matches and all interview questions.</div>
+              <span style={{ fontSize: ".78rem", background: "var(--accent)", color: "#fff", padding: "4px 12px", borderRadius: "99px", fontWeight: 700 }}>₹299/month — less than one coffee</span>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -755,43 +874,89 @@ Rewrite my resume profile for this specific JD. Output in this format:
 
           {isPro ? (
             <div className="card mb-4">
-              <div className="card-head">
-                <div className="card-title">✦ Tailor Resume to Job Description</div>
-                <span className="pro-badge">PRO</span>
+              <div className="card-head" style={{ flexDirection: "column", alignItems: "flex-start", gap: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, width: "100%" }}>
+                  <div className="card-title">✦ Pro AI Toolkit</div>
+                  <span className="pro-badge">PRO</span>
+                </div>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  {[["tailor","Resume Tailor"],["cover","Cover Letter"],["linkedin","LinkedIn Bio"]].map(([id, label]) => (
+                    <button key={id} onClick={() => setActiveProTab(id)} className="btn btn-sm" style={{ background: activeProTab === id ? "var(--accent)" : "var(--bg2)", color: activeProTab === id ? "#fff" : "var(--ink2)", fontWeight: activeProTab === id ? 700 : 500 }}>{label}</button>
+                  ))}
+                </div>
               </div>
               <div className="card-body">
-                <div className="input-group" style={{ marginBottom: 10 }}>
-                  <label className="input-label">Paste the Job Description</label>
-                  <textarea
-                    className="input"
-                    rows={6}
-                    placeholder="Paste the full job description here — the AI will rewrite your resume bullets to match it perfectly..."
-                    value={jd}
-                    onChange={e => setJd(e.target.value)}
-                    style={{ resize: "vertical", fontFamily: "var(--font-body)", fontSize: ".82rem" }}
-                  />
-                </div>
-                <button className="btn btn-primary w-full" onClick={tailorResume} disabled={tailoring || !jd.trim()}>
-                  {tailoring ? <><span className="spin" />Tailoring your resume...</> : "Tailor my resume to this JD →"}
-                </button>
-                {tailored && (
-                  <div style={{ marginTop: 16, padding: "14px", background: "var(--bg)", borderRadius: "var(--r)", border: "1px solid var(--border)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                      <span style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: ".88rem" }}>Your tailored resume</span>
-                      <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(tailored); showToast("Copied to clipboard!"); }}>Copy</button>
-                    </div>
-                    <div style={{ fontSize: ".8rem", lineHeight: 1.8, color: "var(--ink)", whiteSpace: "pre-wrap" }}>{tailored}</div>
+                {activeProTab === "tailor" && (<>
+                  <div className="input-group" style={{ marginBottom: 10 }}>
+                    <label className="input-label">Paste the Job Description</label>
+                    <textarea className="input" rows={5} placeholder="Paste JD from LinkedIn, Naukri, company site..." value={jd} onChange={e => setJd(e.target.value)} style={{ resize: "vertical", fontFamily: "var(--font-body)", fontSize: ".82rem" }} />
                   </div>
-                )}
+                  <button className="btn btn-primary w-full" onClick={tailorResume} disabled={tailoring || !jd.trim()}>
+                    {tailoring ? <><span className="spin" />Tailoring...</> : "Rewrite my resume for this JD →"}
+                  </button>
+                  {tailored && (
+                    <div style={{ marginTop: 14, padding: "14px", background: "var(--bg)", borderRadius: "var(--r)", border: "1px solid var(--border)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                        <span style={{ fontWeight: 700, fontSize: ".85rem" }}>Tailored resume</span>
+                        <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(tailored); showToast("Copied!"); }}>Copy</button>
+                      </div>
+                      <div style={{ fontSize: ".8rem", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{tailored}</div>
+                    </div>
+                  )}
+                </>)}
+                {activeProTab === "cover" && (<>
+                  <div className="input-group" style={{ marginBottom: 10 }}>
+                    <label className="input-label">Paste the Job Description</label>
+                    <textarea className="input" rows={5} placeholder="Paste the JD — AI writes a personalised cover letter matching it exactly..." value={coverJd} onChange={e => setCoverJd(e.target.value)} style={{ resize: "vertical", fontFamily: "var(--font-body)", fontSize: ".82rem" }} />
+                  </div>
+                  <button className="btn btn-primary w-full" onClick={generateCoverLetter} disabled={coverLoading || !coverJd.trim()}>
+                    {coverLoading ? <><span className="spin" />Writing cover letter...</> : "Generate cover letter →"}
+                  </button>
+                  {coverLetter && (
+                    <div style={{ marginTop: 14, padding: "14px", background: "var(--bg)", borderRadius: "var(--r)", border: "1px solid var(--border)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                        <span style={{ fontWeight: 700, fontSize: ".85rem" }}>Your cover letter</span>
+                        <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(coverLetter); showToast("Copied!"); }}>Copy</button>
+                      </div>
+                      <div style={{ fontSize: ".8rem", lineHeight: 1.9, whiteSpace: "pre-wrap" }}>{coverLetter}</div>
+                    </div>
+                  )}
+                </>)}
+                {activeProTab === "linkedin" && (<>
+                  <div className="input-group" style={{ marginBottom: 10 }}>
+                    <label className="input-label">Your current LinkedIn About section</label>
+                    <textarea className="input" rows={5} placeholder="Paste your current LinkedIn About section (or leave blank to generate from scratch)..." value={linkedinBio} onChange={e => setLinkedinBio(e.target.value)} style={{ resize: "vertical", fontFamily: "var(--font-body)", fontSize: ".82rem" }} />
+                  </div>
+                  <button className="btn btn-primary w-full" onClick={optimizeLinkedin} disabled={linkedinLoading}>
+                    {linkedinLoading ? <><span className="spin" />Optimizing...</> : "Optimize my LinkedIn bio →"}
+                  </button>
+                  {linkedinOut && (
+                    <div style={{ marginTop: 14, padding: "14px", background: "var(--bg)", borderRadius: "var(--r)", border: "1px solid var(--border)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                        <span style={{ fontWeight: 700, fontSize: ".85rem" }}>Optimized LinkedIn About</span>
+                        <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(linkedinOut); showToast("Copied!"); }}>Copy</button>
+                      </div>
+                      <div style={{ fontSize: ".8rem", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{linkedinOut}</div>
+                    </div>
+                  )}
+                </>)}
               </div>
             </div>
           ) : (
-            <div className="card mb-4" style={{ border: "1.5px dashed var(--border2)" }}>
-              <div className="card-body" style={{ textAlign: "center", padding: "20px" }}>
-                <div style={{ fontSize: "1.5rem", marginBottom: 8 }}>✦</div>
-                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", marginBottom: 6 }}>Tailor Resume to Any Job Description</div>
-                <div style={{ fontSize: ".78rem", color: "var(--ink2)", marginBottom: 14, lineHeight: 1.6 }}>Paste any JD → AI rewrites your bullets with exact keywords to beat ATS and impress hiring managers.</div>
-                <span className="pro-badge" style={{ fontSize: ".75rem" }}>PRO FEATURE</span>
+            <div className="card mb-4" style={{ background: "linear-gradient(135deg,#1a1916,#2d2c28)", border: "none", color: "#fff" }}>
+              <div className="card-body" style={{ padding: "22px" }}>
+                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1rem", marginBottom: 10 }}>✦ Pro AI Toolkit — 3 features free users don't have</div>
+                {[
+                  ["📄 Resume Tailor", "Paste any JD → AI rewrites your bullets with exact ATS keywords"],
+                  ["✉️ Cover Letter", "Instant personalised cover letter for any job in 10 seconds"],
+                  ["💼 LinkedIn Optimizer", "Rewrite your bio to rank in recruiter searches"],
+                ].map(([title, desc]) => (
+                  <div key={title} style={{ display: "flex", gap: 10, marginBottom: 10, padding: "8px 10px", background: "rgba(255,255,255,0.07)", borderRadius: "var(--r)" }}>
+                    <span style={{ fontSize: ".85rem", fontWeight: 700, minWidth: 130 }}>{title}</span>
+                    <span style={{ fontSize: ".76rem", color: "rgba(247,246,242,.65)", lineHeight: 1.5 }}>{desc}</span>
+                  </div>
+                ))}
+                <div style={{ marginTop: 14, padding: "10px 14px", background: "var(--accent)", borderRadius: "var(--r)", textAlign: "center", fontWeight: 700, fontSize: ".88rem" }}>₹299/month — Unlock all 3 →</div>
               </div>
             </div>
           )}
@@ -837,6 +1002,44 @@ function JobsPage({ resumeData, isPro, setPage }) {
   const [filter, setFilter] = useState("all");
   const [aiJobs, setAiJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
+  const [coldCompany, setColdCompany] = useState("");
+  const [coldRole, setColdRole] = useState("");
+  const [coldEmail, setColdEmail] = useState("");
+  const [coldLoading, setColdLoading] = useState(false);
+
+  const generateColdEmail = async () => {
+    if (!coldCompany.trim() || !coldRole.trim()) return;
+    setColdLoading(true);
+    setColdEmail("");
+    const result = await callClaude(
+      "You are an expert at cold outreach emails that actually get replies from hiring managers and recruiters.",
+      `Write a cold email to a hiring manager at ${coldCompany} for a ${coldRole} position.
+
+Candidate:
+Name: ${resumeData?.name || "the candidate"}
+Current role: ${resumeData?.role || "Software Developer"}
+Experience: ${resumeData?.experience || "3 years"}
+Top skills: ${resumeData?.skills?.slice(0, 4).join(", ") || "software development"}
+
+Write a cold email with:
+- Subject line (magnetic, specific to ${coldCompany})
+- 4-line email body max
+- Line 1: Specific compliment about ${coldCompany} (product, culture, recent news)
+- Line 2: One specific achievement that's relevant to ${coldRole}
+- Line 3: Clear ask (15-min call, not "any openings?")
+- Line 4: Sign-off
+
+No fluff. No "I hope this email finds you well". Sound like a human, not a template.
+
+Format:
+Subject: [subject line]
+
+[email body]`,
+      600
+    );
+    setColdEmail(result);
+    setColdLoading(false);
+  };
 
   useEffect(() => {
     if (!resumeData) return;
@@ -951,13 +1154,43 @@ function JobsPage({ resumeData, isPro, setPage }) {
             </div>
           </div>
 
-          {!isPro && (
-            <div className="card" style={{ background: "var(--ink)", color: "var(--bg)" }}>
-              <div className="card-body" style={{ textAlign: "center", padding: "20px" }}>
-                <div style={{ fontSize: "1.8rem", marginBottom: 8 }}>✉️</div>
-                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", marginBottom: 6 }}>Cold Email Generator</div>
-                <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.6)", marginBottom: 14, lineHeight: 1.5 }}>AI writes a personalised cold email to the hiring manager for any job. Pro feature.</div>
-                <button className="btn btn-sm" style={{ background: "var(--accent)", color: "#fff" }} onClick={() => setPage("pricing")}>Upgrade to Pro</button>
+          {isPro ? (
+            <div className="card" style={{ marginTop: 8 }}>
+              <div className="card-head">
+                <div className="card-title">✉️ Cold Email to Hiring Manager</div>
+                <span className="pro-badge">PRO</span>
+              </div>
+              <div className="card-body">
+                <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+                  <div className="input-group" style={{ flex: 1, marginBottom: 0 }}>
+                    <label className="input-label">Company</label>
+                    <input className="input" placeholder="e.g. Google, Zepto, Razorpay" value={coldCompany} onChange={e => setColdCompany(e.target.value)} />
+                  </div>
+                  <div className="input-group" style={{ flex: 1, marginBottom: 0 }}>
+                    <label className="input-label">Role you want</label>
+                    <input className="input" placeholder="e.g. Senior SDE, Product Manager" value={coldRole} onChange={e => setColdRole(e.target.value)} />
+                  </div>
+                </div>
+                <button className="btn btn-primary w-full" onClick={generateColdEmail} disabled={coldLoading || !coldCompany.trim() || !coldRole.trim()}>
+                  {coldLoading ? <><span className="spin" />Writing email...</> : "Write cold email →"}
+                </button>
+                {coldEmail && (
+                  <div style={{ marginTop: 14, padding: "14px", background: "var(--bg)", borderRadius: "var(--r)", border: "1px solid var(--border)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                      <span style={{ fontWeight: 700, fontSize: ".85rem" }}>Your cold email</span>
+                      <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(coldEmail); }}>Copy</button>
+                    </div>
+                    <div style={{ fontSize: ".8rem", lineHeight: 1.9, whiteSpace: "pre-wrap" }}>{coldEmail}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="card" style={{ background: "var(--ink)", color: "var(--bg)", marginTop: 8 }}>
+              <div className="card-body" style={{ padding: "20px" }}>
+                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", marginBottom: 8 }}>✉️ Cold Email Generator — Pro Only</div>
+                <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.65)", marginBottom: 14, lineHeight: 1.6 }}>Enter any company + role → AI writes a 4-line cold email to the hiring manager that actually gets replies. No fluff, no templates.</div>
+                <button className="btn btn-sm" style={{ background: "var(--accent)", color: "#fff" }} onClick={() => setPage("pricing")}>Upgrade to Pro →</button>
               </div>
             </div>
           )}
