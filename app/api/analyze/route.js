@@ -1,7 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { PDFParse } from "pdf-parse";
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req) {
   try {
@@ -12,38 +9,30 @@ export async function POST(req) {
       return Response.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // Extract text from PDF
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const base64 = buffer.toString("base64");
 
-    let resumeText = "";
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    try {
-      const parser = new PDFParse({ data: buffer });
-      const result = await parser.getText();
-      resumeText = result.text;
-    } catch (e) {
-      return Response.json(
-        { error: "Could not read PDF. Make sure it is not scanned or image-based." },
-        { status: 400 }
-      );
-    }
-
-    if (!resumeText || resumeText.trim().length < 50) {
-      return Response.json(
-        { error: "Resume appears to be empty or image-based. Please use a text-based PDF." },
-        { status: 400 }
-      );
-    }
-
-    // Send extracted text to Haiku
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 2000,
       messages: [
         {
           role: "user",
-          content: `Analyze this resume text and return ONLY a valid JSON object with no extra text, no markdown, no backticks. Use exactly this structure:
+          content: [
+            {
+              type: "document",
+              source: {
+                type: "base64",
+                media_type: "application/pdf",
+                data: base64,
+              },
+            },
+            {
+              type: "text",
+              text: `Analyze this resume and return ONLY a valid JSON object with no extra text, no markdown, no backticks. Use exactly this structure:
 {
   "name": "full name from resume",
   "role": "current or most recent job title",
@@ -61,10 +50,9 @@ export async function POST(req) {
   ]
 }
 
-Score based on: clarity, quantified achievements, ATS keywords, skills relevance, formatting. Be honest and specific.
-
-Resume text:
-${resumeText.slice(0, 8000)}`,
+Score based on: clarity, quantified achievements, ATS keywords, skills relevance, formatting. Be honest and specific.`,
+            },
+          ],
         },
       ],
     });
@@ -84,7 +72,6 @@ ${resumeText.slice(0, 8000)}`,
     }
 
     return Response.json(data);
-
   } catch (error) {
     console.error("Resume analysis error:", error);
     return Response.json(

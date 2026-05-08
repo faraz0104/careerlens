@@ -433,8 +433,9 @@ function HomePage({ setPage, setResumeData }) {
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || "Failed to analyze");
+        let msg = "Failed to analyze resume";
+        try { const err = await response.json(); msg = err.error || msg; } catch {}
+        throw new Error(msg);
       }
 
       const data = await response.json();
@@ -609,8 +610,9 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro }) {
       });
 
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.error || "Failed to analyze");
+        let msg = "Failed to analyze resume";
+        try { const err = await response.json(); msg = err.error || msg; } catch {}
+        throw new Error(msg);
       }
 
       const data = await response.json();
