@@ -1876,14 +1876,14 @@ function PricingPage({ isPro, setIsPro, showToast }) {
             >
               {loading === p.plan ? <><span className="spin" />Processing...</> :
                isPro && p.plan === "pro" ? "✓ Current plan" :
-               p.plan === "free" ? "Start for free" : `Start ${p.trial}`}
+               p.plan === "free" ? "Start for free" : p.plan === "pro" ? "Upgrade to Pro" : "Get Team Plan"}
             </button>
           </div>
         ))}
       </div>
 
       <div style={{ marginTop: 32, textAlign: "center", fontSize: ".8rem", color: "var(--ink3)" }}>
-        Secure payment via Stripe · Cancel anytime · Instant access after payment · GST invoice provided
+        Secure payment via Razorpay · Instant access after payment · GST invoice available · Cancel anytime
       </div>
 
       <div style={{ marginTop: 40 }}>
@@ -1891,7 +1891,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           {[
             ["Is the free plan really free?","Yes, always. No credit card needed. You get 3 resume scans, 10 job matches, and 20 interview questions every month."],
-            ["How does the 14-day trial work?","Full Pro access for 14 days. Your card is charged only after the trial. Cancel before day 14 and you're never charged."],
+            ["What do I get with Pro?","Full access to all features: unlimited resume scans, cover letter generator, LinkedIn optimizer, cold email writer, all interview questions with AI answers, salary negotiation script and more."],
             ["Can I cancel anytime?","Yes. Cancel from your settings with one click. No questions asked. Your data stays for 30 days after cancellation."],
             ["Do you offer refunds?","Yes — full refund within 7 days of payment if you're not satisfied. Email hello@careerlens.io."],
           ].map(([q,a]) => (
