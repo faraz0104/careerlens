@@ -271,6 +271,111 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 .mb-2 { margin-bottom: 8px; } .mb-3 { margin-bottom: 12px; } .mb-4 { margin-bottom: 16px; }
 .w-full { width: 100%; } .text-center { text-align: center; }
 .bg-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r2); padding: 18px; }
+
+/* ── MOBILE NAV ──────────────────────────────────── */
+.nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; border-radius: 8px; background: transparent; border: none; margin-left: auto; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .2s; }
+.mobile-menu { display: none; position: fixed; inset: 0; top: 58px; background: rgba(247,246,242,0.97); backdrop-filter: blur(16px); z-index: 99; padding: 16px; flex-direction: column; gap: 4px; overflow-y: auto; }
+.mobile-menu.open { display: flex; }
+.mobile-menu-link { padding: 12px 16px; border-radius: var(--r); font-size: .95rem; font-weight: 600; color: var(--ink2); background: transparent; text-align: left; border: none; cursor: pointer; transition: all .15s; }
+.mobile-menu-link:hover, .mobile-menu-link.active { color: var(--accent); background: var(--accent-dim); }
+.mobile-menu-divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+/* ── RESPONSIVE ──────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Nav */
+  .nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .nav-right .btn { display: none; }
+  .nav-hamburger { display: flex; }
+
+  /* Hero */
+  .hero { padding: 48px 1rem 36px; }
+  .hero-title { font-size: clamp(1.7rem, 7vw, 2.4rem); }
+  .hero-sub { font-size: .88rem; }
+  .hero-stats { gap: 20px; }
+  .hero-stat-n { font-size: 1.4rem; }
+
+  /* Page */
+  .page { padding: 20px 14px; }
+  .page-title { font-size: 1.3rem; }
+
+  /* Layouts */
+  .two-col { grid-template-columns: 1fr; }
+  .three-col { grid-template-columns: 1fr 1fr; }
+
+  /* Pricing */
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+
+  /* Footer */
+  .footer { padding: 36px 1rem 20px; margin-top: 40px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+
+  /* Job cards */
+  .job-card { flex-wrap: wrap; gap: 10px; padding: 14px; }
+  .job-match { margin-left: 0; }
+
+  /* Company grid */
+  .company-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+  .company-card { padding: 10px; }
+  .company-logo { font-size: 1.3rem; }
+
+  /* Salary */
+  .salary-range { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .salary-num { font-size: 1.4rem; }
+
+  /* Cards */
+  .card-head { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
+  .card-body { padding: 14px; }
+
+  /* Score ring */
+  .score-ring { width: 90px; height: 90px; }
+
+  /* Tabs */
+  .tabs { overflow-x: auto; }
+  .tab { white-space: nowrap; flex: none; padding: 7px 14px; }
+
+  /* Upload */
+  .upload-zone { padding: 32px 16px; }
+
+  /* Sections */
+  .features-section { padding: 40px 1rem; }
+  .features-grid { grid-template-columns: 1fr; }
+
+  /* Toast */
+  .toast { bottom: 16px; right: 12px; left: 12px; font-size: .8rem; }
+
+  /* Ad slots */
+  .ad-leaderboard { height: 60px; }
+  .ad-rectangle { height: 180px; }
+}
+
+@media (max-width: 480px) {
+  /* Nav logo — shorter */
+  .nav-logo span { display: none; }
+
+  /* Three col → single */
+  .three-col { grid-template-columns: 1fr; }
+
+  /* Footer → single col */
+  .footer-grid { grid-template-columns: 1fr; }
+
+  /* Hero */
+  .hero-actions { flex-direction: column; align-items: center; }
+  .hero-actions .btn { width: 100%; max-width: 280px; }
+
+  /* Pricing */
+  .price-card { padding: 22px 18px; }
+  .price-amount { font-size: 2rem; }
+
+  /* Page title */
+  .page-title { font-size: 1.2rem; }
+
+  /* Job card compact */
+  .job-logo { width: 40px; height: 40px; font-size: 1.1rem; }
+  .job-title { font-size: .88rem; }
+}
 `;
 
 /* ── DATA ───────────────────────────────────────── */
@@ -1839,9 +1944,11 @@ function Footer({ setPage }) {
 /* ── ROOT APP ────────────────────────────────────── */
 export default function App({ defaultTab = "home" } = {}) {
   const [page, setPage] = useState(defaultTab);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = (id) => {
     setPage(id);
+    setMobileMenuOpen(false);
     if (typeof window !== "undefined") {
       const path = id === "home" ? "/" : `/${id}`;
       window.history.pushState(null, "", path);
@@ -1883,7 +1990,7 @@ export default function App({ defaultTab = "home" } = {}) {
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <nav className="nav">
           <a className="nav-logo" onClick={() => navigate("home")} style={{ cursor: "pointer" }}>
-            <div className="nav-logo-icon">C</div>CareerLens
+            <div className="nav-logo-icon">C</div><span>CareerLens</span>
           </a>
           <div className="nav-links">
             {NAV_ITEMS.map(n => (
@@ -1897,7 +2004,24 @@ export default function App({ defaultTab = "home" } = {}) {
               <button className="btn btn-primary btn-sm" onClick={() => navigate("pricing")}>Upgrade to Pro</button>
             )}
           </div>
+          <button className="nav-hamburger" onClick={() => setMobileMenuOpen(o => !o)} aria-label="Menu">
+            <span style={{ transform: mobileMenuOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
+            <span style={{ opacity: mobileMenuOpen ? 0 : 1 }} />
+            <span style={{ transform: mobileMenuOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
+          </button>
         </nav>
+
+        <div className={`mobile-menu ${mobileMenuOpen ? "open" : ""}`}>
+          {NAV_ITEMS.map(n => (
+            <button key={n.id} className={`mobile-menu-link ${page === n.id ? "active" : ""}`} onClick={() => navigate(n.id)}>{n.label}</button>
+          ))}
+          <div className="mobile-menu-divider" />
+          {isPro ? (
+            <div style={{ padding: "10px 16px" }}><span className="pro-badge">PRO ✦ Active</span></div>
+          ) : (
+            <button className="btn btn-primary w-full" style={{ marginTop: 4 }} onClick={() => navigate("pricing")}>Upgrade to Pro — ₹299/month</button>
+          )}
+        </div>
 
         <main style={{ flex: 1 }}>
           {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} />}
