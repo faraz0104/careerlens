@@ -1920,6 +1920,110 @@ function PricingPage({ isPro, setIsPro, showToast }) {
 }
 
 /* ── FOOTER ─────────────────────────────────────── */
+/* ── CONTACT PAGE ─────────────────────────────────── */
+function ContactPage({ showToast }) {
+  const [form, setForm] = useState({ name: "", email: "", subject: "General Enquiry", message: "" });
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  const subjects = ["General Enquiry", "Collaboration / Partnership", "Advertise with Us", "Bug Report", "Feature Request", "Other"];
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send");
+      setSent(true);
+      showToast("Message sent! We'll get back to you soon.");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: 640, margin: "0 auto", padding: "60px 1.5rem" }}>
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".75rem", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--accent)", background: "var(--accent-dim)", border: "1px solid rgba(232,90,42,.2)", padding: "4px 12px", borderRadius: 99, marginBottom: 16 }}>✉ Contact</div>
+        <h1 style={{ fontFamily: "var(--font-head)", fontSize: "clamp(1.8rem,4vw,2.6rem)", fontWeight: 800, letterSpacing: "-.04em", marginBottom: 12 }}>Get in touch</h1>
+        <p style={{ color: "var(--ink2)", lineHeight: 1.65, fontSize: ".95rem" }}>Have a question, want to collaborate, or just say hi? Fill in the form and I'll reply within 24 hours.</p>
+      </div>
+
+      {sent ? (
+        <div className="card" style={{ padding: "40px 32px", textAlign: "center" }}>
+          <div style={{ fontSize: "2.5rem", marginBottom: 16 }}>✅</div>
+          <h2 style={{ fontFamily: "var(--font-head)", fontWeight: 700, marginBottom: 8 }}>Message sent!</h2>
+          <p style={{ color: "var(--ink2)", fontSize: ".9rem" }}>Thanks for reaching out. I'll get back to you at <strong>{form.email}</strong> within 24 hours.</p>
+          <button className="btn btn-ghost" style={{ marginTop: 24 }} onClick={() => { setSent(false); setForm({ name: "", email: "", subject: "General Enquiry", message: "" }); }}>Send another message</button>
+        </div>
+      ) : (
+        <div className="card">
+          <div className="card-body">
+            <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                <div>
+                  <label style={{ display: "block", fontSize: ".78rem", fontWeight: 600, marginBottom: 6, color: "var(--ink2)" }}>Your Name *</label>
+                  <input
+                    type="text" required placeholder="Rahul Sharma"
+                    value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    style={{ width: "100%", padding: "9px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".85rem", background: "var(--bg)", color: "var(--ink)" }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: ".78rem", fontWeight: 600, marginBottom: 6, color: "var(--ink2)" }}>Email Address *</label>
+                  <input
+                    type="email" required placeholder="rahul@example.com"
+                    value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                    style={{ width: "100%", padding: "9px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".85rem", background: "var(--bg)", color: "var(--ink)" }}
+                  />
+                </div>
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: ".78rem", fontWeight: 600, marginBottom: 6, color: "var(--ink2)" }}>Subject</label>
+                <select
+                  value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
+                  style={{ width: "100%", padding: "9px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".85rem", background: "var(--bg)", color: "var(--ink)" }}
+                >
+                  {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: ".78rem", fontWeight: 600, marginBottom: 6, color: "var(--ink2)" }}>Message *</label>
+                <textarea
+                  required rows={5} placeholder="Tell me what's on your mind..."
+                  value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                  style={{ width: "100%", padding: "9px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".85rem", background: "var(--bg)", color: "var(--ink)", resize: "vertical", lineHeight: 1.6 }}
+                />
+              </div>
+              {error && <div style={{ background: "var(--red-dim)", color: "var(--red)", border: "1px solid rgba(197,48,48,.2)", borderRadius: "var(--r)", padding: "10px 14px", fontSize: ".83rem" }}>{error}</div>}
+              <button type="submit" className="btn btn-primary" disabled={loading} style={{ alignSelf: "flex-start", minWidth: 160 }}>
+                {loading ? "Sending…" : "Send Message →"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop: 40, display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ fontSize: ".78rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em", color: "var(--ink3)" }}>Other ways to reach me</div>
+        <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+          <a href="mailto:khan97faraz@gmail.com" style={{ color: "var(--accent)", fontSize: ".85rem", fontWeight: 600, textDecoration: "none" }}>✉ khan97faraz@gmail.com</a>
+          <a href="https://linkedin.com/in/faraz0104" target="_blank" rel="noopener noreferrer" style={{ color: "var(--blue)", fontSize: ".85rem", fontWeight: 600, textDecoration: "none" }}>in LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Footer({ setPage }) {
   return (
     <footer className="footer">
@@ -1940,8 +2044,8 @@ function Footer({ setPage }) {
         </div>
         <div>
           <div className="footer-heading">Company</div>
-          {["About Us","Blog","Careers","Privacy Policy","Terms of Service","Contact Us","Advertise with us"].map(l => (
-            <a key={l} className="footer-link">{l}</a>
+          {[["Contact Us","contact"],["Advertise with Us","contact"],["Pricing","pricing"],["Privacy Policy",null],["Terms of Service",null]].map(([l,p]) => (
+            <a key={l} className="footer-link" onClick={() => p && setPage(p)} style={{ cursor: p ? "pointer" : "default" }}>{l}</a>
           ))}
         </div>
       </div>
@@ -2044,6 +2148,7 @@ export default function App({ defaultTab = "home" } = {}) {
           {page === "salary" && <SalaryPage resumeData={resumeData} isPro={isPro} showToast={showToast} />}
           {page === "roadmap" && <RoadmapPage resumeData={resumeData} isPro={isPro} showToast={showToast} />}
           {page === "pricing" && <PricingPage isPro={isPro} setIsPro={setIsPro} showToast={showToast} />}
+          {page === "contact" && <ContactPage showToast={showToast} />}
         </main>
 
         <Footer setPage={navigate} />
