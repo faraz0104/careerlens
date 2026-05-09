@@ -503,11 +503,11 @@ async function callClaude(system, user, max = 800) {
   return d.text || "";
 }
 
-function loadRazorpay() {
+function loadCashfree() {
   return new Promise((resolve) => {
-    if (window.Razorpay) return resolve(true);
+    if (window.Cashfree) return resolve(true);
     const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
@@ -2053,7 +2053,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
     if (plan === "free") return;
     setLoading(plan);
 
-    const loaded = await loadRazorpay();
+    const loaded = await loadCashfree();
     if (!loaded) {
       alert("Could not load payment gateway. Check your internet connection.");
       setLoading("");
@@ -2069,36 +2069,33 @@ function PricingPage({ isPro, setIsPro, showToast }) {
       const order = await orderRes.json();
       if (order.error) throw new Error(order.error);
 
-      const options = {
-        key: order.key,
-        amount: order.amount,
-        currency: order.currency,
-        name: "CareerLens",
-        description: plan === "pro" ? "Pro Plan — Monthly" : "Team Plan — Per Student/Month",
-        order_id: order.id,
-        handler: async function (response) {
-          const verifyRes = await fetch("/api/payment/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...response, plan }),
-          });
-          const result = await verifyRes.json();
-          if (result.success) {
-            localStorage.setItem("cl_payment_id", response.razorpay_payment_id);
-            localStorage.setItem("cl_is_pro", "true");
-            setIsPro(true);
-            showToast(`${plan === "pro" ? "Pro" : "Team"} plan activated! Welcome to Pro ✦`);
-          } else {
-            alert("Payment verification failed. Please contact support@careerlens.io");
-          }
-        },
-        prefill: { name: "", email: "", contact: "" },
-        theme: { color: "#e85a2a" },
-        modal: { ondismiss: () => setLoading("") },
-      };
+      const cashfree = window.Cashfree({ mode: "production" });
+      const result = await cashfree.checkout({
+        paymentSessionId: order.payment_session_id,
+        redirectTarget: "_modal",
+      });
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      if (result.error) {
+        throw new Error(result.error.message || "Payment failed");
+      }
+
+      if (result.paymentDetails) {
+        const verifyRes = await fetch("/api/payment/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ order_id: order.order_id, plan }),
+        });
+        const verify = await verifyRes.json();
+        if (verify.success) {
+          localStorage.setItem("cl_payment_id", verify.payment_id);
+          localStorage.setItem("cl_is_pro", "true");
+          setIsPro(true);
+          showToast(`${plan === "pro" ? "Pro" : "Team"} plan activated! Welcome to Pro ✦`);
+        } else {
+          alert("Payment verification failed. Please contact support@careerlens.io");
+        }
+      }
+
       setLoading("");
     } catch (error) {
       alert("Payment error: " + error.message);
@@ -2156,7 +2153,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
       </div>
 
       <div style={{ marginTop: 32, textAlign: "center", fontSize: ".8rem", color: "var(--ink3)" }}>
-        Secure payment via Razorpay · Instant access after payment · GST invoice available · Cancel anytime
+        Secure payment via Cashfree · Instant access after payment · GST invoice available · Cancel anytime
       </div>
 
       <div style={{ marginTop: 40 }}>
