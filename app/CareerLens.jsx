@@ -1386,7 +1386,7 @@ Subject: [subject line]
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
                 <div className="job-match">{job.match}%</div>
                 <div style={{ fontSize: ".7rem", color: "var(--ink3)" }}>match</div>
-                <button className="btn btn-sm btn-primary" onClick={() => { const q = encodeURIComponent(`${job.title} ${job.company} India`); window.open(`https://www.linkedin.com/jobs/search/?keywords=${q}`, "_blank"); }}>Apply →</button>
+                <button className="btn btn-sm btn-primary" onClick={() => { const url = job.apply_url || `https://www.naukri.com/jobs-in-india?k=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`; window.open(url, "_blank", "noopener,noreferrer"); }}>Apply →</button>
                 <div style={{ fontSize: ".7rem", color: "var(--ink3)" }}>{job.posted}</div>
               </div>
             </div>
