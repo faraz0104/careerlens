@@ -46,7 +46,7 @@ export async function POST(req) {
   "name": "full name from resume",
   "role": "current or most recent job title",
   "experience": "X years",
-  "score": <number between 0-100 based on resume quality>,
+  "score": <integer, see rubric below>,
   "skills": ["skill1", "skill2", "skill3"],
   "missing": ["important missing skill1", "missing skill2", "missing skill3"],
   "summary": "2 sentence summary of the resume",
@@ -59,7 +59,16 @@ export async function POST(req) {
   ]
 }
 
-Score based on: clarity, quantified achievements, ATS keywords, skills relevance, formatting. Be honest and specific.`,
+SCORING RUBRIC — be strict and honest, most resumes score 40-65:
+20-35: Bare minimum info, no structure, no quantified achievements, generic descriptions
+36-50: Basic structure present but missing metrics, weak action verbs, poor ATS keywords, job descriptions are vague duties not achievements
+51-65: Decent structure, some metrics, but still has generic phrases ("responsible for", "helped with"), missing key skills section, inconsistent formatting
+66-75: Good structure, has quantified achievements (%, numbers, $), strong action verbs, relevant skills listed, minor formatting issues
+76-85: Strong resume — clear impact metrics, tailored skills, ATS-optimised keywords, clean formatting, no fluff
+86-95: Exceptional — every bullet has measurable impact, perfectly ATS-optimised, strong personal brand, no wasted space
+
+Deduct points for: no quantified achievements (-15), generic job descriptions (-10), missing skills section (-8), poor formatting (-5), unexplained gaps (-5), objective statement instead of summary (-5), using "responsible for" or "helped with" (-8).
+Add points for: strong action verbs (+5), specific metrics in every bullet (+15), industry keywords (+8), clear career progression (+5), links to portfolio/GitHub (+3).`,
             },
           ],
         },
