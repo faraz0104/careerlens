@@ -4,7 +4,7 @@ import Link from "next/link";
 import { TECHS, ALL_TECHS } from "@/lib/interview-data";
 
 interface Props {
-  params: { tech: string };
+  params: Promise<{ tech: string }>;
 }
 
 export async function generateStaticParams() {
@@ -12,7 +12,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = TECHS[params.tech];
+  const { tech } = await params;
+  const data = TECHS[tech];
   if (!data) return {};
   return {
     title: `${data.metaTitle} | CareerLens`,
@@ -26,8 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function TechInterviewPage({ params }: Props) {
-  const data = TECHS[params.tech];
+export default async function TechInterviewPage({ params }: Props) {
+  const { tech } = await params;
+  const data = TECHS[tech];
   if (!data) notFound();
 
   const faqJsonLd = {

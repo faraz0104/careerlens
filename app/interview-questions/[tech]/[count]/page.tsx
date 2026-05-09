@@ -14,7 +14,7 @@ function parseCount(count: string): CountOption | null {
 }
 
 interface Props {
-  params: { tech: string; count: string };
+  params: Promise<{ tech: string; count: string }>;
 }
 
 export async function generateStaticParams() {
@@ -28,29 +28,32 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = TECHS[params.tech];
-  const n = parseCount(params.count);
+  const { tech, count } = await params;
+  const data = TECHS[tech];
+  const n = parseCount(count);
   if (!data || !n) return {};
 
   const actualCount = Math.min(n, data.questions.length);
-  const title = `Top ${actualCount} ${data.title.replace(" Interview Questions", "")} Interview Questions & Answers (2025)`;
-  const desc = `Crack your ${data.title.replace(" Interview Questions", "")} interview with the top ${actualCount} most-asked questions and detailed answers for 2025. Free study guide for freshers and experienced developers.`;
+  const techName = data.title.replace(" Interview Questions", "");
+  const title = `Top ${actualCount} ${techName} Interview Questions & Answers (2025)`;
+  const desc = `Crack your ${techName} interview with the top ${actualCount} most-asked questions and detailed answers for 2025. Free study guide for freshers and experienced developers.`;
 
   return {
     title: `${title} | CareerLens`,
     description: desc,
-    alternates: { canonical: `https://www.carrerlens.com/interview-questions/${data.slug}/${params.count}` },
+    alternates: { canonical: `https://www.carrerlens.com/interview-questions/${data.slug}/${count}` },
     openGraph: {
       title,
       description: desc,
-      url: `https://www.carrerlens.com/interview-questions/${data.slug}/${params.count}`,
+      url: `https://www.carrerlens.com/interview-questions/${data.slug}/${count}`,
     },
   };
 }
 
-export default function TopNInterviewPage({ params }: Props) {
-  const data = TECHS[params.tech];
-  const n = parseCount(params.count);
+export default async function TopNInterviewPage({ params }: Props) {
+  const { tech, count } = await params;
+  const data = TECHS[tech];
+  const n = parseCount(count);
   if (!data || !n) notFound();
 
   const questions = data.questions.slice(0, n);
@@ -74,7 +77,7 @@ export default function TopNInterviewPage({ params }: Props) {
       { "@type": "ListItem", position: 1, name: "Home", item: "https://www.carrerlens.com" },
       { "@type": "ListItem", position: 2, name: "Interview Questions", item: "https://www.carrerlens.com/interview-questions" },
       { "@type": "ListItem", position: 3, name: data.title, item: `https://www.carrerlens.com/interview-questions/${data.slug}` },
-      { "@type": "ListItem", position: 4, name: `Top ${actualCount}`, item: `https://www.carrerlens.com/interview-questions/${data.slug}/${params.count}` },
+      { "@type": "ListItem", position: 4, name: `Top ${actualCount}`, item: `https://www.carrerlens.com/interview-questions/${data.slug}/${count}` },
     ],
   };
 
@@ -207,7 +210,6 @@ export default function TopNInterviewPage({ params }: Props) {
 
           {/* SIDEBAR */}
           <aside style={{ position: "sticky", top: 68 }}>
-            {/* Other counts */}
             <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
               <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 12 }}>{techName} Question Sets</div>
               <Link href={`/interview-questions/${data.slug}`} style={{ textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 0", borderBottom: "1px solid #f0ede8" }}>
@@ -223,7 +225,6 @@ export default function TopNInterviewPage({ params }: Props) {
               ))}
             </div>
 
-            {/* Related topics */}
             {related.length > 0 && (
               <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
                 <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 12 }}>Related Topics</div>
@@ -239,7 +240,6 @@ export default function TopNInterviewPage({ params }: Props) {
               </div>
             )}
 
-            {/* All topics */}
             <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px" }}>
               <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 12 }}>All Interview Topics</div>
               {ALL_TECHS.map((t) => (
@@ -257,7 +257,6 @@ export default function TopNInterviewPage({ params }: Props) {
           </aside>
         </div>
 
-        {/* FOOTER */}
         <div style={{ borderTop: "1px solid #e5e2de", padding: "24px 2rem", textAlign: "center", fontSize: ".75rem", color: "#9a958f", marginTop: 24 }}>
           © 2025 CareerLens · <Link href="/" style={{ color: "#9a958f" }}>Home</Link> · <Link href="/interview-questions" style={{ color: "#9a958f" }}>Interview Questions</Link> · <Link href="/pricing" style={{ color: "#9a958f" }}>Pricing</Link>
         </div>
