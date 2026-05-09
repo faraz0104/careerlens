@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
+import { ALL_TECHS } from "@/lib/interview-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.carrerlens.com";
   const now = new Date();
 
-  return [
+  const appPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/resume`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/cover-letter`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
@@ -16,4 +17,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/roadmap`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
+
+  const interviewIndex: MetadataRoute.Sitemap = [
+    { url: `${base}/interview-questions`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+  ];
+
+  const interviewPages: MetadataRoute.Sitemap = ALL_TECHS.map((tech) => ({
+    url: `${base}/interview-questions/${tech.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.9,
+  }));
+
+  return [...appPages, ...interviewIndex, ...interviewPages];
 }
