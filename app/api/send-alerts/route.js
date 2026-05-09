@@ -63,7 +63,7 @@ async function generateJobs(role, city) {
       }
     );
     const data = await res.json();
-    return (data.data || [])
+    return (data.data?.jobs || data.data || [])
       .filter(j => j.job_apply_link)
       .slice(0, 5)
       .map(j => ({

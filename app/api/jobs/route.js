@@ -93,7 +93,7 @@ export async function POST(req) {
     if (!res.ok) throw new Error(`JSearch error: ${res.status}`);
 
     const data = await res.json();
-    const raw = data.data || [];
+    const raw = data.data?.jobs || data.data || [];
 
     if (!raw.length) return Response.json([]);
 
