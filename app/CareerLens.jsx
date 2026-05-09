@@ -2048,9 +2048,17 @@ function RoadmapPage({ resumeData, isPro, showToast }) {
 /* PRICING */
 function PricingPage({ isPro, setIsPro, showToast }) {
   const [loading, setLoading] = useState("");
+  const [emailPrompt, setEmailPrompt] = useState(null); // { plan }
+  const [emailInput, setEmailInput] = useState("");
+  const [emailError, setEmailError] = useState("");
 
-  const handleBuy = async (plan) => {
+  const handleBuy = async (plan, email) => {
     if (plan === "free") return;
+    if (!email) {
+      setEmailPrompt({ plan });
+      return;
+    }
+    setEmailPrompt(null);
     setLoading(plan);
 
     const loaded = await loadCashfree();
@@ -2064,7 +2072,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
       const orderRes = await fetch("/api/payment/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, customer_email: email }),
       });
       const order = await orderRes.json();
       if (order.error) throw new Error(order.error);
@@ -2140,7 +2148,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
             ) : (
               <button
                 className={`btn w-full ${p.featured ? "btn-primary" : p.plan === "free" ? "btn-ghost" : "btn-dark"}`}
-                onClick={() => handleBuy(p.plan)}
+                onClick={() => handleBuy(p.plan, null)}
                 disabled={loading === p.plan || (p.plan !== "free" && isPro)}
               >
                 {loading === p.plan ? <><span className="spin" />Processing...</> :
@@ -2173,8 +2181,44 @@ function PricingPage({ isPro, setIsPro, showToast }) {
         </div>
       </div>
       <AdSlot type="rectangle" label="Advertisement" />
+
+      {/* EMAIL PROMPT MODAL */}
+      {emailPrompt && (
+        <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.5)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:1000, padding:"16px" }}>
+          <div style={{ background:"#fff", borderRadius:14, padding:"28px 28px 24px", maxWidth:400, width:"100%", boxShadow:"0 20px 60px rgba(0,0,0,.2)" }}>
+            <div style={{ fontWeight:800, fontSize:"1.1rem", color:"#1a1916", marginBottom:6 }}>Where should we send your receipt?</div>
+            <div style={{ fontSize:".82rem", color:"#5a5650", marginBottom:20 }}>We'll email your payment confirmation &amp; access details.</div>
+            <input
+              type="email"
+              placeholder="your@email.com"
+              value={emailInput}
+              onChange={e => { setEmailInput(e.target.value); setEmailError(""); }}
+              style={{ width:"100%", padding:"11px 14px", borderRadius:9, border:`1.5px solid ${emailError ? "#e53e3e" : "#e5e2de"}`, fontSize:".9rem", marginBottom:emailError ? 6 : 16, boxSizing:"border-box", outline:"none" }}
+              onKeyDown={e => { if (e.key === "Enter") submitEmail(); }}
+              autoFocus
+            />
+            {emailError && <div style={{ fontSize:".75rem", color:"#e53e3e", marginBottom:12 }}>{emailError}</div>}
+            <div style={{ display:"flex", gap:10 }}>
+              <button className="btn btn-ghost" style={{ flex:1 }} onClick={() => { setEmailPrompt(null); setEmailInput(""); setEmailError(""); }}>Cancel</button>
+              <button className="btn btn-primary" style={{ flex:2 }} onClick={submitEmail}>
+                Continue to Payment →
+              </button>
+            </div>
+            <div style={{ textAlign:"center", fontSize:".7rem", color:"#9a958f", marginTop:12 }}>🔒 We never share your email</div>
+          </div>
+        </div>
+      )}
     </div>
   );
+
+  function submitEmail() {
+    const email = emailInput.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+    handleBuy(emailPrompt.plan, email);
+  }
 }
 
 /* ── FOOTER ─────────────────────────────────────── */
