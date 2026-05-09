@@ -81,7 +81,7 @@ export async function POST(req) {
 
     const query = encodeURIComponent(`${role} India`);
     const res = await fetch(
-      `https://jsearch.p.rapidapi.com/search?query=${query}&page=1&num_pages=2&date_posted=month&country=in`,
+      `https://jsearch.p.rapidapi.com/search-v2?query=${query}&page=1&num_pages=2&date_posted=month&country=in`,
       {
         headers: {
           "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
