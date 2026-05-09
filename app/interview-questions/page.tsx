@@ -55,15 +55,13 @@ export default function InterviewQuestionsIndex() {
             <Link
               key={tech.slug}
               href={`/interview-questions/${tech.slug}`}
+              className="iq-card-link"
               style={{ textDecoration: "none" }}
             >
-              <div style={{
+              <div className="iq-card" style={{
                 background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "20px 22px",
                 transition: "box-shadow .15s, border-color .15s", cursor: "pointer",
-              }}
-                onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 20px rgba(0,0,0,.08)"; (e.currentTarget as HTMLDivElement).style.borderColor = "#e85a2a"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "none"; (e.currentTarget as HTMLDivElement).style.borderColor = "#e5e2de"; }}
-              >
+              }}>
                 <div style={{ fontSize: "2rem", marginBottom: 10 }}>{tech.icon}</div>
                 <div style={{ fontWeight: 700, fontSize: ".95rem", color: "#1a1916", marginBottom: 4 }}>{tech.title}</div>
                 <div style={{ fontSize: ".78rem", color: "#9a958f", marginBottom: 12 }}>
@@ -95,6 +93,13 @@ export default function InterviewQuestionsIndex() {
       <div style={{ borderTop: "1px solid #e5e2de", padding: "24px 2rem", textAlign: "center", fontSize: ".75rem", color: "#9a958f" }}>
         © 2025 CareerLens · <Link href="/" style={{ color: "#9a958f" }}>Home</Link> · <Link href="/pricing" style={{ color: "#9a958f" }}>Pricing</Link>
       </div>
+
+      <style>{`
+        .iq-card-link:hover .iq-card {
+          box-shadow: 0 4px 20px rgba(0,0,0,.08);
+          border-color: #e85a2a !important;
+        }
+      `}</style>
     </div>
   );
 }
