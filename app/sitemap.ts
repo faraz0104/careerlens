@@ -29,5 +29,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...appPages, ...interviewIndex, ...interviewPages];
+  const topNPages: MetadataRoute.Sitemap = ALL_TECHS.flatMap((tech) =>
+    [10, 20, 30, 50].map((n) => ({
+      url: `${base}/interview-questions/${tech.slug}/top-${n}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    }))
+  );
+
+  return [...appPages, ...interviewIndex, ...interviewPages, ...topNPages];
 }
