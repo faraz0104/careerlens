@@ -680,7 +680,95 @@ function HomePage({ setPage, setResumeData }) {
           </div>
         </div>
       </section>
+
+      <JobAlertSignup />
     </div>
+  );
+}
+
+function JobAlertSignup() {
+  const [form, setForm] = useState({ email: "", name: "", role: "", city: "Bangalore" });
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  const cities = ["Bangalore","Mumbai","Hyderabad","Delhi NCR","Pune","Chennai","Kolkata","Remote","Any"];
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to subscribe");
+      setDone(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <section style={{ padding: "60px 2rem", background: "var(--bg)" }}>
+      <div style={{ maxWidth: 560, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".75rem", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--accent)", background: "var(--accent-dim)", border: "1px solid rgba(232,90,42,.2)", padding: "4px 12px", borderRadius: 99, marginBottom: 14 }}>📬 Free Job Alerts</div>
+          <h2 style={{ fontFamily: "var(--font-head)", fontSize: "clamp(1.5rem,3.5vw,2rem)", fontWeight: 800, letterSpacing: "-.04em", marginBottom: 10 }}>Get jobs in your inbox every Monday</h2>
+          <p style={{ color: "var(--ink2)", fontSize: ".88rem", lineHeight: 1.65 }}>5 personalised job picks sent to you weekly — curated by AI for your role and city. Free forever.</p>
+        </div>
+
+        {done ? (
+          <div className="card" style={{ padding: "32px 24px", textAlign: "center" }}>
+            <div style={{ fontSize: "2.2rem", marginBottom: 12 }}>🎉</div>
+            <div style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: "1.05rem", marginBottom: 6 }}>You're in! First email lands Monday.</div>
+            <div style={{ color: "var(--ink2)", fontSize: ".83rem" }}>We'll send 5 {form.role} jobs in {form.city} every week.</div>
+          </div>
+        ) : (
+          <div className="card">
+            <div className="card-body">
+              <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>Your Name</label>
+                    <input type="text" placeholder="Rahul Sharma" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }} />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>Email *</label>
+                    <input type="email" required placeholder="you@gmail.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }} />
+                  </div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>Job Role *</label>
+                    <input type="text" required placeholder="Software Engineer" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }} />
+                  </div>
+                  <div>
+                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>City</label>
+                    <select value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }}>
+                      {cities.map(c => <option key={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+                {error && <div style={{ background: "var(--red-dim)", color: "var(--red)", border: "1px solid rgba(197,48,48,.2)", borderRadius: "var(--r)", padding: "8px 12px", fontSize: ".8rem" }}>{error}</div>}
+                <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: "100%", justifyContent: "center", padding: "11px" }}>
+                  {loading ? "Subscribing…" : "📬 Get free job alerts every Monday"}
+                </button>
+                <div style={{ textAlign: "center", fontSize: ".72rem", color: "var(--ink3)" }}>No spam. Unsubscribe anytime. 100% free.</div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 
