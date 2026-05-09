@@ -1,9 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { Resend } from "resend";
-import Anthropic from "@anthropic-ai/sdk";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function GET(req) {
   const authHeader = req.headers.get("authorization");
@@ -53,34 +51,30 @@ export async function GET(req) {
 
 async function generateJobs(role, city) {
   try {
-    const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1500,
-      messages: [{
-        role: "user",
-        content: `Generate 5 realistic job openings for a ${role} in ${city !== "Any" ? city : "India"}.
-
-Return ONLY a valid JSON array, no markdown, no backticks:
-[{
-  "title": "exact job title",
-  "company": "real Indian company name",
-  "location": "${city !== "Any" ? city : "City"}, India or Remote",
-  "salary": "₹XX-XX LPA",
-  "type": "Full-time",
-  "skills": ["skill1", "skill2", "skill3"],
-  "highlight": "one compelling reason to apply"
-}]
-
-Rules:
-- Mix: Indian startups (Razorpay, CRED, Zepto, Meesho, Groww), MNCs (Google, Microsoft, Amazon), IT firms (TCS, Infosys)
-- Salary realistic for India 2024
-- Skills relevant to ${role}`
-      }]
-    });
-
-    const text = response.content[0].text.trim();
-    const match = text.match(/\[[\s\S]*\]/);
-    return match ? JSON.parse(match[0]) : [];
+    const location = city !== "Any" ? city : "India";
+    const query = encodeURIComponent(`${role} ${location}`);
+    const res = await fetch(
+      `https://jsearch.p.rapidapi.com/search?query=${query}&page=1&num_pages=1&date_posted=week&country=in`,
+      {
+        headers: {
+          "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
+          "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
+        },
+      }
+    );
+    const data = await res.json();
+    return (data.data || [])
+      .filter(j => j.job_apply_link)
+      .slice(0, 5)
+      .map(j => ({
+        title: j.job_title,
+        company: j.employer_name,
+        location: [j.job_city, "India"].filter(Boolean).join(", "),
+        salary: j.job_min_salary ? `₹${Math.round(j.job_min_salary / 100000)}–${Math.round(j.job_max_salary / 100000)}L PA` : "Competitive",
+        skills: (j.job_required_skills || []).slice(0, 3),
+        highlight: `Real opening at ${j.employer_name} — posted ${j.job_posted_at_datetime_utc ? Math.floor((Date.now() - new Date(j.job_posted_at_datetime_utc)) / 86400000) + "d ago" : "recently"}`,
+        apply_url: j.job_apply_link,
+      }));
   } catch {
     return [];
   }
@@ -88,7 +82,7 @@ Rules:
 
 function buildEmail(sub, jobs) {
   const jobCards = jobs.map(j => `
-    <div style="background:#fff;border:1px solid #e5e2de;border-radius:10px;padding:16px 20px;margin-bottom:12px;">
+    <a href="${j.apply_url}" target="_blank" rel="noopener noreferrer" style="display:block;text-decoration:none;background:#fff;border:1px solid #e5e2de;border-radius:10px;padding:16px 20px;margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div>
           <div style="font-weight:700;font-size:.95rem;color:#1a1916;">${j.title}</div>
@@ -96,9 +90,9 @@ function buildEmail(sub, jobs) {
         </div>
         <div style="font-weight:700;font-size:.82rem;color:#2d8a4e;white-space:nowrap;margin-left:12px;">${j.salary}</div>
       </div>
-      <div style="font-size:.78rem;color:#9a958f;margin-bottom:10px;">${j.skills.join(" · ")}</div>
-      <div style="font-size:.8rem;color:#e85a2a;font-weight:600;">✦ ${j.highlight}</div>
-    </div>
+      ${j.skills.length ? `<div style="font-size:.78rem;color:#9a958f;margin-bottom:10px;">${j.skills.join(" · ")}</div>` : ""}
+      <div style="font-size:.8rem;color:#e85a2a;font-weight:600;">✦ ${j.highlight} → Apply now</div>
+    </a>
   `).join("");
 
   return `
