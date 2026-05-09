@@ -41,8 +41,12 @@ export async function POST(req) {
             },
             {
               type: "text",
-              text: `Analyze this resume and return ONLY a valid JSON object with no extra text, no markdown, no backticks. Use exactly this structure:
+              text: `First check if this document is a resume or CV. A resume contains a person's work experience, education, and/or skills. If it is NOT a resume (e.g. it's an invoice, ID card, certificate, article, blank page, or any other document), return ONLY this JSON:
+{"is_resume": false, "error": "This doesn't look like a resume. Please upload your CV or resume in PDF format."}
+
+If it IS a resume, analyze it and return ONLY a valid JSON object with no extra text, no markdown, no backticks:
 {
+  "is_resume": true,
   "name": "full name from resume",
   "role": "current or most recent job title",
   "experience": "X years",
@@ -87,6 +91,13 @@ Add points for: strong action verbs (+5), specific metrics in every bullet (+15)
       } else {
         throw new Error("Could not parse AI response");
       }
+    }
+
+    if (data.is_resume === false) {
+      return Response.json(
+        { error: data.error || "This doesn't look like a resume. Please upload your CV or resume." },
+        { status: 422 }
+      );
     }
 
     return Response.json(data);

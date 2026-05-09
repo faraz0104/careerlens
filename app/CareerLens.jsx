@@ -521,12 +521,30 @@ function HomePage({ setPage, setResumeData }) {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [uploadError, setUploadError] = useState("");
   const fileRef = useRef();
 
   const handleFile = async (file) => {
     if (!file) return;
+    setUploadError("");
     setFileName(file.name);
     setUploading(true);
+
+    const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|doc|docx)$/i)) {
+      setUploadError("Only PDF, DOC, or DOCX files are accepted.");
+      setUploading(false);
+      setFileName("");
+      return;
+    }
+
+    const maxMB = 10;
+    if (file.size > maxMB * 1024 * 1024) {
+      setUploadError(`File is too large. Maximum size is ${maxMB}MB.`);
+      setUploading(false);
+      setFileName("");
+      return;
+    }
 
     try {
       const formData = new FormData();
@@ -537,13 +555,11 @@ function HomePage({ setPage, setResumeData }) {
         body: formData,
       });
 
-      if (!response.ok) {
-        let msg = "Failed to analyze resume";
-        try { const err = await response.json(); msg = err.error || msg; } catch {}
-        throw new Error(msg);
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to analyze resume");
+      }
 
       setResumeData({
         name: data.name,
@@ -558,7 +574,8 @@ function HomePage({ setPage, setResumeData }) {
 
       setPage("resume");
     } catch (error) {
-      alert("Error analyzing resume: " + error.message);
+      setUploadError(error.message);
+      setFileName("");
       console.error(error);
     } finally {
       setUploading(false);
@@ -599,9 +616,15 @@ function HomePage({ setPage, setResumeData }) {
           </button>
         </div>
 
-        {fileName && !uploading && (
+        {fileName && !uploading && !uploadError && (
           <div className="info-box info-success" style={{ maxWidth: 400, margin: "0 auto 20px" }}>
             <span>✓</span><span>Analysing <strong>{fileName}</strong>...</span>
+          </div>
+        )}
+        {uploadError && (
+          <div className="info-box" style={{ maxWidth: 460, margin: "0 auto 20px", background: "var(--red-dim)", border: "1px solid rgba(197,48,48,.25)", color: "var(--red)" }}>
+            <span>⚠</span>
+            <span>{uploadError}</span>
           </div>
         )}
 
