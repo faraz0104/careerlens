@@ -687,7 +687,7 @@ function HomePage({ setPage, setResumeData }) {
 }
 
 function JobAlertSignup() {
-  const [form, setForm] = useState({ email: "", name: "", role: "", city: "Bangalore" });
+  const [form, setForm] = useState({ email: "", role: "", city: "Bangalore" });
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -713,61 +713,119 @@ function JobAlertSignup() {
     }
   };
 
+  const inputStyle = {
+    width: "100%", padding: "10px 13px",
+    border: "1.5px solid rgba(247,246,242,.12)",
+    borderRadius: "var(--r)", fontSize: ".85rem",
+    background: "rgba(247,246,242,.07)", color: "var(--bg)",
+    outline: "none", transition: "border-color .2s",
+  };
+  const labelStyle = { display: "block", fontSize: ".72rem", fontWeight: 600, marginBottom: 5, color: "rgba(247,246,242,.5)", letterSpacing: ".03em", textTransform: "uppercase" };
+
   return (
-    <section style={{ padding: "60px 2rem", background: "var(--bg)" }}>
-      <div style={{ maxWidth: 560, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".75rem", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--accent)", background: "var(--accent-dim)", border: "1px solid rgba(232,90,42,.2)", padding: "4px 12px", borderRadius: 99, marginBottom: 14 }}>📬 Free Job Alerts</div>
-          <h2 style={{ fontFamily: "var(--font-head)", fontSize: "clamp(1.5rem,3.5vw,2rem)", fontWeight: 800, letterSpacing: "-.04em", marginBottom: 10 }}>Get jobs in your inbox every Monday</h2>
-          <p style={{ color: "var(--ink2)", fontSize: ".88rem", lineHeight: 1.65 }}>5 personalised job picks sent to you weekly — curated by AI for your role and city. Free forever.</p>
+    <section style={{ background: "var(--ink)", padding: "72px 2rem", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 80% at 70% 50%, rgba(232,90,42,.12) 0%, transparent 65%)", pointerEvents: "none" }} />
+      <div className="job-alert-grid" style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center", position: "relative" }}>
+
+        {/* Left — value prop */}
+        <div>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".72rem", fontWeight: 700, letterSpacing: ".07em", textTransform: "uppercase", color: "#e8a020", background: "rgba(232,160,32,.1)", border: "1px solid rgba(232,160,32,.25)", padding: "4px 12px", borderRadius: 99, marginBottom: 20 }}>📬 Free Weekly Job Alerts</div>
+          <h2 style={{ fontFamily: "var(--font-head)", fontSize: "clamp(1.7rem,3.5vw,2.4rem)", fontWeight: 800, letterSpacing: "-.04em", color: "var(--bg)", lineHeight: 1.15, marginBottom: 16 }}>
+            5 jobs picked for you,<br /><em style={{ color: "var(--accent)", fontStyle: "normal" }}>every Monday morning.</em>
+          </h2>
+          <p style={{ color: "rgba(247,246,242,.6)", fontSize: ".9rem", lineHeight: 1.7, marginBottom: 28 }}>
+            Stop scrolling Naukri for hours. CareerLens AI picks the best openings for your role and city and delivers them straight to your inbox — free, every week.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
+            {[
+              ["🎯", "Personalised to your role & city", "Not generic listings — curated for you"],
+              ["⚡", "New openings + walk-in alerts", "Including last-minute walk-in drives"],
+              ["🔒", "One click to apply", "Each job links back to CareerLens with full details"],
+            ].map(([icon, title, sub]) => (
+              <div key={title} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div style={{ width: 36, height: 36, borderRadius: 9, background: "rgba(247,246,242,.07)", border: "1px solid rgba(247,246,242,.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", flexShrink: 0 }}>{icon}</div>
+                <div>
+                  <div style={{ fontSize: ".85rem", fontWeight: 700, color: "var(--bg)", marginBottom: 2 }}>{title}</div>
+                  <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.45)" }}>{sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ display: "flex" }}>
+              {["👨‍💻","👩‍💼","👨‍🎓","👩‍💻","👨"].map((a, i) => (
+                <div key={i} style={{ width: 28, height: 28, borderRadius: "50%", background: `hsl(${i * 40 + 200},50%,55%)`, border: "2px solid var(--ink)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".8rem", marginLeft: i ? -8 : 0 }}>{a}</div>
+              ))}
+            </div>
+            <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.5)" }}><strong style={{ color: "rgba(247,246,242,.8)" }}>2,100+ job seekers</strong> already subscribed</div>
+          </div>
         </div>
 
-        {done ? (
-          <div className="card" style={{ padding: "32px 24px", textAlign: "center" }}>
-            <div style={{ fontSize: "2.2rem", marginBottom: 12 }}>🎉</div>
-            <div style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: "1.05rem", marginBottom: 6 }}>You're in! First email lands Monday.</div>
-            <div style={{ color: "var(--ink2)", fontSize: ".83rem" }}>We'll send 5 {form.role} jobs in {form.city} every week.</div>
-          </div>
-        ) : (
-          <div className="card">
-            <div className="card-body">
-              <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>Your Name</label>
-                    <input type="text" placeholder="Rahul Sharma" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }} />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>Email *</label>
-                    <input type="email" required placeholder="you@gmail.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }} />
-                  </div>
+        {/* Right — form */}
+        <div>
+          {done ? (
+            <div style={{ background: "rgba(247,246,242,.05)", border: "1px solid rgba(247,246,242,.12)", borderRadius: 16, padding: "40px 32px", textAlign: "center" }}>
+              <div style={{ width: 60, height: 60, borderRadius: "50%", background: "rgba(45,138,78,.15)", border: "1px solid rgba(45,138,78,.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", margin: "0 auto 16px" }}>✓</div>
+              <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1.2rem", color: "var(--bg)", marginBottom: 8 }}>You're subscribed!</div>
+              <div style={{ color: "rgba(247,246,242,.55)", fontSize: ".85rem", lineHeight: 1.65 }}>
+                First batch of <strong style={{ color: "rgba(247,246,242,.8)" }}>{form.role} jobs in {form.city}</strong> lands this Monday morning. Check your inbox.
+              </div>
+              <div style={{ marginTop: 20, padding: "10px 16px", background: "rgba(45,138,78,.1)", border: "1px solid rgba(45,138,78,.2)", borderRadius: 8, fontSize: ".78rem", color: "rgba(247,246,242,.5)" }}>
+                Add <strong style={{ color: "rgba(247,246,242,.7)" }}>onboarding@resend.dev</strong> to contacts so alerts don't go to spam.
+              </div>
+            </div>
+          ) : (
+            <div style={{ background: "rgba(247,246,242,.05)", border: "1px solid rgba(247,246,242,.12)", borderRadius: 16, padding: "32px 28px", backdropFilter: "blur(8px)" }}>
+              <div style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: "1rem", color: "var(--bg)", marginBottom: 4 }}>Get your free job alerts</div>
+              <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.4)", marginBottom: 24 }}>Takes 20 seconds. No card needed.</div>
+              <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                <div>
+                  <label style={labelStyle}>Your Email *</label>
+                  <input type="email" required placeholder="you@gmail.com" value={form.email}
+                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                    onFocus={e => e.target.style.borderColor = "var(--accent)"}
+                    onBlur={e => e.target.style.borderColor = "rgba(247,246,242,.12)"}
+                    style={inputStyle} />
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>Job Role *</label>
-                    <input type="text" required placeholder="Software Engineer" value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
-                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }} />
+                    <label style={labelStyle}>Job Role *</label>
+                    <input type="text" required placeholder="Software Engineer" value={form.role}
+                      onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
+                      onFocus={e => e.target.style.borderColor = "var(--accent)"}
+                      onBlur={e => e.target.style.borderColor = "rgba(247,246,242,.12)"}
+                      style={inputStyle} />
                   </div>
                   <div>
-                    <label style={{ display: "block", fontSize: ".75rem", fontWeight: 600, marginBottom: 5, color: "var(--ink2)" }}>City</label>
+                    <label style={labelStyle}>City</label>
                     <select value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                      style={{ width: "100%", padding: "8px 12px", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", fontSize: ".83rem", background: "var(--bg)" }}>
-                      {cities.map(c => <option key={c}>{c}</option>)}
+                      style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}>
+                      {cities.map(c => <option key={c} style={{ background: "#1a1916" }}>{c}</option>)}
                     </select>
                   </div>
                 </div>
-                {error && <div style={{ background: "var(--red-dim)", color: "var(--red)", border: "1px solid rgba(197,48,48,.2)", borderRadius: "var(--r)", padding: "8px 12px", fontSize: ".8rem" }}>{error}</div>}
-                <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: "100%", justifyContent: "center", padding: "11px" }}>
-                  {loading ? "Subscribing…" : "📬 Get free job alerts every Monday"}
+                {error && (
+                  <div style={{ background: "rgba(197,48,48,.12)", color: "#f87171", border: "1px solid rgba(197,48,48,.25)", borderRadius: "var(--r)", padding: "9px 13px", fontSize: ".8rem" }}>{error}</div>
+                )}
+                <button type="submit" className="btn btn-primary" disabled={loading}
+                  style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: ".88rem", marginTop: 4 }}>
+                  {loading ? <><span className="spin" />Subscribing…</> : "📬 Send me jobs every Monday — Free"}
                 </button>
-                <div style={{ textAlign: "center", fontSize: ".72rem", color: "var(--ink3)" }}>No spam. Unsubscribe anytime. 100% free.</div>
+                <div style={{ textAlign: "center", fontSize: ".7rem", color: "rgba(247,246,242,.3)", lineHeight: 1.6 }}>
+                  No spam ever. Unsubscribe in one click.
+                </div>
               </form>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
+      {/* Mobile override */}
+      <style>{`
+        @media (max-width: 768px) {
+          .job-alert-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+        }
+      `}</style>
     </section>
   );
 }
