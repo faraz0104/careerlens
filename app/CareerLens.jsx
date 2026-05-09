@@ -681,6 +681,7 @@ function HomePage({ setPage, setResumeData }) {
             {[["🎯 Jobs","jobs"],["🏢 Interview","interview"],["💰 Salary","salary"],["🗺️ Roadmap","roadmap"]].map(([l,p]) => (
               <button key={p} className="quick-pill" onClick={() => setPage(p)}>{l}</button>
             ))}
+            <a href="/interview-questions" className="quick-pill" style={{ textDecoration:"none", color:"#e85a2a", fontWeight:700, border:"1px solid rgba(232,90,42,.3)", background:"rgba(232,90,42,.08)" }}>📚 Free Q&amp;A</a>
           </div>
 
           <div style={{ marginTop:16, padding:"12px 14px", background:"var(--bg2)", borderRadius:"var(--r)", display:"flex", gap:10, alignItems:"center" }}>
@@ -729,6 +730,22 @@ function HomePage({ setPage, setResumeData }) {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* INTERVIEW Q&A BANNER */}
+      <section style={{ padding:"28px 2rem", borderTop:"1px solid var(--border)" }}>
+        <a href="/interview-questions" style={{ textDecoration:"none", display:"block", maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ background:"linear-gradient(135deg,#1a1916,#2d2c28)", borderRadius:14, padding:"24px 28px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16, cursor:"pointer" }}>
+            <div>
+              <div style={{ fontSize:".7rem", fontWeight:700, letterSpacing:".08em", textTransform:"uppercase", color:"#e85a2a", marginBottom:6 }}>✦ 100% Free · No Login Required</div>
+              <div style={{ color:"#f7f6f2", fontWeight:800, fontSize:"clamp(1rem,2.5vw,1.3rem)", letterSpacing:"-.03em", marginBottom:6 }}>Top Interview Questions for Every Technology</div>
+              <div style={{ color:"rgba(247,246,242,.65)", fontSize:".82rem" }}>React, Java, Python, SQL, System Design, DSA, DBMS, OS, DevOps, AWS &amp; more — all free, with detailed answers.</div>
+            </div>
+            <div style={{ background:"#e85a2a", color:"#fff", padding:"11px 24px", borderRadius:9, fontWeight:700, fontSize:".85rem", whiteSpace:"nowrap", flexShrink:0 }}>
+              Study Free →
+            </div>
+          </div>
+        </a>
       </section>
 
       {/* SOCIAL PROOF */}
@@ -2281,6 +2298,7 @@ function Footer({ setPage }) {
           {[["Resume Analyser","resume"],["Job Matching","jobs"],["Interview Prep","interview"],["Coding Practice","coding"],["Salary Intel","salary"],["Career Roadmap","roadmap"]].map(([l,p]) => (
             <a key={l} className="footer-link" onClick={() => setPage(p)}>{l}</a>
           ))}
+          <a href="/interview-questions" className="footer-link" style={{ color: "#e85a2a" }}>Interview Q&amp;A (Free)</a>
         </div>
         <div>
           <div className="footer-heading">Companies</div>
@@ -2356,6 +2374,7 @@ export default function App({ defaultTab = "home" } = {}) {
             {NAV_ITEMS.map(n => (
               <a key={n.id} href={n.id === "home" ? "/" : `/${n.id}`} className={`nav-link ${page === n.id ? "active" : ""}`} onClick={(e) => { e.preventDefault(); navigate(n.id); }}>{n.label}</a>
             ))}
+            <a href="/interview-questions" className="nav-link" style={{ color: "#e85a2a", fontWeight: 700 }}>Interview Q&amp;A ✦</a>
           </div>
           <div className="nav-right">
             {isPro ? (
@@ -2375,6 +2394,7 @@ export default function App({ defaultTab = "home" } = {}) {
           {NAV_ITEMS.map(n => (
             <button key={n.id} className={`mobile-menu-link ${page === n.id ? "active" : ""}`} onClick={() => navigate(n.id)}>{n.label}</button>
           ))}
+          <a href="/interview-questions" className="mobile-menu-link" style={{ color: "#e85a2a", fontWeight: 700, textDecoration: "none", display: "block", padding: "10px 16px", fontSize: ".9rem" }}>Interview Q&amp;A ✦</a>
           <div className="mobile-menu-divider" />
           {isPro ? (
             <div style={{ padding: "10px 16px" }}><span className="pro-badge">PRO ✦ Active</span></div>
