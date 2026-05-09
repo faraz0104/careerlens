@@ -591,111 +591,166 @@ function HomePage({ setPage, setResumeData }) {
     { icon:"🗺️", name:"Career Roadmap", desc:"Personalised 6-month plan from your current role to your dream role", color:"#fdf4ff", tag:"Pro", tagClass:"tag-amber" },
   ];
 
+  const checks = [
+    ["📊","ATS Resume Score","Get a score + exact fixes to get more callbacks","resume"],
+    ["🎯","AI Job Matching","Real jobs from LinkedIn & Indeed matched to your resume","jobs"],
+    ["🏢","Interview Prep","Company-specific questions — Google, Amazon, TCS & 50+ more","interview"],
+    ["💰","Salary Intel","Know your market rate + negotiation script","salary"],
+  ];
+
   return (
     <div>
       <AdSlot type="leaderboard" label="Advertisement — Top Banner" />
 
-      <div className="hero">
-        <div className="hero-label">✦ AI-Powered Career Intelligence</div>
-        <h1 className="hero-title">
-          Upload your resume.<br/>
-          <em>Know exactly what to fix.</em>
-        </h1>
-        <p className="hero-sub">
-          CareerLens analyses your resume, matches you to real jobs, and preps you for interviews at your target companies — all in one place.
-        </p>
-        <div className="hero-actions">
-          <label style={{ cursor: "pointer" }}>
-            <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" style={{ display: "none" }} onChange={e => handleFile(e.target.files[0])} />
-            <div className="btn btn-primary btn-lg">
-              {uploading ? <><span className="spin" />Analysing...</> : "📄 Upload Resume — It's Free"}
-            </div>
-          </label>
-          <button className="btn btn-ghost btn-lg" onClick={() => setPage("interview")}>
-            Browse Interview Questions →
-          </button>
+      <style>{`
+        .home-hero { display:grid; grid-template-columns:1fr 400px; gap:48px; align-items:center; max-width:1100px; margin:0 auto; padding:44px 2rem 36px; }
+        .home-upload-card { background:#fff; border:1px solid var(--border); border-radius:var(--r2); box-shadow:var(--shadow2); padding:28px; }
+        .home-check { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:all .15s; }
+        .home-check:last-child { border-bottom:none; }
+        .home-check:hover { padding-left:4px; }
+        .home-stat { text-align:center; padding:0 20px; }
+        .home-stat + .home-stat { border-left:1px solid var(--border); }
+        .quick-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:99px; font-size:.75rem; font-weight:600; background:var(--bg2); color:var(--ink2); border:1px solid var(--border); cursor:pointer; transition:all .15s; white-space:nowrap; }
+        .quick-pill:hover { background:var(--accent-dim); color:var(--accent); border-color:rgba(232,90,42,.3); }
+        @media(max-width:768px){
+          .home-hero { grid-template-columns:1fr; gap:24px; padding:24px 1rem 20px; }
+          .home-stat + .home-stat { border-left:none; border-top:1px solid var(--border); padding-top:12px; }
+        }
+      `}</style>
+
+      <div className="home-hero">
+        {/* LEFT */}
+        <div>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".72rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"var(--accent)", background:"var(--accent-dim)", border:"1px solid rgba(232,90,42,.2)", padding:"4px 12px", borderRadius:99, marginBottom:16 }}>✦ Free for Indian Job Seekers</div>
+          <h1 style={{ fontFamily:"var(--font-head)", fontSize:"clamp(1.9rem,4.5vw,3rem)", fontWeight:800, letterSpacing:"-.04em", lineHeight:1.1, marginBottom:14 }}>
+            Land your next job<br/><em style={{ color:"var(--accent)", fontStyle:"normal" }}>faster with AI.</em>
+          </h1>
+          <p style={{ fontSize:".95rem", color:"var(--ink2)", lineHeight:1.7, marginBottom:24, maxWidth:480 }}>
+            Upload your resume and get your ATS score, real job matches, company interview prep, and salary insights — all in under 60 seconds.
+          </p>
+
+          <div style={{ marginBottom:24 }}>
+            {checks.map(([icon, name, desc, page]) => (
+              <div key={name} className="home-check" onClick={() => setPage(page)}>
+                <div style={{ width:32, height:32, borderRadius:8, background:"var(--bg2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:".95rem", flexShrink:0 }}>{icon}</div>
+                <div>
+                  <div style={{ fontSize:".85rem", fontWeight:700, marginBottom:2 }}>{name}</div>
+                  <div style={{ fontSize:".76rem", color:"var(--ink2)" }}>{desc}</div>
+                </div>
+                <div style={{ marginLeft:"auto", fontSize:".7rem", color:"var(--ink3)" }}>→</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display:"flex", background:"var(--bg2)", borderRadius:"var(--r)", padding:"14px 0", flexWrap:"wrap" }}>
+            {[["2.1M+","Resumes analysed"],["94%","Got interviews"],["500+","Companies"],["₹0","To start"]].map(([n,l]) => (
+              <div key={l} className="home-stat">
+                <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.15rem", letterSpacing:"-.03em" }}>{n}</div>
+                <div style={{ fontSize:".68rem", color:"var(--ink3)", marginTop:2 }}>{l}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {fileName && !uploading && !uploadError && (
-          <div className="info-box info-success" style={{ maxWidth: 400, margin: "0 auto 20px" }}>
-            <span>✓</span><span>Analysing <strong>{fileName}</strong>...</span>
-          </div>
-        )}
-        {uploadError && (
-          <div className="info-box" style={{ maxWidth: 460, margin: "0 auto 20px", background: "var(--red-dim)", border: "1px solid rgba(197,48,48,.25)", color: "var(--red)" }}>
-            <span>⚠</span>
-            <span>{uploadError}</span>
-          </div>
-        )}
-
-        <div className="hero-stats">
-          {[["2.1M+","Resumes analysed"],["94%","Got more interviews"],["₹0","Cost to start"],["500+","Company question banks"]].map(([n,l]) => (
-            <div key={l} className="text-center">
-              <div className="hero-stat-n">{n}</div>
-              <div className="hero-stat-l">{l}</div>
+        {/* RIGHT */}
+        <div className="home-upload-card">
+          <div style={{ fontSize:".78rem", fontWeight:700, textTransform:"uppercase", letterSpacing:".06em", color:"var(--ink3)", marginBottom:12 }}>Step 1 of 1 — Upload your resume</div>
+          <label style={{ cursor: uploading ? "wait" : "pointer" }}>
+            <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" style={{ display:"none" }} onChange={e => handleFile(e.target.files[0])} />
+            <div className="upload-zone" style={{ padding:"36px 20px", marginBottom:12 }}>
+              {uploading ? (
+                <><div style={{ fontSize:"2rem", marginBottom:8 }}><span className="spin" style={{ fontSize:"1.8rem" }}/></div>
+                <div className="upload-title">Analysing your resume...</div>
+                <div className="upload-sub">Claude AI is reading every line</div></>
+              ) : (
+                <><div className="upload-icon">📄</div>
+                <div className="upload-title">Drop your PDF here</div>
+                <div className="upload-sub">or click to browse · Max 10MB</div>
+                <div style={{ marginTop:14 }} className="btn btn-primary">Upload Resume — Free</div></>
+              )}
             </div>
-          ))}
+          </label>
+
+          {uploadError && (
+            <div className="info-box" style={{ marginBottom:12, background:"var(--red-dim)", border:"1px solid rgba(197,48,48,.25)", color:"var(--red)" }}>
+              <span>⚠</span><span>{uploadError}</span>
+            </div>
+          )}
+
+          <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+            {[["🎯 Jobs","jobs"],["🏢 Interview","interview"],["💰 Salary","salary"],["🗺️ Roadmap","roadmap"]].map(([l,p]) => (
+              <button key={p} className="quick-pill" onClick={() => setPage(p)}>{l}</button>
+            ))}
+          </div>
+
+          <div style={{ marginTop:16, padding:"12px 14px", background:"var(--bg2)", borderRadius:"var(--r)", display:"flex", gap:10, alignItems:"center" }}>
+            <div style={{ fontSize:"1.1rem" }}>🔒</div>
+            <div style={{ fontSize:".72rem", color:"var(--ink2)", lineHeight:1.5 }}>Your resume is never stored. Analysed in real-time and deleted immediately.</div>
+          </div>
         </div>
       </div>
 
-      <section className="features-section">
-        <div className="section-header">
-          <div className="section-tag">Features</div>
-          <div className="section-title">Everything you need to land your dream job</div>
-          <div className="section-sub">Not just a job board. A full career intelligence engine that tells you exactly what to do next.</div>
-        </div>
-        <div className="features-grid">
-          {features.map(f => (
-            <div key={f.name} className="feature-card" style={{ background: f.color }} onClick={() => setPage(f.name.includes("Resume") ? "resume" : f.name.includes("Job") ? "jobs" : f.name.includes("Interview") ? "interview" : f.name.includes("Coding") ? "coding" : f.name.includes("Salary") ? "salary" : "roadmap")}>
-              <div className="feature-icon" style={{ background: "rgba(255,255,255,.7)" }}>{f.icon}</div>
-              <div className="feature-name">{f.name}</div>
-              <div className="feature-desc">{f.desc}</div>
-              <span className={`feature-tag tag ${f.tagClass}`}>{f.tag}</span>
+      {/* HOW IT WORKS */}
+      <section style={{ padding:"28px 2rem", background:"var(--bg2)", borderTop:"1px solid var(--border)", borderBottom:"1px solid var(--border)" }}>
+        <div style={{ maxWidth:900, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:0 }}>
+          {[
+            ["1","Upload your resume","Drag and drop your PDF — Claude reads every word in seconds"],
+            ["2","Get instant insights","ATS score, skill gaps, job matches, interview questions — all at once"],
+            ["3","Apply with confidence","Tailored resume, cover letter, cold email — ready to send"],
+          ].map(([n, title, desc], i) => (
+            <div key={n} style={{ padding:"16px 20px", borderRight: i < 2 ? "1px solid var(--border)" : "none", display:"flex", gap:12, alignItems:"flex-start" }}>
+              <div style={{ width:26, height:26, borderRadius:"50%", background:"var(--accent)", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", fontSize:".75rem", fontWeight:800, flexShrink:0 }}>{n}</div>
+              <div>
+                <div style={{ fontWeight:700, fontSize:".85rem", marginBottom:3 }}>{title}</div>
+                <div style={{ fontSize:".74rem", color:"var(--ink2)", lineHeight:1.6 }}>{desc}</div>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section style={{ padding: "60px 2rem", background: "var(--ink)" }}>
-        <div className="section-header" style={{ color: "var(--bg)" }}>
-          <div className="section-tag" style={{ color: "#e8a020" }}>Company Questions</div>
-          <div className="section-title" style={{ color: "var(--bg)" }}>Interview questions from top companies</div>
-          <div className="section-sub" style={{ color: "rgba(247,246,242,.6)" }}>Real questions asked in actual interviews. Updated weekly by our community.</div>
-        </div>
-        <div className="company-grid" style={{ maxWidth: 1000, margin: "0 auto" }}>
-          {COMPANIES.slice(0, 6).map(c => (
-            <div key={c.id} className="company-card" style={{ background: "rgba(247,246,242,.06)", border: "1px solid rgba(247,246,242,.1)", color: "var(--bg)" }} onClick={() => setPage("interview")}>
-              <div className="company-logo">{c.logo}</div>
-              <div className="company-name">{c.name}</div>
-              <div className="company-meta" style={{ color: "rgba(247,246,242,.4)" }}>{c.questions} questions</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ textAlign: "center", marginTop: 24 }}>
-          <button className="btn" style={{ background: "rgba(247,246,242,.1)", color: "var(--bg)", border: "1px solid rgba(247,246,242,.2)" }} onClick={() => setPage("interview")}>View all companies →</button>
+      {/* FEATURES */}
+      <section style={{ padding:"36px 2rem" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:18, flexWrap:"wrap", gap:10 }}>
+            <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.1rem", letterSpacing:"-.03em" }}>Everything in one place</div>
+            <div style={{ fontSize:".76rem", color:"var(--ink2)" }}>6 tools · Free to start</div>
+          </div>
+          <div className="features-grid">
+            {features.map(f => (
+              <div key={f.name} className="feature-card" style={{ background:f.color, padding:"16px" }} onClick={() => setPage(f.name.includes("Resume") ? "resume" : f.name.includes("Job") ? "jobs" : f.name.includes("Interview") ? "interview" : f.name.includes("Coding") ? "coding" : f.name.includes("Salary") ? "salary" : "roadmap")}>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
+                  <div className="feature-icon" style={{ background:"rgba(255,255,255,.7)", width:36, height:36, fontSize:"1rem", marginBottom:0 }}>{f.icon}</div>
+                  <span className={`feature-tag tag ${f.tagClass}`}>{f.tag}</span>
+                </div>
+                <div className="feature-name" style={{ fontSize:".86rem" }}>{f.name}</div>
+                <div className="feature-desc" style={{ fontSize:".75rem" }}>{f.desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <AdSlot type="rectangle" label="Advertisement — Middle Banner" />
-
-      <section style={{ padding: "60px 2rem", background: "var(--bg2)" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-          <div className="section-tag">Trusted by 2.1M job seekers</div>
-          <div className="section-title" style={{ marginBottom: 32 }}>Real results from real people</div>
-          <div className="three-col" style={{ gap: 16 }}>
+      {/* SOCIAL PROOF */}
+      <section style={{ padding:"28px 2rem 36px", background:"var(--bg2)", borderTop:"1px solid var(--border)" }}>
+        <div style={{ maxWidth:1000, margin:"0 auto" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16, flexWrap:"wrap" }}>
+            <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1rem" }}>Trusted by 2.1M+ job seekers</div>
+            <div style={{ color:"#f59e0b", fontSize:".9rem" }}>★★★★★</div>
+          </div>
+          <div className="three-col" style={{ gap:12 }}>
             {[
-              { name:"Priya M.", role:"Got SDE2 at Amazon", text:"Resume went from 54 to 89 after fixing the suggestions. Got 4 calls in 2 weeks.", avatar:"👩" },
-              { name:"Rahul K.", role:"Got PM at Flipkart", text:"The company-specific questions were exactly what was asked. Prepared 10x better.", avatar:"👨" },
-              { name:"Ananya S.", role:"Got DS at Google", text:"Salary negotiation script got me 28% more than the initial offer. Life-changing.", avatar:"👩‍💼" },
+              { name:"Priya M.", role:"SDE2 at Amazon", text:"Resume went from 54 to 89 after fixing the suggestions. Got 4 calls in 2 weeks.", avatar:"👩" },
+              { name:"Rahul K.", role:"PM at Flipkart", text:"Company-specific questions were exactly what was asked in my interview. 10x better prep.", avatar:"👨" },
+              { name:"Ananya S.", role:"Data Scientist at Google", text:"Salary negotiation script got me 28% more than the initial offer. Total game changer.", avatar:"👩‍💼" },
             ].map(t => (
-              <div key={t.name} className="bg-card" style={{ textAlign: "left" }}>
-                <div style={{ fontSize: "1.2rem", marginBottom: 8 }}>{"★★★★★"}</div>
-                <div style={{ fontSize: ".83rem", color: "var(--ink2)", lineHeight: 1.6, marginBottom: 12 }}>"{t.text}"</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: "1.3rem" }}>{t.avatar}</span>
+              <div key={t.name} style={{ background:"#fff", border:"1px solid var(--border)", borderRadius:"var(--r2)", padding:"14px" }}>
+                <div style={{ fontSize:".78rem", color:"var(--ink2)", lineHeight:1.65, marginBottom:10, fontStyle:"italic" }}>"{t.text}"</div>
+                <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <span style={{ fontSize:"1.1rem" }}>{t.avatar}</span>
                   <div>
-                    <div style={{ fontSize: ".82rem", fontWeight: 700 }}>{t.name}</div>
-                    <div style={{ fontSize: ".73rem", color: "var(--green)", fontWeight: 600 }}>{t.role}</div>
+                    <div style={{ fontSize:".78rem", fontWeight:700 }}>{t.name}</div>
+                    <div style={{ fontSize:".68rem", color:"var(--green)", fontWeight:600 }}>✓ {t.role}</div>
                   </div>
                 </div>
               </div>
