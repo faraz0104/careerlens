@@ -854,7 +854,7 @@ function JobAlertSignup() {
 }
 
 /* RESUME */
-function ResumePage({ resumeData, setResumeData, showToast, isPro }) {
+function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage }) {
   const [loading, setLoading] = useState(false);
   const [aiTip, setAiTip] = useState("");
   const [jd, setJd] = useState("");
@@ -1106,6 +1106,24 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
         </div>
       </div>
 
+      {/* Job Match Teaser */}
+      <div onClick={() => setPage("jobs")} style={{ cursor: "pointer", background: "linear-gradient(135deg, #1a1916 0%, #2a1a0e 100%)", borderRadius: "var(--r2)", padding: "20px 24px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, border: "1px solid rgba(232,90,42,.3)", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", right: -20, top: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(232,90,42,.12)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", right: 60, bottom: -30, width: 80, height: 80, borderRadius: "50%", background: "rgba(232,90,42,.07)", pointerEvents: "none" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 14, position: "relative" }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(232,90,42,.2)", border: "1px solid rgba(232,90,42,.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem", flexShrink: 0 }}>🎯</div>
+          <div>
+            <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1rem", color: "#f7f6f2", marginBottom: 3 }}>Real jobs matched to your profile</div>
+            <div style={{ fontSize: ".8rem", color: "rgba(247,246,242,.55)", lineHeight: 1.5 }}>
+              We pulled live <strong style={{ color: "rgba(247,246,242,.8)" }}>{resumeData.role}</strong> openings from LinkedIn & Indeed that match your skills — click to view & apply directly.
+            </div>
+          </div>
+        </div>
+        <div style={{ flexShrink: 0, background: "var(--accent)", color: "#fff", padding: "9px 18px", borderRadius: "var(--r)", fontWeight: 700, fontSize: ".82rem", whiteSpace: "nowrap", position: "relative" }}>
+          View Jobs →
+        </div>
+      </div>
+
       <div className="two-col">
         <div>
           <div className="card mb-4">
@@ -1316,13 +1334,15 @@ Subject: [subject line]
   };
 
   useEffect(() => {
-    if (!resumeData) return;
     setLoadingJobs(true);
     setAiJobs([]);
+    const body = resumeData
+      ? { skills: resumeData.skills, role: resumeData.role, experience: resumeData.experience, missing: resumeData.missing }
+      : { skills: [], role: "Software Engineer", experience: "any", missing: [] };
     fetch("/api/jobs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ skills: resumeData.skills, role: resumeData.role, experience: resumeData.experience, missing: resumeData.missing }),
+      body: JSON.stringify(body),
     })
       .then(r => r.json())
       .then(jobs => { setAiJobs(Array.isArray(jobs) ? jobs : []); setLoadingJobs(false); })
@@ -1343,9 +1363,9 @@ Subject: [subject line]
           <div>
             <div className="page-title">Job Matches</div>
             <div className="page-sub">
-              {loadingJobs ? "Scanning jobs that match your resume..." :
-               resumeData ? `Based on your resume — ${allJobs.length} jobs found` :
-               "Upload your resume for personalised matches"}
+              {loadingJobs ? "Finding real job openings..." :
+               resumeData ? `Matched to your ${resumeData.role} profile — ${allJobs.length} live jobs` :
+               `${allJobs.length} live jobs · Upload your resume for personalised matches`}
             </div>
           </div>
           <div style={{ display: "flex", gap: 6 }}>
@@ -2310,7 +2330,7 @@ export default function App({ defaultTab = "home" } = {}) {
 
         <main style={{ flex: 1 }}>
           {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} />}
-          {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} />}
+          {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} setPage={navigate} />}
           {page === "jobs" && <JobsPage resumeData={resumeData} isPro={isPro} setPage={navigate} />}
           {page === "interview" && <InterviewPage isPro={isPro} setPage={navigate} />}
           {page === "coding" && <CodingPage isPro={isPro} />}
