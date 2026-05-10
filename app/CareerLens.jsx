@@ -1713,7 +1713,6 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
 
   return (
     <div className="page">
-      <AdSlot type="leaderboard" />
       <div className="page-header">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
@@ -1727,32 +1726,46 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
         </div>
       </div>
 
-      {/* GUIDED JOURNEY FLOW */}
-      <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: "var(--r2)", padding: "16px 20px", marginBottom: 20 }}>
-        <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--ink3)", marginBottom: 12 }}>Your job prep journey</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto" }}>
-          {[
-            { step: 1, label: "Resume Analysed", icon: "📊", page: "resume", done: true },
-            { step: 2, label: "View Matched Jobs", icon: "🎯", page: "jobs", done: false },
-            { step: 3, label: "Interview Prep", icon: "🏢", page: "interview", done: false },
-            { step: 4, label: "Cover Letter", icon: "✉️", page: "resume", done: false },
-          ].map((s, i, arr) => (
-            <div key={s.step} style={{ display: "flex", alignItems: "center", flex: i < arr.length - 1 ? "1" : "0" }}>
-              <div onClick={() => setPage(s.page)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer", minWidth: 72 }}>
-                <div style={{ width: 36, height: 36, borderRadius: "50%", background: s.done ? "var(--green)" : "var(--bg3)", border: `2px solid ${s.done ? "var(--green)" : "var(--border)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".95rem", transition: "all .15s" }}>
-                  {s.done ? "✓" : s.icon}
-                </div>
-                <div style={{ fontSize: ".65rem", fontWeight: s.done ? 700 : 500, color: s.done ? "var(--green)" : "var(--ink3)", textAlign: "center", whiteSpace: "nowrap" }}>{s.label}</div>
+      {/* SCORE SUMMARY — was preceded by AdSlot (removed to show score above fold) — visible immediately without scrolling */}
+      <div style={{ background: "#fff", border: "2px solid var(--border)", borderRadius: "var(--r2)", padding: "16px 20px", marginBottom: 16, display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexShrink: 0 }}>
+          <ScoreRing score={resumeData.score} />
+          <div>
+            <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)", lineHeight: 1.2 }}>
+              {resumeData.score >= 75 ? "Strong resume" : resumeData.score >= 55 ? "Room for improvement" : "Needs significant work"}
+            </div>
+            <div style={{ fontSize: ".74rem", color: resumeData.score >= 75 ? "var(--green)" : resumeData.score >= 55 ? "var(--amber)" : "var(--red)", fontWeight: 700, marginTop: 2 }}>
+              {resumeData.score >= 75 ? "🏆 Top tier" : resumeData.score >= 60 ? "📈 Above average" : "⚠️ Below average"} · Stronger than {resumeData.score <= 40 ? Math.round(resumeData.score * 0.4) : resumeData.score <= 60 ? Math.round(resumeData.score * 0.6) : resumeData.score <= 75 ? Math.round(resumeData.score * 0.72) : Math.round(resumeData.score * 0.85)}% of candidates
+            </div>
+          </div>
+        </div>
+        <div style={{ flex: 1, display: "flex", gap: 10, flexWrap: "wrap", minWidth: 200 }}>
+          {[["ATS","78%","var(--blue)"],["Skills","62%","var(--amber)"],["Content","71%","var(--green)"],["Format","85%","var(--green)"]].map(([l,v,c]) => (
+            <div key={l} style={{ flex: "1 1 80px", background: "var(--bg2)", borderRadius: "var(--r)", padding: "8px 12px", minWidth: 70 }}>
+              <div style={{ fontSize: ".68rem", color: "var(--ink3)", fontWeight: 600, marginBottom: 4 }}>{l}</div>
+              <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", color: c }}>{v}</div>
+              <div style={{ height: 3, background: "var(--bg3)", borderRadius: 99, marginTop: 4, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: v, background: c, borderRadius: 99 }} />
               </div>
-              {i < arr.length - 1 && (
-                <div style={{ flex: 1, height: 2, background: s.done ? "var(--green)" : "var(--border)", margin: "0 4px", marginBottom: 18 }} />
-              )}
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 12, fontSize: ".78rem", color: "var(--ink2)" }}>
-          ✅ Step 1 done — <span style={{ fontWeight: 700, color: "var(--ink)", cursor: "pointer" }} onClick={() => setPage("jobs")}>Next: View your matched jobs →</span>
-        </div>
+      </div>
+
+      {/* GUIDED JOURNEY FLOW — compact strip */}
+      <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: "var(--r2)", padding: "9px 16px", marginBottom: 16, display: "flex", alignItems: "center", gap: 6, overflowX: "auto", flexWrap: "nowrap" }}>
+        <span style={{ fontSize: ".7rem", fontWeight: 700, color: "var(--ink3)", whiteSpace: "nowrap", marginRight: 4 }}>Next steps:</span>
+        {[
+          { label: "✅ Resume Analysed", page: "resume", done: true },
+          { label: "🎯 View Jobs", page: "jobs", done: false },
+          { label: "🏢 Interview Prep", page: "interview", done: false },
+          { label: "✉️ Cover Letter", page: "resume", done: false },
+        ].map((s, i, arr) => (
+          <span key={i} style={{ display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
+            <span onClick={() => setPage(s.page)} style={{ fontSize: ".74rem", fontWeight: s.done ? 700 : 600, color: s.done ? "var(--green)" : "var(--accent)", cursor: "pointer", textDecoration: s.done ? "none" : "underline", textUnderlineOffset: 2 }}>{s.label}</span>
+            {i < arr.length - 1 && <span style={{ color: "var(--ink3)", fontSize: ".7rem" }}>→</span>}
+          </span>
+        ))}
       </div>
 
       {/* Job Match Section */}
