@@ -961,7 +961,30 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage }) {
   const [generating, setGenerating] = useState(false);
   const fileRef = useRef();
 
+  const [showResumeUpgrade, setShowResumeUpgrade] = useState(false);
+
   const generateResume = async () => {
+    if (!isPro) {
+      // Generate the resume anyway so user sees it's real — then lock it
+      setGenerating(true);
+      setGeneratedResume(null);
+      try {
+        const res = await fetch("/api/resume/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(resumeData),
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        setGeneratedResume(data);
+        setShowResumeUpgrade(true); // show locked state
+      } catch (err) {
+        showToast("Failed to generate resume: " + err.message);
+      } finally {
+        setGenerating(false);
+      }
+      return;
+    }
     setGenerating(true);
     setGeneratedResume(null);
     try {
@@ -1274,30 +1297,32 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               ))}
               <button
                 className="btn btn-primary w-full"
-                style={{ marginTop: 8, justifyContent: "center" }}
+                style={{ marginTop: 8, justifyContent: "center", background: isPro ? undefined : "linear-gradient(135deg,#e85a2a,#c94a1a)" }}
                 onClick={generateResume}
                 disabled={generating}
               >
                 {generating
                   ? <><span className="spin" />Generating your improved resume...</>
-                  : "✨ Generate Improved Resume — Fix All Issues →"}
+                  : isPro
+                    ? "✨ Generate Improved Resume — Fix All Issues →"
+                    : "✨ Generate My Fixed Resume — See It Now →"}
               </button>
               <div style={{ textAlign: "center", fontSize: ".72rem", color: "var(--ink3)" }}>
-                AI applies all fixes above · Download as PDF in one click
+                {isPro ? "AI applies all fixes above · Download as PDF in one click" : "AI fixes all issues above · See a preview instantly"}
               </div>
             </div>
           </div>
 
           {/* GENERATED RESUME MODAL */}
           {generatedResume && (
-            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.6)", zIndex: 1000, overflowY: "auto", padding: "20px" }} onClick={e => e.target === e.currentTarget && setGeneratedResume(null)}>
-              <div style={{ maxWidth: 760, margin: "0 auto", background: "#fff", borderRadius: 14, overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,.25)" }}>
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.6)", zIndex: 1000, overflowY: "auto", padding: "20px" }} onClick={e => e.target === e.currentTarget && !showResumeUpgrade && setGeneratedResume(null)}>
+              <div style={{ maxWidth: 760, margin: "0 auto", background: "#fff", borderRadius: 14, overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,.25)", position: "relative" }}>
                 {/* Modal toolbar */}
                 <div style={{ background: "#1a1916", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div style={{ color: "#f7f6f2", fontWeight: 700, fontSize: ".9rem" }}>✨ Your Improved Resume</div>
+                  <div style={{ color: "#f7f6f2", fontWeight: 700, fontSize: ".9rem" }}>✨ Your Improved Resume is Ready</div>
                   <div style={{ display: "flex", gap: 8 }}>
-                    <button className="btn btn-primary btn-sm" onClick={() => window.print()}>⬇ Download PDF</button>
-                    <button className="btn btn-ghost btn-sm" style={{ color: "#f7f6f2", borderColor: "rgba(247,246,242,.2)" }} onClick={() => setGeneratedResume(null)}>✕ Close</button>
+                    {!showResumeUpgrade && <button className="btn btn-primary btn-sm" onClick={() => window.print()}>⬇ Download PDF</button>}
+                    <button className="btn btn-ghost btn-sm" style={{ color: "#f7f6f2", borderColor: "rgba(247,246,242,.2)" }} onClick={() => { setGeneratedResume(null); setShowResumeUpgrade(false); }}>✕ Close</button>
                   </div>
                 </div>
 
@@ -1379,9 +1404,64 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                   )}
                 </div>
 
-                <div style={{ background: "#f7f6f2", padding: "12px 20px", fontSize: ".72rem", color: "#9a958f", textAlign: "center" }}>
-                  Review and personalise before sending. Add your real company names, dates and achievements.
-                </div>
+                {!showResumeUpgrade && (
+                  <div style={{ background: "#f7f6f2", padding: "12px 20px", fontSize: ".72rem", color: "#9a958f", textAlign: "center" }}>
+                    Review and personalise before sending. Add your real company names, dates and achievements.
+                  </div>
+                )}
+
+                {/* LOCK OVERLAY for free users */}
+                {showResumeUpgrade && (
+                  <div style={{ position: "absolute", inset: 0, top: 52, display: "flex", flexDirection: "column" }}>
+                    {/* Visible teaser — name + role only, rest blurred */}
+                    <div style={{ padding: "24px 32px 12px", background: "#fff", borderBottom: "1px solid #e5e2de" }}>
+                      <div style={{ fontSize: "1.4rem", fontWeight: 700 }}>{generatedResume.name}</div>
+                      <div style={{ color: "#e85a2a", fontWeight: 600, marginBottom: 4 }}>{generatedResume.role}</div>
+                      <div style={{ fontSize: ".78rem", color: "#9a958f" }}>📧 {generatedResume.email} · 📍 {generatedResume.location}</div>
+                    </div>
+                    {/* Blurred content behind overlay */}
+                    <div style={{ position: "relative", overflow: "hidden", flex: 1 }}>
+                      <div style={{ filter: "blur(5px)", userSelect: "none", pointerEvents: "none", padding: "20px 32px", fontSize: ".84rem", lineHeight: 1.8, color: "#1a1916" }}>
+                        <div style={{ fontWeight: 700, marginBottom: 6 }}>Professional Summary</div>
+                        <p style={{ marginBottom: 16 }}>{generatedResume.summary}</p>
+                        <div style={{ fontWeight: 700, marginBottom: 6 }}>Work Experience</div>
+                        {generatedResume.experience?.map((exp, i) => (
+                          <div key={i} style={{ marginBottom: 12 }}>
+                            <div style={{ fontWeight: 700 }}>{exp.title} — {exp.company}</div>
+                            {exp.bullets?.map((b, j) => <div key={j}>• {b}</div>)}
+                          </div>
+                        ))}
+                        <div style={{ fontWeight: 700, marginBottom: 6 }}>Skills</div>
+                        <div>{generatedResume.skills?.technical?.join(", ")}</div>
+                      </div>
+                      {/* Upgrade CTA on top of blur */}
+                      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(to bottom, rgba(255,255,255,.1) 0%, rgba(255,255,255,.95) 30%)" }}>
+                        <div style={{ textAlign: "center", padding: "28px 32px", maxWidth: 400 }}>
+                          <div style={{ fontSize: "2rem", marginBottom: 12 }}>🔒</div>
+                          <div style={{ fontWeight: 800, fontSize: "1.2rem", color: "#1a1916", marginBottom: 8, letterSpacing: "-.02em" }}>
+                            Your resume is ready.<br/>Unlock it with Pro.
+                          </div>
+                          <div style={{ fontSize: ".83rem", color: "#5a5650", lineHeight: 1.7, marginBottom: 20 }}>
+                            All {resumeData.improvements?.length} issues fixed · ATS-optimised · Quantified bullets · Download as PDF
+                          </div>
+                          <div style={{ display: "flex", gap: 8, flexDirection: "column", alignItems: "center" }}>
+                            <button className="btn btn-primary" style={{ fontSize: "1rem", padding: "13px 32px", fontWeight: 800, width: "100%", justifyContent: "center" }}
+                              onClick={() => { setGeneratedResume(null); setShowResumeUpgrade(false); setPage("pricing"); }}>
+                              Unlock for ₹299/month →
+                            </button>
+                            <div style={{ fontSize: ".72rem", color: "#9a958f" }}>7-day refund · Cancel anytime · Instant access</div>
+                          </div>
+                          <div style={{ marginTop: 20, padding: "12px 16px", background: "#f7f6f2", borderRadius: 10, textAlign: "left" }}>
+                            <div style={{ fontSize: ".72rem", fontWeight: 700, color: "#1a1916", marginBottom: 6 }}>✦ Pro also includes:</div>
+                            {["Unlimited resume scans","Cover letter per JD","Resume tailored to job description","Cold email to hiring manager","Salary negotiation script","All interview questions + AI answers"].map(f => (
+                              <div key={f} style={{ fontSize: ".75rem", color: "#5a5650", marginBottom: 3 }}>✅ {f}</div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
