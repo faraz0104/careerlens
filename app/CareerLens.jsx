@@ -592,10 +592,10 @@ function HomePage({ setPage, setResumeData }) {
   ];
 
   const checks = [
-    ["📊","ATS Resume Score","Get a score + exact fixes to get more callbacks","resume"],
-    ["🎯","AI Job Matching","Real jobs from LinkedIn & Indeed matched to your resume","jobs"],
-    ["🏢","Interview Prep","Company-specific questions — Google, Amazon, TCS & 50+ more","interview"],
-    ["💰","Salary Intel","Know your market rate + negotiation script","salary"],
+    ["📊","ATS Score + Fixes","Most resumes score 40-65. See exactly what's costing you callbacks.","resume"],
+    ["🎯","Jobs Matched to You","See your % match for real jobs — know why you're not getting calls.","jobs"],
+    ["🏢","Company Interview Prep","Questions asked at Google, Amazon, TCS & 50+ companies.","interview"],
+    ["💰","Salary Negotiation","Know your market rate + the exact script to ask for 20% more.","salary"],
   ];
 
   return (
@@ -612,6 +612,7 @@ function HomePage({ setPage, setResumeData }) {
         .home-stat + .home-stat { border-left:1px solid var(--border); }
         .quick-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:99px; font-size:.75rem; font-weight:600; background:var(--bg2); color:var(--ink2); border:1px solid var(--border); cursor:pointer; transition:all .15s; white-space:nowrap; }
         .quick-pill:hover { background:var(--accent-dim); color:var(--accent); border-color:rgba(232,90,42,.3); }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
         @media(max-width:768px){
           .home-hero { grid-template-columns:1fr; gap:24px; padding:24px 1rem 20px; }
           .home-stat + .home-stat { border-left:none; border-top:1px solid var(--border); padding-top:12px; }
@@ -621,12 +622,15 @@ function HomePage({ setPage, setResumeData }) {
       <div className="home-hero">
         {/* LEFT */}
         <div>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".72rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"var(--accent)", background:"var(--accent-dim)", border:"1px solid rgba(232,90,42,.2)", padding:"4px 12px", borderRadius:99, marginBottom:16 }}>✦ Free for Indian Job Seekers</div>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".72rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"var(--accent)", background:"var(--accent-dim)", border:"1px solid rgba(232,90,42,.2)", padding:"4px 12px", borderRadius:99, marginBottom:16 }}>
+            <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--accent)", display:"inline-block", animation:"pulse 2s infinite" }} />
+            Free · Results in 60 seconds
+          </div>
           <h1 style={{ fontFamily:"var(--font-head)", fontSize:"clamp(1.9rem,4.5vw,3rem)", fontWeight:800, letterSpacing:"-.04em", lineHeight:1.1, marginBottom:14 }}>
-            Land your next job<br/><em style={{ color:"var(--accent)", fontStyle:"normal" }}>faster with AI.</em>
+            Know your resume score<br/><em style={{ color:"var(--accent)", fontStyle:"normal" }}>before the recruiter does.</em>
           </h1>
-          <p style={{ fontSize:".95rem", color:"var(--ink2)", lineHeight:1.7, marginBottom:24, maxWidth:480 }}>
-            Upload your resume and get your ATS score, real job matches, company interview prep, and salary insights — all in under 60 seconds.
+          <p style={{ fontSize:".95rem", color:"var(--ink2)", lineHeight:1.7, marginBottom:24, maxWidth:460 }}>
+            Upload your resume → get your ATS score, skill gaps, real job matches, and company-specific interview questions. Free, instant, no login needed.
           </p>
 
           <div style={{ marginBottom:24 }}>
@@ -643,7 +647,7 @@ function HomePage({ setPage, setResumeData }) {
           </div>
 
           <div style={{ display:"flex", background:"var(--bg2)", borderRadius:"var(--r)", padding:"14px 0", flexWrap:"wrap" }}>
-            {[["2.1M+","Resumes analysed"],["94%","Got interviews"],["500+","Companies"],["₹0","To start"]].map(([n,l]) => (
+            {[["50+","Companies covered"],["7","Countries using it"],["₹0","To get started"],["60s","To get results"]].map(([n,l]) => (
               <div key={l} className="home-stat">
                 <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.15rem", letterSpacing:"-.03em" }}>{n}</div>
                 <div style={{ fontSize:".68rem", color:"var(--ink3)", marginTop:2 }}>{l}</div>
@@ -654,19 +658,27 @@ function HomePage({ setPage, setResumeData }) {
 
         {/* RIGHT */}
         <div className="home-upload-card">
-          <div style={{ fontSize:".78rem", fontWeight:700, textTransform:"uppercase", letterSpacing:".06em", color:"var(--ink3)", marginBottom:12 }}>Step 1 of 1 — Upload your resume</div>
+          <div style={{ marginBottom:14 }}>
+            <div style={{ fontWeight:800, fontSize:"1rem", color:"var(--ink)", marginBottom:4 }}>Check your ATS score — free</div>
+            <div style={{ fontSize:".78rem", color:"var(--ink2)" }}>You'll get in 60 seconds:</div>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:8 }}>
+              {["📊 ATS Score","🔍 Skill gaps","💼 Job matches","🏢 Interview Qs"].map(t => (
+                <span key={t} style={{ fontSize:".72rem", fontWeight:600, background:"var(--accent-dim)", color:"var(--accent)", padding:"3px 10px", borderRadius:99, border:"1px solid rgba(232,90,42,.2)" }}>{t}</span>
+              ))}
+            </div>
+          </div>
           <label style={{ cursor: uploading ? "wait" : "pointer" }}>
             <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" style={{ display:"none" }} onChange={e => handleFile(e.target.files[0])} />
-            <div className="upload-zone" style={{ padding:"36px 20px", marginBottom:12 }}>
+            <div className="upload-zone" style={{ padding:"28px 20px", marginBottom:12 }}>
               {uploading ? (
                 <><div style={{ fontSize:"2rem", marginBottom:8 }}><span className="spin" style={{ fontSize:"1.8rem" }}/></div>
                 <div className="upload-title">Analysing your resume...</div>
                 <div className="upload-sub">Claude AI is reading every line</div></>
               ) : (
                 <><div className="upload-icon">📄</div>
-                <div className="upload-title">Drop your PDF here</div>
-                <div className="upload-sub">or click to browse · Max 10MB</div>
-                <div style={{ marginTop:14 }} className="btn btn-primary">Upload Resume — Free</div></>
+                <div className="upload-title">Drop your resume here</div>
+                <div className="upload-sub">PDF, DOC · Max 10MB · Never stored</div>
+                <div style={{ marginTop:14 }} className="btn btn-primary" style={{ fontSize:".9rem", padding:"10px 28px" }}>Get My ATS Score — Free →</div></>
               )}
             </div>
           </label>
@@ -752,8 +764,9 @@ function HomePage({ setPage, setResumeData }) {
       <section style={{ padding:"28px 2rem 36px", background:"var(--bg2)", borderTop:"1px solid var(--border)" }}>
         <div style={{ maxWidth:1000, margin:"0 auto" }}>
           <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16, flexWrap:"wrap" }}>
-            <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1rem" }}>Trusted by 2.1M+ job seekers</div>
+            <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1rem" }}>What job seekers are saying</div>
             <div style={{ color:"#f59e0b", fontSize:".9rem" }}>★★★★★</div>
+            <div style={{ fontSize:".72rem", color:"var(--ink3)", background:"var(--bg2)", padding:"3px 10px", borderRadius:99, border:"1px solid var(--border)" }}>Used across India, US &amp; 7 countries</div>
           </div>
           <div className="three-col" style={{ gap:12 }}>
             {[
