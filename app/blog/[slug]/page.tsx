@@ -109,7 +109,7 @@ export default async function BlogPostPage({ params }: Props) {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: "https://www.carrerlens.com" },
       { "@type": "ListItem", position: 2, name: "Blog", item: "https://www.carrerlens.com/blog" },
-      { "@type": "ListItem", position: 3, name: post.category, item: `https://www.carrerlens.com/blog/category/${post.category.toLowerCase().replace(/\s+/g, "-")}` },
+      { "@type": "ListItem", position: 3, name: post.category, item: `https://www.carrerlens.com/blog/category/${post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}` },
       { "@type": "ListItem", position: 4, name: post.title, item: `https://www.carrerlens.com/blog/${post.slug}` },
     ],
   };
@@ -142,7 +142,7 @@ export default async function BlogPostPage({ params }: Props) {
             <span style={{ margin: "0 6px" }}>›</span>
             <Link href="/blog" style={{ color: "#9a958f", textDecoration: "none" }}>Blog</Link>
             <span style={{ margin: "0 6px" }}>›</span>
-            <Link href={`/blog/category/${post.category.toLowerCase().replace(/\s+/g, "-")}`} style={{ color: "#9a958f", textDecoration: "none" }}>{post.category}</Link>
+            <Link href={`/blog/category/${post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`} style={{ color: "#9a958f", textDecoration: "none" }}>{post.category}</Link>
             <span style={{ margin: "0 6px" }}>›</span>
             <span style={{ color: "#5a5650" }}>{post.title.slice(0, 50)}{post.title.length > 50 ? "…" : ""}</span>
           </div>
@@ -152,7 +152,7 @@ export default async function BlogPostPage({ params }: Props) {
         <div style={{ background: post.coverColor, padding: "40px 2rem 36px" }}>
           <div style={{ maxWidth: 780, margin: "0 auto" }}>
             <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
-              <Link href={`/blog/category/${post.category.toLowerCase().replace(/\s+/g, "-")}`} style={{ textDecoration: "none", background: "#e85a2a", color: "#fff", fontSize: ".68rem", fontWeight: 700, padding: "3px 10px", borderRadius: 20, letterSpacing: ".05em", textTransform: "uppercase" }}>{post.category}</Link>
+              <Link href={`/blog/category/${post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`} style={{ textDecoration: "none", background: "#e85a2a", color: "#fff", fontSize: ".68rem", fontWeight: 700, padding: "3px 10px", borderRadius: 20, letterSpacing: ".05em", textTransform: "uppercase" }}>{post.category}</Link>
               {post.tags.slice(0, 3).map(tag => (
                 <span key={tag} style={{ background: "rgba(255,255,255,.12)", color: "rgba(247,246,242,.75)", fontSize: ".68rem", fontWeight: 600, padding: "3px 10px", borderRadius: 20 }}>{tag}</span>
               ))}

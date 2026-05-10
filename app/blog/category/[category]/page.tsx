@@ -13,12 +13,12 @@ function slugToTitle(slug: string) {
 
 function findCategory(slug: string) {
   return BLOG_CATEGORIES.find(
-    c => c.toLowerCase().replace(/\s+/g, "-") === slug
+    c => c.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") === slug
   );
 }
 
 export async function generateStaticParams() {
-  return BLOG_CATEGORIES.map(cat => ({ category: cat.toLowerCase().replace(/\s+/g, "-") }));
+  return BLOG_CATEGORIES.map(cat => ({ category: cat.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -121,7 +121,7 @@ export default async function CategoryPage({ params }: Props) {
             {BLOG_CATEGORIES.map(cat => (
               <Link
                 key={cat}
-                href={`/blog/category/${cat.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`/blog/category/${cat.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
                 style={{
                   textDecoration: "none",
                   background: cat === catName ? "#1a1916" : "#f0ede8",

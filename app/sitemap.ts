@@ -51,7 +51,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const blogCategoryPages: MetadataRoute.Sitemap = BLOG_CATEGORIES.map(cat => ({
-    url: `${base}/blog/category/${cat.toLowerCase().replace(/\s+/g, "-")}`,
+    url: `${base}/blog/category/${cat.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: 0.8,
