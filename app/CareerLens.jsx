@@ -1759,18 +1759,41 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
           {/* COMPANY READINESS */}
           {(() => {
             const userSkills = resumeData.skills.map(s => s.toLowerCase());
+            // Skill aliases — if user has any alias, it counts as that skill
+            const ALIASES = {
+              "programming": ["java","python","c++","javascript","typescript","c#","go","ruby","swift","kotlin","php","scala"],
+              "backend": ["java","node","spring","django","express","flask","fastapi","rails","laravel","nestjs","golang"],
+              "frontend": ["react","vue","angular","html","css","javascript","typescript","next","svelte"],
+              "database": ["sql","mysql","postgres","mongodb","oracle","redis","dynamodb","sqlite","cassandra"],
+              "cloud": ["aws","azure","gcp","cloud","s3","ec2","lambda","kubernetes","docker","terraform","devops"],
+              "dsa": ["data structures","algorithms","leetcode","competitive","problem solving","dynamic programming","trees","graphs"],
+              "system design": ["system design","microservices","distributed","architecture","scalability","high availability"],
+              "communication": ["communication","leadership","team","agile","scrum","project management"],
+            };
+            const hasSkill = (needed) => {
+              const n = needed.toLowerCase();
+              if (userSkills.some(s => s.includes(n) || n.includes(s))) return true;
+              // check aliases
+              for (const [group, aliases] of Object.entries(ALIASES)) {
+                if (aliases.includes(n) || n === group) {
+                  if (userSkills.some(s => aliases.some(a => s.includes(a) || a.includes(s)) || s === group)) return true;
+                }
+              }
+              return false;
+            };
             const companies = [
-              { name: "TCS", icon: "🔷", needs: ["java","sql","python","communication","problem solving"] },
-              { name: "Infosys", icon: "🔶", needs: ["java","javascript","sql","python","testing"] },
-              { name: "Wipro", icon: "🟢", needs: ["java","c++","sql","linux"] },
-              { name: "Accenture", icon: "🟣", needs: ["java","react","sql","cloud","agile"] },
-              { name: "Amazon", icon: "🟠", needs: ["data structures","algorithms","java","python","system design"] },
-              { name: "Google", icon: "🔴", needs: ["algorithms","data structures","system design","python","distributed systems"] },
-              { name: "Microsoft", icon: "🪟", needs: ["data structures","system design","typescript","azure"] },
-              { name: "Flipkart", icon: "⚡", needs: ["java","react","node.js","system design","sql"] },
+              { name: "TCS", icon: "🔷", needs: ["programming","sql","communication","problem solving","testing","git"] },
+              { name: "Infosys", icon: "🔶", needs: ["programming","frontend","database","communication","agile","rest api"] },
+              { name: "Wipro", icon: "🟢", needs: ["programming","database","communication","linux","testing"] },
+              { name: "Accenture", icon: "🟣", needs: ["programming","frontend","database","cloud","agile","communication"] },
+              { name: "Cognizant", icon: "🔵", needs: ["programming","database","communication","testing","agile"] },
+              { name: "Amazon", icon: "🟠", needs: ["dsa","programming","database","system design","cloud","problem solving"] },
+              { name: "Flipkart", icon: "⚡", needs: ["programming","frontend","backend","database","system design"] },
+              { name: "Google", icon: "🔴", needs: ["dsa","system design","programming","problem solving","cloud"] },
+              { name: "Microsoft", icon: "🪟", needs: ["dsa","system design","programming","cloud","database"] },
             ].map(c => ({
               ...c,
-              pct: Math.round((c.needs.filter(n => userSkills.some(s => s.includes(n) || n.includes(s))).length / c.needs.length) * 100),
+              pct: Math.min(95, Math.round((c.needs.filter(hasSkill).length / c.needs.length) * 100)),
             })).sort((a,b) => b.pct - a.pct);
             const top = companies[0];
             return (
