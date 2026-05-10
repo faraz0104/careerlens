@@ -707,6 +707,42 @@ function QuickCareerScan() {
               ))}
             </div>
           </div>
+          {/* Benchmark bar */}
+          {(() => {
+            const avg = result.score;
+            const low = Math.max(avg - 19, 20);
+            const top = Math.min(avg + 16, 98);
+            const markerPct = ((avg - 20) / 78) * 100;
+            const benchColor = avg >= 68 ? "#4ade80" : avg >= 55 ? "#fbbf24" : "#f87171";
+            return (
+              <div style={{ background:"rgba(255,255,255,.04)", borderRadius:"var(--r)", padding:"9px 11px", marginBottom:8 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
+                  <div style={{ fontSize:".64rem", fontWeight:600, color:"rgba(247,246,242,.4)" }}>Where do you stand?</div>
+                  <div style={{ fontSize:".64rem", fontWeight:700, color:benchColor }}>
+                    {avg >= 68 ? "Above average" : avg >= 55 ? "Average" : "Below average"}
+                  </div>
+                </div>
+                <div style={{ position:"relative", height:6, background:"linear-gradient(90deg,#ef4444 0%,#fbbf24 45%,#4ade80 100%)", borderRadius:99, marginBottom:8 }}>
+                  <div style={{ position:"absolute", top:"50%", left:`${markerPct}%`, transform:"translate(-50%,-50%)", width:12, height:12, borderRadius:"50%", background:"#fff", border:`2.5px solid ${benchColor}`, boxShadow:`0 0 0 3px rgba(255,255,255,.15)` }} />
+                </div>
+                <div style={{ display:"flex", justifyContent:"space-between" }}>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:".6rem", fontWeight:700, color:"rgba(247,246,242,.25)" }}>{low}</div>
+                    <div style={{ fontSize:".55rem", color:"rgba(247,246,242,.18)" }}>Bottom 25%</div>
+                  </div>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:".6rem", fontWeight:700, color:"rgba(247,246,242,.5)" }}>{avg} avg</div>
+                    <div style={{ fontSize:".55rem", color:"rgba(247,246,242,.3)" }}>Most candidates</div>
+                  </div>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:".6rem", fontWeight:700, color:"#4ade80" }}>{top}+</div>
+                    <div style={{ fontSize:".55rem", color:"rgba(74,222,128,.5)" }}>Top 10%</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           <div style={{ display:"flex", gap:6, marginBottom:8 }}>
             <div style={{ flex:1, background:"rgba(45,138,78,.15)", border:"1px solid rgba(45,138,78,.2)", borderRadius:"var(--r)", padding:"7px 10px", textAlign:"center" }}>
               <div style={{ fontSize:".6rem", color:"#4ade80", fontWeight:600, marginBottom:1 }}>Market salary</div>
@@ -723,6 +759,112 @@ function QuickCareerScan() {
           <button onClick={() => setResult(null)} style={{ width:"100%", padding:"5px", fontSize:".68rem", fontWeight:600, background:"transparent", border:"none", color:"rgba(247,246,242,.3)", cursor:"pointer" }}>
             Try another role ↺
           </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── RESUME DEMO ANIMATION ──────────────────────── */
+function ResumeDemoAnimation() {
+  const [phase, setPhase] = useState(0);
+  const [scoreVal, setScoreVal] = useState(0);
+  const [shownGaps, setShownGaps] = useState(0);
+  const [shownJobs, setShownJobs] = useState(0);
+  const timerRef = useRef(null);
+
+  const GAPS = ["System Design basics", "Docker & Kubernetes", "Cloud (AWS/GCP)"];
+  const JOBS = [
+    { co:"Razorpay", role:"SDE-2", match:94 },
+    { co:"Swiggy", role:"Frontend Eng", match:88 },
+    { co:"CRED", role:"React Dev", match:91 },
+  ];
+
+  useEffect(() => {
+    let scoreIv;
+    const run = () => {
+      setPhase(0); setScoreVal(0); setShownGaps(0); setShownJobs(0);
+      timerRef.current = setTimeout(() => {
+        setPhase(1);
+        let s = 0;
+        scoreIv = setInterval(() => {
+          s += 3; if (s >= 73) { s = 73; clearInterval(scoreIv); }
+          setScoreVal(s);
+        }, 22);
+        timerRef.current = setTimeout(() => {
+          setPhase(2);
+          [0,1,2].forEach(i => setTimeout(() => setShownGaps(i+1), i*450));
+          timerRef.current = setTimeout(() => {
+            setPhase(3);
+            [0,1,2].forEach(i => setTimeout(() => setShownJobs(i+1), i*380));
+            timerRef.current = setTimeout(run, 3200);
+          }, 2200);
+        }, 1900);
+      }, 1400);
+    };
+    run();
+    return () => { clearTimeout(timerRef.current); clearInterval(scoreIv); };
+  }, []);
+
+  const r = 26, c = 2 * Math.PI * r;
+  const scoreColor = scoreVal >= 70 ? "#4ade80" : scoreVal >= 50 ? "#fbbf24" : "#e85a2a";
+
+  return (
+    <div style={{ background:"rgba(0,0,0,.25)", borderRadius:10, padding:"11px 13px", marginBottom:12, minHeight:80 }}>
+      <div style={{ fontSize:".58rem", fontWeight:700, color:"rgba(247,246,242,.22)", textTransform:"uppercase", letterSpacing:".08em", marginBottom:8 }}>
+        ▶ Live preview — what your results look like
+      </div>
+
+      {phase === 0 && (
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <div style={{ width:32, height:32, borderRadius:7, background:"rgba(247,246,242,.06)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:".9rem", flexShrink:0 }}>📄</div>
+          <div style={{ flex:1 }}>
+            <div style={{ fontSize:".7rem", fontWeight:600, color:"rgba(247,246,242,.5)", marginBottom:5 }}>Reading resume sections...</div>
+            <div style={{ height:2.5, background:"rgba(247,246,242,.07)", borderRadius:99, overflow:"hidden" }}>
+              <div style={{ height:"100%", background:"#e85a2a", borderRadius:99, animation:"scanProgress 1.4s ease-out forwards" }} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {phase === 1 && (
+        <div style={{ display:"flex", alignItems:"center", gap:12, animation:"fadeSlideUp .3s ease" }}>
+          <div style={{ position:"relative", width:58, height:58, flexShrink:0 }}>
+            <svg viewBox="0 0 64 64" width={58} height={58} style={{ transform:"rotate(-90deg)" }}>
+              <circle cx="32" cy="32" r={r} fill="none" stroke="rgba(247,246,242,.07)" strokeWidth={6} />
+              <circle cx="32" cy="32" r={r} fill="none" stroke={scoreColor} strokeWidth={6} strokeLinecap="round"
+                strokeDasharray={c} strokeDashoffset={c - (scoreVal/100)*c} />
+            </svg>
+            <div style={{ position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"var(--font-head)", fontWeight:800, fontSize:".95rem", color:scoreColor }}>{scoreVal}</div>
+          </div>
+          <div>
+            <div style={{ fontSize:".76rem", fontWeight:700, color:"rgba(247,246,242,.75)" }}>ATS Score</div>
+            <div style={{ fontSize:".66rem", color:"rgba(247,246,242,.35)", marginTop:2 }}>Above average for role</div>
+            <div style={{ fontSize:".62rem", color:"#4ade80", marginTop:4, fontWeight:600 }}>↑ Top 25% of candidates</div>
+          </div>
+        </div>
+      )}
+
+      {phase === 2 && (
+        <div style={{ animation:"fadeSlideUp .3s ease" }}>
+          <div style={{ fontSize:".64rem", fontWeight:600, color:"rgba(247,246,242,.35)", marginBottom:6 }}>Skill gaps identified:</div>
+          {GAPS.slice(0, shownGaps).map(g => (
+            <div key={g} style={{ display:"flex", alignItems:"center", gap:6, fontSize:".7rem", color:"rgba(247,246,242,.65)", marginBottom:4, animation:"fadeSlideUp .3s ease" }}>
+              <span style={{ color:"#f87171", fontWeight:700, fontSize:".62rem" }}>✗</span>{g}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {phase === 3 && (
+        <div style={{ animation:"fadeSlideUp .3s ease" }}>
+          <div style={{ fontSize:".64rem", fontWeight:600, color:"rgba(247,246,242,.35)", marginBottom:6 }}>Top job matches:</div>
+          {JOBS.slice(0, shownJobs).map(j => (
+            <div key={j.co} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:5, animation:"fadeSlideUp .3s ease" }}>
+              <div style={{ fontSize:".7rem", color:"rgba(247,246,242,.65)" }}>{j.co} <span style={{ color:"rgba(247,246,242,.3)" }}>·</span> <span style={{ color:"rgba(247,246,242,.35)", fontSize:".64rem" }}>{j.role}</span></div>
+              <div style={{ fontSize:".7rem", fontWeight:800, color:"#4ade80" }}>{j.match}%</div>
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -932,6 +1074,8 @@ function HomePage({ setPage, setResumeData }) {
               <span>⚠</span><span>{uploadError}</span>
             </div>
           )}
+
+          <ResumeDemoAnimation />
 
           {/* Quick nav */}
           <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:14 }}>
