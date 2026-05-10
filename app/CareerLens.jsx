@@ -856,7 +856,7 @@ function HomePage({ setPage, setResumeData }) {
       <MarketTicker />
 
       <style>{`
-        .home-hero { display:grid; grid-template-columns:440px 1fr; gap:52px; align-items:center; max-width:1140px; margin:0 auto; padding:52px 2rem 44px; }
+        .home-hero { display:grid; grid-template-columns:500px 1fr; gap:52px; align-items:center; max-width:1200px; margin:0 auto; padding:52px 2rem 44px; }
         .home-upload-card { background:linear-gradient(145deg,#1c1b18,#252320); border:1px solid rgba(247,246,242,.09); border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,.28),0 4px 12px rgba(0,0,0,.15); padding:26px; }
         .upload-zone-dark { border:1.5px dashed rgba(247,246,242,.14); border-radius:12px; padding:32px 20px; text-align:center; background:rgba(255,255,255,.025); transition:all .2s; cursor:pointer; }
         .upload-zone-dark:hover { border-color:rgba(232,90,42,.5); background:rgba(232,90,42,.04); }
