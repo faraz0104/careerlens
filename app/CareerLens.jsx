@@ -856,7 +856,7 @@ function HomePage({ setPage, setResumeData }) {
       <MarketTicker />
 
       <style>{`
-        .home-hero { display:grid; grid-template-columns:1fr 400px; gap:48px; align-items:center; max-width:1100px; margin:0 auto; padding:44px 2rem 36px; }
+        .home-hero { display:grid; grid-template-columns:400px 1fr; gap:48px; align-items:center; max-width:1100px; margin:0 auto; padding:44px 2rem 36px; }
         .home-upload-card { background:#fff; border:1px solid var(--border); border-radius:var(--r2); box-shadow:var(--shadow2); padding:28px; }
         .home-check { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:all .15s; }
         .home-check:last-child { border-bottom:none; }
@@ -875,43 +875,7 @@ function HomePage({ setPage, setResumeData }) {
       `}</style>
 
       <div className="home-hero">
-        {/* LEFT */}
-        <div>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".72rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"var(--accent)", background:"var(--accent-dim)", border:"1px solid rgba(232,90,42,.2)", padding:"4px 12px", borderRadius:99, marginBottom:16 }}>
-            <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--accent)", display:"inline-block", animation:"pulse 2s infinite" }} />
-            Free · Results in 60 seconds
-          </div>
-          <h1 style={{ fontFamily:"var(--font-head)", fontSize:"clamp(1.9rem,4.5vw,3rem)", fontWeight:800, letterSpacing:"-.04em", lineHeight:1.1, marginBottom:14 }}>
-            Know your resume score<br/><em style={{ color:"var(--accent)", fontStyle:"normal" }}>before the recruiter does.</em>
-          </h1>
-          <p style={{ fontSize:".95rem", color:"var(--ink2)", lineHeight:1.7, marginBottom:24, maxWidth:460 }}>
-            Upload your resume → get your ATS score, skill gaps, real job matches, and company-specific interview questions. Free, instant, no login needed.
-          </p>
-
-          <div style={{ marginBottom:24 }}>
-            {checks.map(([icon, name, desc, page]) => (
-              <div key={name} className="home-check" onClick={() => setPage(page)}>
-                <div style={{ width:32, height:32, borderRadius:8, background:"var(--bg2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:".95rem", flexShrink:0 }}>{icon}</div>
-                <div>
-                  <div style={{ fontSize:".85rem", fontWeight:700, marginBottom:2 }}>{name}</div>
-                  <div style={{ fontSize:".76rem", color:"var(--ink2)" }}>{desc}</div>
-                </div>
-                <div style={{ marginLeft:"auto", fontSize:".7rem", color:"var(--ink3)" }}>→</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display:"flex", background:"var(--bg2)", borderRadius:"var(--r)", padding:"14px 0", flexWrap:"wrap" }}>
-            {[["50+","Companies covered"],["7","Countries using it"],["₹0","To get started"],["60s","To get results"]].map(([n,l]) => (
-              <div key={l} className="home-stat">
-                <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.15rem", letterSpacing:"-.03em" }}>{n}</div>
-                <div style={{ fontSize:".68rem", color:"var(--ink3)", marginTop:2 }}>{l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT */}
+        {/* LEFT — Upload card */}
         <div className="home-upload-card">
           <div style={{ marginBottom:14 }}>
             <div style={{ fontWeight:800, fontSize:"1rem", color:"var(--ink)", marginBottom:4 }}>Check your ATS score — free</div>
@@ -956,6 +920,42 @@ function HomePage({ setPage, setResumeData }) {
             <div style={{ fontSize:".72rem", color:"var(--ink2)", lineHeight:1.5 }}>Your resume is never stored. Analysed in real-time and deleted immediately.</div>
           </div>
           <LiveActivityFeed />
+        </div>
+
+        {/* RIGHT — Text & features */}
+        <div>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".72rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"var(--accent)", background:"var(--accent-dim)", border:"1px solid rgba(232,90,42,.2)", padding:"4px 12px", borderRadius:99, marginBottom:16 }}>
+            <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--accent)", display:"inline-block", animation:"pulse 2s infinite" }} />
+            Free · Results in 60 seconds
+          </div>
+          <h1 style={{ fontFamily:"var(--font-head)", fontSize:"clamp(1.9rem,4.5vw,3rem)", fontWeight:800, letterSpacing:"-.04em", lineHeight:1.1, marginBottom:14 }}>
+            Know your resume score<br/><em style={{ color:"var(--accent)", fontStyle:"normal" }}>before the recruiter does.</em>
+          </h1>
+          <p style={{ fontSize:".95rem", color:"var(--ink2)", lineHeight:1.7, marginBottom:24, maxWidth:460 }}>
+            Upload your resume → get your ATS score, skill gaps, real job matches, and company-specific interview questions. Free, instant, no login needed.
+          </p>
+
+          <div style={{ marginBottom:24 }}>
+            {checks.map(([icon, name, desc, page]) => (
+              <div key={name} className="home-check" onClick={() => setPage(page)}>
+                <div style={{ width:32, height:32, borderRadius:8, background:"var(--bg2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:".95rem", flexShrink:0 }}>{icon}</div>
+                <div>
+                  <div style={{ fontSize:".85rem", fontWeight:700, marginBottom:2 }}>{name}</div>
+                  <div style={{ fontSize:".76rem", color:"var(--ink2)" }}>{desc}</div>
+                </div>
+                <div style={{ marginLeft:"auto", fontSize:".7rem", color:"var(--ink3)" }}>→</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display:"flex", background:"var(--bg2)", borderRadius:"var(--r)", padding:"14px 0", flexWrap:"wrap" }}>
+            {[["50+","Companies covered"],["7","Countries using it"],["₹0","To get started"],["60s","To get results"]].map(([n,l]) => (
+              <div key={l} className="home-stat">
+                <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.15rem", letterSpacing:"-.03em" }}>{n}</div>
+                <div style={{ fontSize:".68rem", color:"var(--ink3)", marginTop:2 }}>{l}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
