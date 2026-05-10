@@ -1,8 +1,6 @@
 import { Resend } from "resend";
 import { supabase } from "@/lib/supabase";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req) {
   try {
     const { order_id, plan } = await req.json();
@@ -33,6 +31,7 @@ export async function POST(req) {
     if (error && error.code !== "23505") console.error("DB save error:", error);
 
     if (customer_email) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
         from: "CareerLens <hello@carrerlens.com>",
         to: customer_email,

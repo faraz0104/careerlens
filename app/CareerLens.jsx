@@ -2819,6 +2819,7 @@ function Footer({ setPage }) {
             <a key={l} className="footer-link" onClick={() => setPage(p)}>{l}</a>
           ))}
           <a href="/interview-questions" className="footer-link" style={{ color: "#e85a2a" }}>Interview Q&amp;A (Free)</a>
+          <a href="/blog" className="footer-link">Blog</a>
         </div>
         <div>
           <div className="footer-heading">Companies</div>
@@ -2895,6 +2896,7 @@ export default function App({ defaultTab = "home" } = {}) {
               <a key={n.id} href={n.id === "home" ? "/" : `/${n.id}`} className={`nav-link ${page === n.id ? "active" : ""}`} onClick={(e) => { e.preventDefault(); navigate(n.id); }}>{n.label}</a>
             ))}
             <a href="/interview-questions" className="nav-link" style={{ color: "#e85a2a", fontWeight: 700 }}>Interview Q&amp;A ✦</a>
+            <a href="/blog" className="nav-link">Blog</a>
           </div>
           <div className="nav-right">
             {isPro ? (
@@ -2915,6 +2917,7 @@ export default function App({ defaultTab = "home" } = {}) {
             <button key={n.id} className={`mobile-menu-link ${page === n.id ? "active" : ""}`} onClick={() => navigate(n.id)}>{n.label}</button>
           ))}
           <a href="/interview-questions" className="mobile-menu-link" style={{ color: "#e85a2a", fontWeight: 700, textDecoration: "none", display: "block", padding: "10px 16px", fontSize: ".9rem" }}>Interview Q&amp;A ✦</a>
+          <a href="/blog" className="mobile-menu-link" style={{ textDecoration: "none", display: "block", padding: "10px 16px", fontSize: ".9rem", color: "#1a1916" }}>Blog</a>
           <div className="mobile-menu-divider" />
           {isPro ? (
             <div style={{ padding: "10px 16px" }}><span className="pro-badge">PRO ✦ Active</span></div>

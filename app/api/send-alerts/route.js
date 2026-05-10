@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export const dynamic = "force-dynamic";
 
 export async function GET(req) {
   const authHeader = req.headers.get("authorization");
@@ -31,6 +31,7 @@ export async function GET(req) {
       const jobs = await generateJobs(sub.role, sub.city);
       if (!jobs.length) continue;
 
+      const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
         from: "CareerLens Jobs <onboarding@resend.dev>",
         to: sub.email,

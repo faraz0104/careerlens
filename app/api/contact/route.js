@@ -1,7 +1,9 @@
 import { Resend } from "resend";
 import { rateLimit } from "@/lib/rateLimit";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export const dynamic = "force-dynamic";
+let _resend;
+const getResend = () => { if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY); return _resend; };
 
 export async function POST(req) {
   const { allowed, minutesLeft } = rateLimit(req, "contact", 3, 60);
@@ -19,7 +21,7 @@ export async function POST(req) {
       return Response.json({ error: "Name, email and message are required." }, { status: 400 });
     }
 
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "CareerLens <onboarding@resend.dev>",
       to: "khan97faraz@gmail.com",
       replyTo: email.trim(),
