@@ -678,7 +678,7 @@ function HomePage({ setPage, setResumeData }) {
                 <><div className="upload-icon">📄</div>
                 <div className="upload-title">Drop your resume here</div>
                 <div className="upload-sub">PDF, DOC · Max 10MB · Never stored</div>
-                <div style={{ marginTop:14 }} className="btn btn-primary" style={{ fontSize:".9rem", padding:"10px 28px" }}>Get My ATS Score — Free →</div></>
+                <div style={{ marginTop:14, fontSize:".9rem", padding:"10px 28px" }} className="btn btn-primary">Get My ATS Score — Free →</div></>
               )}
             </div>
           </label>
