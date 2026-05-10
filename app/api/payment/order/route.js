@@ -1,14 +1,16 @@
 const PLANS = {
-  pro:  { amount: 299,  currency: "INR", description: "CareerLens Pro - Monthly" },
-  team: { amount: 499,  currency: "INR", description: "CareerLens Team - Per Student/Month" },
+  pro:  { amountINR: 299,  amountUSD: 20,  description: "CareerLens Pro - Monthly" },
+  team: { amountINR: 499,  amountUSD: 40,  description: "CareerLens Team - Per Student/Month" },
 };
 
 export async function POST(req) {
   try {
-    const { plan, customer_email, customer_name, customer_phone } = await req.json();
+    const { plan, customer_email, customer_name, customer_phone, currency = "INR" } = await req.json();
     const planData = PLANS[plan];
     if (!planData) return Response.json({ error: "Invalid plan" }, { status: 400 });
 
+    const isUSD = currency === "USD";
+    const amount = isUSD ? planData.amountUSD : planData.amountINR;
     const orderId = `cl_${plan}_${Date.now()}`;
 
     const res = await fetch("https://api.cashfree.com/pg/orders", {
@@ -21,8 +23,8 @@ export async function POST(req) {
       },
       body: JSON.stringify({
         order_id: orderId,
-        order_amount: planData.amount,
-        order_currency: planData.currency,
+        order_amount: amount,
+        order_currency: currency,
         customer_details: {
           customer_id: `cust_${Date.now()}`,
           customer_name: customer_name || "CareerLens User",

@@ -1549,7 +1549,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                           <div style={{ display: "flex", gap: 8, flexDirection: "column", alignItems: "center" }}>
                             <button className="btn btn-primary" style={{ fontSize: "1rem", padding: "13px 32px", fontWeight: 800, width: "100%", justifyContent: "center" }}
                               onClick={() => { setGeneratedResume(null); setShowResumeUpgrade(false); setPage("pricing"); }}>
-                              Unlock for ₹299/month →
+                              Unlock for {isPro ? "" : "Pro →"}
                             </button>
                             <div style={{ fontSize: ".72rem", color: "#9a958f" }}>7-day refund · Cancel anytime · Instant access</div>
                           </div>
@@ -2383,6 +2383,11 @@ function PricingPage({ isPro, setIsPro, showToast }) {
   const [emailPrompt, setEmailPrompt] = useState(null); // { plan }
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [isIndia, setIsIndia] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/geo").then(r => r.json()).then(d => setIsIndia(d.isIndia)).catch(() => {});
+  }, []);
 
   const handleBuy = async (plan, email) => {
     if (plan === "free") return;
@@ -2404,7 +2409,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
       const orderRes = await fetch("/api/payment/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, customer_email: email }),
+        body: JSON.stringify({ plan, customer_email: email, currency: isIndia ? "INR" : "USD" }),
       });
       const order = await orderRes.json();
       if (order.error) throw new Error(order.error);
@@ -2454,8 +2459,8 @@ function PricingPage({ isPro, setIsPro, showToast }) {
       <div className="pricing-grid">
         {[
           { name:"Free", who:"Getting started", price:"₹0", trial:"Always free", features:["3 resume scans/month","10 job matches","20 interview questions","Basic company questions","5 coding problems"], locked:["AI mock interview","Salary negotiation script","Cold email generator","Resume tailoring per job","Career roadmap","Unlimited everything"], plan:"free" },
-          { name:"Pro", who:"Active job seekers", price:"₹299", trial:"Billed monthly", features:["Unlimited resume scans","Unlimited job matches","All interview questions","AI model answers","Live code review","Salary negotiation script","Cold email generator","Resume tailoring per JD","Career roadmap","Priority support"], locked:[], plan:"pro", featured:true },
-          { name:"Team", who:"Colleges & bootcamps", price:"₹499", trial:"Per student/month", features:["Everything in Pro","Team admin dashboard","Student progress tracking","Bulk resume analysis reports","Placement success analytics","AI mock interview simulator","Custom company question banks","Referral & cold email templates","1-on-1 placement coaching","Dedicated account manager","White-label option","API access"], locked:[], plan:"team", comingSoon:true },
+          { name:"Pro", who:"Active job seekers", price: isIndia ? "₹299" : "$20", trial:"Billed monthly", features:["Unlimited resume scans","Unlimited job matches","All interview questions","AI model answers","Live code review","Salary negotiation script","Cold email generator","Resume tailoring per JD","Career roadmap","Priority support"], locked:[], plan:"pro", featured:true },
+          { name:"Team", who:"Colleges & bootcamps", price: isIndia ? "₹499" : "$40", trial:"Per student/month", features:["Everything in Pro","Team admin dashboard","Student progress tracking","Bulk resume analysis reports","Placement success analytics","AI mock interview simulator","Custom company question banks","Referral & cold email templates","1-on-1 placement coaching","Dedicated account manager","White-label option","API access"], locked:[], plan:"team", comingSoon:true },
         ].map(p => (
           <div key={p.name} className={`price-card ${p.featured ? "featured" : ""}`} style={p.comingSoon ? { opacity: 0.85, position: "relative" } : {}}>
             {p.featured && <div className="price-badge">MOST POPULAR</div>}
@@ -2493,7 +2498,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
       </div>
 
       <div style={{ marginTop: 32, textAlign: "center", fontSize: ".8rem", color: "var(--ink3)" }}>
-        Secure payment via Cashfree · Instant access after payment · GST invoice available · Cancel anytime
+        Secure payment via Cashfree · Instant access after payment · {isIndia ? "GST invoice available · " : ""}Cancel anytime
       </div>
 
       <div style={{ marginTop: 40 }}>
