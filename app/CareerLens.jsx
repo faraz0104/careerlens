@@ -856,11 +856,11 @@ function HomePage({ setPage, setResumeData }) {
       <MarketTicker />
 
       <style>{`
-        .home-hero { display:grid; grid-template-columns:400px 1fr; gap:48px; align-items:center; max-width:1100px; margin:0 auto; padding:44px 2rem 36px; }
-        .home-upload-card { background:linear-gradient(145deg,#1c1b18,#252320); border:1px solid rgba(247,246,242,.09); border-radius:16px; box-shadow:0 12px 48px rgba(0,0,0,.22),0 2px 8px rgba(0,0,0,.12); padding:20px; }
-        .upload-zone-dark { border:1.5px dashed rgba(247,246,242,.14); border-radius:10px; padding:22px 16px; text-align:center; background:rgba(255,255,255,.025); transition:all .2s; cursor:pointer; }
+        .home-hero { display:grid; grid-template-columns:440px 1fr; gap:52px; align-items:center; max-width:1140px; margin:0 auto; padding:52px 2rem 44px; }
+        .home-upload-card { background:linear-gradient(145deg,#1c1b18,#252320); border:1px solid rgba(247,246,242,.09); border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,.28),0 4px 12px rgba(0,0,0,.15); padding:26px; }
+        .upload-zone-dark { border:1.5px dashed rgba(247,246,242,.14); border-radius:12px; padding:32px 20px; text-align:center; background:rgba(255,255,255,.025); transition:all .2s; cursor:pointer; }
         .upload-zone-dark:hover { border-color:rgba(232,90,42,.5); background:rgba(232,90,42,.04); }
-        .upload-pill-dark { padding:4px 10px; border-radius:99px; font-size:.7rem; font-weight:600; background:rgba(247,246,242,.07); color:rgba(247,246,242,.55); border:1px solid rgba(247,246,242,.1); cursor:pointer; transition:all .15s; }
+        .upload-pill-dark { padding:5px 12px; border-radius:99px; font-size:.72rem; font-weight:600; background:rgba(247,246,242,.07); color:rgba(247,246,242,.55); border:1px solid rgba(247,246,242,.1); cursor:pointer; transition:all .15s; }
         .upload-pill-dark:hover { background:rgba(247,246,242,.12); color:rgba(247,246,242,.85); }
         .home-check { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:all .15s; }
         .home-check:last-child { border-bottom:none; }
@@ -883,33 +883,43 @@ function HomePage({ setPage, setResumeData }) {
         <div className="home-upload-card">
 
           {/* Header */}
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+          <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:18 }}>
             <div>
-              <div style={{ color:"#f7f6f2", fontWeight:800, fontSize:".95rem", letterSpacing:"-.02em" }}>Analyse your resume</div>
-              <div style={{ color:"rgba(247,246,242,.38)", fontSize:".7rem", marginTop:2 }}>ATS score · skill gaps · job matches · 30 sec</div>
+              <div style={{ color:"#f7f6f2", fontWeight:800, fontSize:"1.05rem", letterSpacing:"-.03em", marginBottom:3 }}>Analyse your resume</div>
+              <div style={{ color:"rgba(247,246,242,.38)", fontSize:".74rem" }}>ATS score · skill gaps · job matches · 30 sec</div>
             </div>
-            <div style={{ display:"flex", alignItems:"center", gap:5, background:"rgba(74,222,128,.1)", border:"1px solid rgba(74,222,128,.2)", padding:"3px 9px", borderRadius:99 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:5, background:"rgba(74,222,128,.1)", border:"1px solid rgba(74,222,128,.22)", padding:"4px 10px", borderRadius:99, flexShrink:0 }}>
               <div style={{ width:5, height:5, borderRadius:"50%", background:"#4ade80", animation:"pulse 2s infinite" }} />
-              <span style={{ fontSize:".65rem", fontWeight:700, color:"#4ade80", letterSpacing:".04em" }}>FREE</span>
+              <span style={{ fontSize:".66rem", fontWeight:700, color:"#4ade80", letterSpacing:".05em" }}>FREE</span>
             </div>
           </div>
 
+          {/* Output badges */}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, marginBottom:14 }}>
+            {[["📊","ATS Score"],["🔍","Skill Gaps"],["💼","Job Matches"],["🏢","Interview Qs"]].map(([icon, label]) => (
+              <div key={label} style={{ display:"flex", alignItems:"center", gap:7, background:"rgba(255,255,255,.04)", border:"1px solid rgba(247,246,242,.08)", borderRadius:8, padding:"7px 10px" }}>
+                <span style={{ fontSize:".85rem" }}>{icon}</span>
+                <span style={{ fontSize:".72rem", fontWeight:600, color:"rgba(247,246,242,.6)" }}>{label}</span>
+              </div>
+            ))}
+          </div>
+
           {/* Drop zone */}
-          <label style={{ cursor: uploading ? "wait" : "pointer", display:"block", marginBottom:10 }}>
+          <label style={{ cursor: uploading ? "wait" : "pointer", display:"block", marginBottom:12 }}>
             <input ref={fileRef} type="file" accept=".pdf,.doc,.docx" style={{ display:"none" }} onChange={e => handleFile(e.target.files[0])} />
             <div className="upload-zone-dark">
               {uploading ? (
                 <>
-                  <span className="spin" style={{ width:22, height:22, borderColor:"rgba(232,90,42,.3)", borderTopColor:"#e85a2a", margin:"0 auto 8px", display:"block" }} />
-                  <div style={{ color:"rgba(247,246,242,.7)", fontSize:".8rem", fontWeight:600 }}>Analysing your resume...</div>
-                  <div style={{ color:"rgba(247,246,242,.3)", fontSize:".68rem", marginTop:3 }}>Claude AI is reading every line</div>
+                  <span className="spin" style={{ width:24, height:24, borderColor:"rgba(232,90,42,.3)", borderTopColor:"#e85a2a", margin:"0 auto 10px", display:"block" }} />
+                  <div style={{ color:"rgba(247,246,242,.75)", fontSize:".85rem", fontWeight:600 }}>Analysing your resume...</div>
+                  <div style={{ color:"rgba(247,246,242,.3)", fontSize:".72rem", marginTop:4 }}>Claude AI is reading every line</div>
                 </>
               ) : (
                 <>
-                  <div style={{ fontSize:"1.5rem", marginBottom:6 }}>📄</div>
-                  <div style={{ color:"rgba(247,246,242,.65)", fontSize:".8rem", fontWeight:600, marginBottom:3 }}>Drop PDF or DOCX here</div>
-                  <div style={{ color:"rgba(247,246,242,.25)", fontSize:".67rem", marginBottom:12 }}>Max 10MB · Instant · Never stored</div>
-                  <div style={{ background:"#e85a2a", color:"#fff", padding:"8px 22px", borderRadius:8, fontWeight:700, fontSize:".8rem", display:"inline-block", boxShadow:"0 4px 16px rgba(232,90,42,.35)" }}>
+                  <div style={{ fontSize:"1.8rem", marginBottom:8 }}>📄</div>
+                  <div style={{ color:"rgba(247,246,242,.7)", fontSize:".85rem", fontWeight:700, marginBottom:4 }}>Drop PDF or DOCX here</div>
+                  <div style={{ color:"rgba(247,246,242,.28)", fontSize:".7rem", marginBottom:14 }}>Max 10MB · Instant · Never stored</div>
+                  <div style={{ background:"#e85a2a", color:"#fff", padding:"10px 28px", borderRadius:9, fontWeight:700, fontSize:".85rem", display:"inline-block", boxShadow:"0 6px 20px rgba(232,90,42,.4)", letterSpacing:"-.01em" }}>
                     Get My ATS Score — Free →
                   </div>
                 </>
@@ -918,22 +928,22 @@ function HomePage({ setPage, setResumeData }) {
           </label>
 
           {uploadError && (
-            <div style={{ marginBottom:10, padding:"8px 12px", background:"rgba(197,48,48,.12)", border:"1px solid rgba(197,48,48,.25)", borderRadius:"var(--r)", fontSize:".75rem", color:"#f87171", display:"flex", gap:7, alignItems:"center" }}>
+            <div style={{ marginBottom:12, padding:"9px 13px", background:"rgba(197,48,48,.12)", border:"1px solid rgba(197,48,48,.25)", borderRadius:"var(--r)", fontSize:".76rem", color:"#f87171", display:"flex", gap:7, alignItems:"center" }}>
               <span>⚠</span><span>{uploadError}</span>
             </div>
           )}
 
           {/* Quick nav */}
-          <div style={{ display:"flex", gap:5, flexWrap:"wrap", marginBottom:12 }}>
+          <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:14 }}>
             {[["🎯 Jobs","jobs"],["🏢 Interview","interview"],["💰 Salary","salary"],["🗺️ Roadmap","roadmap"]].map(([l,p]) => (
               <button key={p} className="upload-pill-dark" onClick={() => setPage(p)}>{l}</button>
             ))}
-            <a href="/interview-questions" style={{ padding:"4px 10px", borderRadius:99, fontSize:".7rem", fontWeight:700, background:"rgba(232,90,42,.15)", color:"#e85a2a", border:"1px solid rgba(232,90,42,.28)", textDecoration:"none" }}>📚 Free Q&A</a>
+            <a href="/interview-questions" style={{ padding:"5px 12px", borderRadius:99, fontSize:".72rem", fontWeight:700, background:"rgba(232,90,42,.15)", color:"#e85a2a", border:"1px solid rgba(232,90,42,.28)", textDecoration:"none" }}>📚 Free Q&A</a>
           </div>
 
           {/* Footer */}
-          <div style={{ borderTop:"1px solid rgba(247,246,242,.07)", paddingTop:10 }}>
-            <div style={{ fontSize:".63rem", color:"rgba(247,246,242,.22)", marginBottom:6, display:"flex", alignItems:"center", gap:5 }}>
+          <div style={{ borderTop:"1px solid rgba(247,246,242,.07)", paddingTop:11 }}>
+            <div style={{ fontSize:".64rem", color:"rgba(247,246,242,.22)", marginBottom:7, display:"flex", alignItems:"center", gap:5 }}>
               <span>🔒</span> Resume deleted immediately after analysis · never stored
             </div>
             <LiveActivityFeed />
