@@ -1240,6 +1240,34 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
         </div>
       </div>
 
+      {/* GUIDED JOURNEY FLOW */}
+      <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: "var(--r2)", padding: "16px 20px", marginBottom: 20 }}>
+        <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--ink3)", marginBottom: 12 }}>Your job prep journey</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 0, overflowX: "auto" }}>
+          {[
+            { step: 1, label: "Resume Analysed", icon: "📊", page: "resume", done: true },
+            { step: 2, label: "View Matched Jobs", icon: "🎯", page: "jobs", done: false },
+            { step: 3, label: "Interview Prep", icon: "🏢", page: "interview", done: false },
+            { step: 4, label: "Cover Letter", icon: "✉️", page: "resume", done: false },
+          ].map((s, i, arr) => (
+            <div key={s.step} style={{ display: "flex", alignItems: "center", flex: i < arr.length - 1 ? "1" : "0" }}>
+              <div onClick={() => setPage(s.page)} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer", minWidth: 72 }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: s.done ? "var(--green)" : "var(--bg3)", border: `2px solid ${s.done ? "var(--green)" : "var(--border)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".95rem", transition: "all .15s" }}>
+                  {s.done ? "✓" : s.icon}
+                </div>
+                <div style={{ fontSize: ".65rem", fontWeight: s.done ? 700 : 500, color: s.done ? "var(--green)" : "var(--ink3)", textAlign: "center", whiteSpace: "nowrap" }}>{s.label}</div>
+              </div>
+              {i < arr.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: s.done ? "var(--green)" : "var(--border)", margin: "0 4px", marginBottom: 18 }} />
+              )}
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop: 12, fontSize: ".78rem", color: "var(--ink2)" }}>
+          ✅ Step 1 done — <span style={{ fontWeight: 700, color: "var(--ink)", cursor: "pointer" }} onClick={() => setPage("jobs")}>Next: View your matched jobs →</span>
+        </div>
+      </div>
+
       {/* Job Match Teaser */}
       <div onClick={() => setPage("jobs")} style={{ cursor: "pointer", background: "linear-gradient(135deg, #1a1916 0%, #2a1a0e 100%)", borderRadius: "var(--r2)", padding: "20px 24px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, border: "1px solid rgba(232,90,42,.3)", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", right: -20, top: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(232,90,42,.12)", pointerEvents: "none" }} />
@@ -1261,15 +1289,42 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
       <div className="two-col">
         <div>
           <div className="card mb-4">
-            <div className="card-head"><div className="card-title">Resume Score</div><span className="tag tag-amber">67/100</span></div>
+            <div className="card-head">
+              <div className="card-title">Resume Score</div>
+              <span className="tag tag-amber">{resumeData.score}/100</span>
+            </div>
             <div className="card-body">
               <div style={{ display: "flex", gap: 20, alignItems: "center", marginBottom: 16 }}>
                 <ScoreRing score={resumeData.score} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: "var(--font-head)", fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>Room for improvement</div>
+                  <div style={{ fontFamily: "var(--font-head)", fontSize: "1rem", fontWeight: 700, marginBottom: 4 }}>
+                    {resumeData.score >= 75 ? "Strong resume" : resumeData.score >= 55 ? "Room for improvement" : "Needs significant work"}
+                  </div>
                   <div style={{ fontSize: ".82rem", color: "var(--ink2)", lineHeight: 1.6 }}>{resumeData.summary}</div>
                 </div>
               </div>
+
+              {/* Score comparison bar */}
+              {(() => {
+                const score = resumeData.score;
+                const stronger = score <= 40 ? Math.round(score * 0.4) : score <= 60 ? Math.round(score * 0.6) : score <= 75 ? Math.round(score * 0.72) : Math.round(score * 0.85);
+                const label = score >= 75 ? "🏆 Top tier" : score >= 60 ? "📈 Above average" : "⚠️ Below average";
+                return (
+                  <div style={{ background: "var(--bg2)", borderRadius: "var(--r)", padding: "12px 14px", marginBottom: 16 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                      <div style={{ fontSize: ".78rem", fontWeight: 700 }}>Your resume vs other freshers</div>
+                      <span style={{ fontSize: ".7rem", fontWeight: 700, color: score >= 75 ? "var(--green)" : score >= 55 ? "var(--amber)" : "var(--red)" }}>{label}</span>
+                    </div>
+                    <div style={{ position: "relative", height: 8, background: "var(--bg3)", borderRadius: 99, overflow: "hidden", marginBottom: 6 }}>
+                      <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${score}%`, background: score >= 75 ? "var(--green)" : score >= 55 ? "var(--amber)" : "var(--red)", borderRadius: 99, transition: "width 1s ease" }} />
+                    </div>
+                    <div style={{ fontSize: ".75rem", color: "var(--ink2)" }}>
+                      Stronger than <strong style={{ color: "var(--ink)" }}>{stronger}%</strong> of freshers · Fix the issues below to reach top 10%
+                    </div>
+                  </div>
+                );
+              })()}
+
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {[["ATS Compatibility","78%","var(--blue)"],["Skills Match","62%","var(--amber)"],["Content Quality","71%","var(--green)"],["Formatting","85%","var(--green)"]].map(([l,v,c]) => (
                   <div key={l}>
