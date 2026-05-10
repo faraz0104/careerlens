@@ -6,6 +6,11 @@ const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@media print {
+  body > *:not(#resume-print) { display: none !important; }
+  #resume-print { display: block !important; padding: 0 !important; }
+  .no-print { display: none !important; }
+}
 :root {
   --bg: #f7f6f2;
   --bg2: #eeecea;
@@ -952,7 +957,28 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage }) {
   const [linkedinOut, setLinkedinOut] = useState("");
   const [linkedinLoading, setLinkedinLoading] = useState(false);
   const [activeProTab, setActiveProTab] = useState("tailor");
+  const [generatedResume, setGeneratedResume] = useState(null);
+  const [generating, setGenerating] = useState(false);
   const fileRef = useRef();
+
+  const generateResume = async () => {
+    setGenerating(true);
+    setGeneratedResume(null);
+    try {
+      const res = await fetch("/api/resume/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resumeData),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setGeneratedResume(data);
+    } catch (err) {
+      showToast("Failed to generate resume: " + err.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const tailorResume = async () => {
     if (!jd.trim()) return showToast("Paste a job description first");
@@ -1246,8 +1272,119 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                   <span style={{ fontSize: ".8rem", color: "var(--ink)", lineHeight: 1.5 }}>{imp}</span>
                 </div>
               ))}
+              <button
+                className="btn btn-primary w-full"
+                style={{ marginTop: 8, justifyContent: "center" }}
+                onClick={generateResume}
+                disabled={generating}
+              >
+                {generating
+                  ? <><span className="spin" />Generating your improved resume...</>
+                  : "✨ Generate Improved Resume — Fix All Issues →"}
+              </button>
+              <div style={{ textAlign: "center", fontSize: ".72rem", color: "var(--ink3)" }}>
+                AI applies all fixes above · Download as PDF in one click
+              </div>
             </div>
           </div>
+
+          {/* GENERATED RESUME MODAL */}
+          {generatedResume && (
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.6)", zIndex: 1000, overflowY: "auto", padding: "20px" }} onClick={e => e.target === e.currentTarget && setGeneratedResume(null)}>
+              <div style={{ maxWidth: 760, margin: "0 auto", background: "#fff", borderRadius: 14, overflow: "hidden", boxShadow: "0 24px 80px rgba(0,0,0,.25)" }}>
+                {/* Modal toolbar */}
+                <div style={{ background: "#1a1916", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ color: "#f7f6f2", fontWeight: 700, fontSize: ".9rem" }}>✨ Your Improved Resume</div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button className="btn btn-primary btn-sm" onClick={() => window.print()}>⬇ Download PDF</button>
+                    <button className="btn btn-ghost btn-sm" style={{ color: "#f7f6f2", borderColor: "rgba(247,246,242,.2)" }} onClick={() => setGeneratedResume(null)}>✕ Close</button>
+                  </div>
+                </div>
+
+                {/* Resume content */}
+                <div id="resume-print" style={{ padding: "40px 48px", fontFamily: "Georgia, serif", color: "#1a1916", lineHeight: 1.6 }}>
+                  {/* Header */}
+                  <div style={{ borderBottom: "2px solid #1a1916", paddingBottom: 16, marginBottom: 20 }}>
+                    <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, letterSpacing: "-.02em" }}>{generatedResume.name}</h1>
+                    <div style={{ fontWeight: 600, fontSize: "1rem", color: "#e85a2a", marginBottom: 8 }}>{generatedResume.role}</div>
+                    <div style={{ fontSize: ".8rem", color: "#5a5650", display: "flex", flexWrap: "wrap", gap: "8px 20px" }}>
+                      <span>📧 {generatedResume.email}</span>
+                      <span>📱 {generatedResume.phone}</span>
+                      <span>📍 {generatedResume.location}</span>
+                      <span>🔗 {generatedResume.linkedin}</span>
+                    </div>
+                  </div>
+
+                  {/* Summary */}
+                  <div style={{ marginBottom: 20 }}>
+                    <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Professional Summary</h2>
+                    <p style={{ margin: 0, fontSize: ".88rem", lineHeight: 1.7 }}>{generatedResume.summary}</p>
+                  </div>
+
+                  {/* Experience */}
+                  {generatedResume.experience?.length > 0 && (
+                    <div style={{ marginBottom: 20 }}>
+                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 12px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Work Experience</h2>
+                      {generatedResume.experience.map((exp, i) => (
+                        <div key={i} style={{ marginBottom: 16 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+                            <div style={{ fontWeight: 700, fontSize: ".9rem" }}>{exp.title}</div>
+                            <div style={{ fontSize: ".78rem", color: "#5a5650" }}>{exp.duration}</div>
+                          </div>
+                          <div style={{ fontStyle: "italic", fontSize: ".82rem", color: "#5a5650", marginBottom: 6 }}>{exp.company}</div>
+                          <ul style={{ margin: 0, paddingLeft: 18 }}>
+                            {exp.bullets?.map((b, j) => (
+                              <li key={j} style={{ fontSize: ".83rem", marginBottom: 4, lineHeight: 1.6 }}>{b}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Skills */}
+                  <div style={{ marginBottom: 20 }}>
+                    <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 10px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Skills</h2>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 24px" }}>
+                      <div>
+                        <div style={{ fontSize: ".75rem", fontWeight: 700, color: "#5a5650", marginBottom: 4 }}>TECHNICAL</div>
+                        <div style={{ fontSize: ".83rem" }}>{generatedResume.skills?.technical?.join(" · ")}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: ".75rem", fontWeight: 700, color: "#5a5650", marginBottom: 4 }}>SOFT SKILLS</div>
+                        <div style={{ fontSize: ".83rem" }}>{generatedResume.skills?.soft?.join(" · ")}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Education */}
+                  {generatedResume.education && (
+                    <div style={{ marginBottom: 20 }}>
+                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Education</h2>
+                      <div style={{ fontSize: ".88rem", fontWeight: 700 }}>{generatedResume.education.degree}</div>
+                      <div style={{ fontSize: ".82rem", color: "#5a5650" }}>{generatedResume.education.institution} · {generatedResume.education.year}</div>
+                    </div>
+                  )}
+
+                  {/* Certifications */}
+                  {generatedResume.certifications?.length > 0 && (
+                    <div>
+                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Certifications</h2>
+                      <ul style={{ margin: 0, paddingLeft: 18 }}>
+                        {generatedResume.certifications.map((c, i) => (
+                          <li key={i} style={{ fontSize: ".83rem", marginBottom: 3 }}>{c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ background: "#f7f6f2", padding: "12px 20px", fontSize: ".72rem", color: "#9a958f", textAlign: "center" }}>
+                  Review and personalise before sending. Add your real company names, dates and achievements.
+                </div>
+              </div>
+            </div>
+          )}
 
           {isPro ? (
             <div className="card mb-4">
