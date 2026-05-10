@@ -1088,8 +1088,6 @@ function HomePage({ setPage, setResumeData }) {
             </div>
           )}
 
-          <ResumeDemoAnimation />
-
           {/* Quick nav */}
           <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:14 }}>
             {[["🎯 Jobs","jobs"],["🏢 Interview","interview"],["💰 Salary","salary"],["🗺️ Roadmap","roadmap"]].map(([l,p]) => (
@@ -1756,21 +1754,70 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
         </div>
       </div>
 
-      {/* Job Match Teaser */}
-      <div onClick={() => setPage("jobs")} style={{ cursor: "pointer", background: "linear-gradient(135deg, #1a1916 0%, #2a1a0e 100%)", borderRadius: "var(--r2)", padding: "20px 24px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, border: "1px solid rgba(232,90,42,.3)", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", right: -20, top: -20, width: 120, height: 120, borderRadius: "50%", background: "rgba(232,90,42,.12)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", right: 60, bottom: -30, width: 80, height: 80, borderRadius: "50%", background: "rgba(232,90,42,.07)", pointerEvents: "none" }} />
-        <div style={{ display: "flex", alignItems: "center", gap: 14, position: "relative" }}>
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(232,90,42,.2)", border: "1px solid rgba(232,90,42,.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem", flexShrink: 0 }}>🎯</div>
-          <div>
-            <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1rem", color: "#f7f6f2", marginBottom: 3 }}>Real jobs matched to your profile</div>
-            <div style={{ fontSize: ".8rem", color: "rgba(247,246,242,.55)", lineHeight: 1.5 }}>
-              We pulled live <strong style={{ color: "rgba(247,246,242,.8)" }}>{resumeData.role}</strong> openings from LinkedIn & Indeed that match your skills — click to view & apply directly.
+      {/* Job Match Section */}
+      <div style={{ background: "#fff", border: "2px solid var(--border)", borderRadius: "var(--r2)", marginBottom: 20, overflow: "hidden" }}>
+        {/* Header */}
+        <div style={{ background: "linear-gradient(135deg, #1a1916, #2a1a0e)", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: "rgba(232,90,42,.25)", border: "1px solid rgba(232,90,42,.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.1rem", flexShrink: 0 }}>🎯</div>
+            <div>
+              <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1rem", color: "#f7f6f2", letterSpacing: "-.02em" }}>
+                Real jobs matched to your profile
+              </div>
+              <div style={{ fontSize: ".74rem", color: "rgba(247,246,242,.5)", marginTop: 2 }}>
+                Live <strong style={{ color: "rgba(247,246,242,.75)" }}>{resumeData.role}</strong> openings from LinkedIn & Indeed — click any to apply
+              </div>
             </div>
           </div>
+          <button onClick={() => setPage("jobs")} style={{ flexShrink: 0, background: "var(--accent)", color: "#fff", padding: "8px 16px", borderRadius: "var(--r)", fontWeight: 700, fontSize: ".78rem", border: "none", cursor: "pointer", whiteSpace: "nowrap" }}>
+            View All →
+          </button>
         </div>
-        <div style={{ flexShrink: 0, background: "var(--accent)", color: "#fff", padding: "9px 18px", borderRadius: "var(--r)", fontWeight: 700, fontSize: ".82rem", whiteSpace: "nowrap", position: "relative" }}>
-          View Jobs →
+
+        {/* Job Cards */}
+        <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
+          {MOCK_JOBS.slice(0, 4).map(job => (
+            <a key={job.id} href={job.apply_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 14, padding: "12px 14px", background: "var(--bg)", border: "1.5px solid var(--border)", borderRadius: "var(--r2)", transition: "all .15s", cursor: "pointer" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "#fff"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(232,90,42,.1)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--bg)"; e.currentTarget.style.boxShadow = "none"; }}>
+              <div style={{ width: 44, height: 44, borderRadius: 10, background: "#fff", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0, boxShadow: "0 1px 4px rgba(0,0,0,.06)" }}>
+                {job.logo}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: ".9rem", color: "var(--ink)", marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {job.title}
+                </div>
+                <div style={{ fontSize: ".76rem", color: "var(--ink2)", marginBottom: 4 }}>
+                  {job.company} · {job.location} · {job.type}
+                </div>
+                <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                  <span style={{ fontSize: ".7rem", fontWeight: 700, color: "var(--green)", background: "var(--green-dim)", padding: "2px 8px", borderRadius: 99, border: "1px solid rgba(45,138,78,.2)" }}>
+                    {job.salary}
+                  </span>
+                  <span style={{ fontSize: ".68rem", color: "var(--ink3)" }}>{job.posted}</span>
+                </div>
+              </div>
+              <div style={{ flexShrink: 0, textAlign: "center" }}>
+                <div style={{ fontFamily: "var(--font-head)", fontWeight: 900, fontSize: "1.2rem", color: job.match >= 90 ? "var(--green)" : job.match >= 80 ? "var(--amber)" : "var(--ink2)", lineHeight: 1 }}>
+                  {job.match}%
+                </div>
+                <div style={{ fontSize: ".6rem", color: "var(--ink3)", fontWeight: 600, marginTop: 2 }}>match</div>
+                <div style={{ marginTop: 6, background: "var(--accent)", color: "#fff", padding: "4px 10px", borderRadius: 6, fontSize: ".68rem", fontWeight: 700 }}>
+                  Apply →
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div style={{ padding: "10px 14px", borderTop: "1px solid var(--border)", background: "var(--bg2)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ fontSize: ".74rem", color: "var(--ink2)" }}>
+            Showing top 4 of <strong style={{ color: "var(--ink)" }}>{MOCK_JOBS.length}</strong> matched openings
+          </div>
+          <button onClick={() => setPage("jobs")} style={{ background: "transparent", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", padding: "5px 14px", fontSize: ".75rem", fontWeight: 700, color: "var(--ink)", cursor: "pointer" }}>
+            See all {MOCK_JOBS.length} jobs →
+          </button>
         </div>
       </div>
 
