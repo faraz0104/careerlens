@@ -1448,6 +1448,7 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage }) {
   const fileRef = useRef();
 
   const [showResumeUpgrade, setShowResumeUpgrade] = useState(false);
+  const [jobsExpanded, setJobsExpanded] = useState(false);
 
   const generateResume = async () => {
     if (!isPro) {
@@ -1776,7 +1777,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
 
         {/* Job Cards */}
         <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
-          {MOCK_JOBS.slice(0, 4).map(job => (
+          {MOCK_JOBS.slice(0, jobsExpanded ? 4 : 1).map(job => (
             <a key={job.id} href={job.apply_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 14, padding: "12px 14px", background: "var(--bg)", border: "1.5px solid var(--border)", borderRadius: "var(--r2)", transition: "all .15s", cursor: "pointer" }}
               onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "#fff"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(232,90,42,.1)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--bg)"; e.currentTarget.style.boxShadow = "none"; }}>
@@ -1808,12 +1809,21 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               </div>
             </a>
           ))}
+
+          {/* Expand / Collapse toggle */}
+          <button
+            onClick={() => setJobsExpanded(v => !v)}
+            style={{ width: "100%", background: "var(--bg2)", border: "1.5px dashed var(--border)", borderRadius: "var(--r2)", padding: "9px 14px", fontSize: ".78rem", fontWeight: 700, color: "var(--ink2)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all .15s" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.color = "var(--accent)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--ink2)"; }}>
+            {jobsExpanded ? "▲ Show less" : `▼ See ${MOCK_JOBS.length - 1} more matched jobs`}
+          </button>
         </div>
 
         {/* Footer */}
         <div style={{ padding: "10px 14px", borderTop: "1px solid var(--border)", background: "var(--bg2)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ fontSize: ".74rem", color: "var(--ink2)" }}>
-            Showing top 4 of <strong style={{ color: "var(--ink)" }}>{MOCK_JOBS.length}</strong> matched openings
+            {MOCK_JOBS.length} live openings matched to your profile
           </div>
           <button onClick={() => setPage("jobs")} style={{ background: "transparent", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", padding: "5px 14px", fontSize: ".75rem", fontWeight: 700, color: "var(--ink)", cursor: "pointer" }}>
             See all {MOCK_JOBS.length} jobs →
