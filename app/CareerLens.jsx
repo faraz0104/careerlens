@@ -943,6 +943,21 @@ function JobAlertSignup() {
   );
 }
 
+function ShareableCard({ title, shareText, children }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div className="card">
+      <div className="card-head">
+        <div className="card-title">{title}</div>
+        <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(shareText); setCopied(true); setTimeout(() => setCopied(false), 2000); }}>
+          {copied ? "✓ Copied!" : "📤 Share"}
+        </button>
+      </div>
+      <div className="card-body">{children}</div>
+    </div>
+  );
+}
+
 /* RESUME */
 function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage }) {
   const [loading, setLoading] = useState(false);
@@ -1685,6 +1700,110 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               )}
             </div>
           </div>
+
+          {/* PLACEMENT READINESS SCORE */}
+          {(() => {
+            const resumeScore = resumeData.score;
+            const skillStrength = Math.round((resumeData.skills.length / Math.max(1, resumeData.skills.length + resumeData.missing.length)) * 100);
+            const interviewReady = Math.min(95, Math.max(30, resumeData.skills.length * 10 + 20));
+            const expStr = (resumeData.experience || "").toLowerCase();
+            const marketFit = expStr.includes("5+") || expStr.match(/[6-9]\s*year/) ? 88
+              : expStr.includes("3") || expStr.includes("4") ? 74
+              : expStr.includes("2") ? 64
+              : expStr.includes("1") ? 54 : 44;
+            const overall = Math.round((resumeScore * 0.35) + (interviewReady * 0.25) + (skillStrength * 0.25) + (marketFit * 0.15));
+            const categories = [
+              { label: "Resume Quality", score: resumeScore, icon: "📄", color: resumeScore >= 70 ? "var(--green)" : resumeScore >= 50 ? "var(--amber)" : "var(--red)" },
+              { label: "Interview Readiness", score: interviewReady, icon: "🏢", color: interviewReady >= 70 ? "var(--green)" : "var(--amber)" },
+              { label: "Skills Strength", score: skillStrength, icon: "💡", color: skillStrength >= 70 ? "var(--green)" : skillStrength >= 50 ? "var(--amber)" : "var(--red)" },
+              { label: "Market Fit", score: marketFit, icon: "📈", color: marketFit >= 70 ? "var(--green)" : "var(--amber)" },
+            ];
+            const worst = [...categories].sort((a,b) => a.score - b.score)[0];
+            const shareText = `🎯 My Placement Readiness: ${overall}%\n\n📄 Resume Quality: ${resumeScore}/100\n🏢 Interview Ready: ${interviewReady}/100\n💡 Skills: ${skillStrength}/100\n📈 Market Fit: ${marketFit}/100\n\nGet your score free → carrerlens.com`;
+            return (
+              <ShareableCard title="🎯 Placement Readiness" shareText={shareText}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 18 }}>
+                  <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
+                    <svg width="72" height="72" viewBox="0 0 72 72">
+                      <circle cx="36" cy="36" r="30" fill="none" stroke="var(--bg2)" strokeWidth="7" />
+                      <circle cx="36" cy="36" r="30" fill="none"
+                        stroke={overall >= 70 ? "#2d8a4e" : overall >= 50 ? "#d97706" : "#c53030"}
+                        strokeWidth="7" strokeDasharray={`${(overall / 100) * 188.5} 188.5`}
+                        strokeLinecap="round" transform="rotate(-90 36 36)" />
+                      <text x="36" y="41" textAnchor="middle" fontSize="15" fontWeight="800" fill="var(--ink)">{overall}%</text>
+                    </svg>
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: ".95rem", marginBottom: 3 }}>
+                      {overall >= 75 ? "Job-ready 🚀" : overall >= 55 ? "Getting there 📈" : "Needs work ⚠️"}
+                    </div>
+                    <div style={{ fontSize: ".75rem", color: "var(--ink2)", lineHeight: 1.5 }}>Overall placement readiness based on resume, skills &amp; experience</div>
+                  </div>
+                </div>
+                {categories.map(c => (
+                  <div key={c.label} style={{ marginBottom: 10 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".76rem", marginBottom: 4 }}>
+                      <span style={{ color: "var(--ink2)" }}>{c.icon} {c.label}</span>
+                      <span style={{ fontWeight: 700 }}>{c.score}</span>
+                    </div>
+                    <div className="progress-bar"><div className="progress-fill" style={{ width: `${c.score}%`, background: c.color }} /></div>
+                  </div>
+                ))}
+                <div style={{ marginTop: 12, padding: "10px 12px", background: "var(--bg2)", borderRadius: "var(--r)", fontSize: ".74rem", color: "var(--ink2)" }}>
+                  💡 Improve your <strong>{worst.label.toLowerCase()}</strong> first — it has the biggest impact on your overall score.
+                </div>
+              </ShareableCard>
+            );
+          })()}
+
+          {/* COMPANY READINESS */}
+          {(() => {
+            const userSkills = resumeData.skills.map(s => s.toLowerCase());
+            const companies = [
+              { name: "TCS", icon: "🔷", needs: ["java","sql","python","communication","problem solving"] },
+              { name: "Infosys", icon: "🔶", needs: ["java","javascript","sql","python","testing"] },
+              { name: "Wipro", icon: "🟢", needs: ["java","c++","sql","linux"] },
+              { name: "Accenture", icon: "🟣", needs: ["java","react","sql","cloud","agile"] },
+              { name: "Amazon", icon: "🟠", needs: ["data structures","algorithms","java","python","system design"] },
+              { name: "Google", icon: "🔴", needs: ["algorithms","data structures","system design","python","distributed systems"] },
+              { name: "Microsoft", icon: "🪟", needs: ["data structures","system design","typescript","azure"] },
+              { name: "Flipkart", icon: "⚡", needs: ["java","react","node.js","system design","sql"] },
+            ].map(c => ({
+              ...c,
+              pct: Math.round((c.needs.filter(n => userSkills.some(s => s.includes(n) || n.includes(s))).length / c.needs.length) * 100),
+            })).sort((a,b) => b.pct - a.pct);
+            const top = companies[0];
+            return (
+              <div className="card">
+                <div className="card-head"><div className="card-title">🏢 Company Readiness</div></div>
+                <div className="card-body">
+                  <div style={{ fontSize: ".74rem", color: "var(--ink3)", marginBottom: 12 }}>
+                    Your skills vs what each company typically tests — upload a stronger resume to improve these
+                  </div>
+                  {companies.map(c => (
+                    <div key={c.name} style={{ marginBottom: 10 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: ".78rem", marginBottom: 4 }}>
+                        <span style={{ fontWeight: 600 }}>{c.icon} {c.name}</span>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <span style={{ fontWeight: 700 }}>{c.pct}%</span>
+                          <span style={{ fontSize: ".68rem" }}>{c.pct >= 70 ? "✅ Ready" : c.pct >= 50 ? "⚠️ Close" : "❌ Gap"}</span>
+                        </div>
+                      </div>
+                      <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${c.pct}%`, background: c.pct >= 70 ? "var(--green)" : c.pct >= 50 ? "var(--amber)" : "var(--red)" }} />
+                      </div>
+                    </div>
+                  ))}
+                  <div style={{ marginTop: 10, padding: "9px 12px", background: "var(--bg2)", borderRadius: "var(--r)", fontSize: ".74rem", color: "var(--ink2)" }}>
+                    🏆 You're most ready for <strong>{top.name}</strong> ({top.pct}%). Practice their interview questions to close the gap.
+                  </div>
+                  <button className="btn btn-ghost w-full" style={{ marginTop: 8, fontSize: ".78rem", justifyContent: "center" }} onClick={() => setPage("interview")}>
+                    Practice company-specific questions →
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
 
           <AdSlot type="rectangle" label="Advertisement" />
         </div>
