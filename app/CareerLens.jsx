@@ -381,6 +381,9 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
   .job-logo { width: 40px; height: 40px; font-size: 1.1rem; }
   .job-title { font-size: .88rem; }
 }
+@keyframes tickerMove { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes scanProgress { from { width: 0%; } to { width: 100%; } }
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 `;
 
 /* ── DATA ───────────────────────────────────────── */
@@ -519,6 +522,250 @@ function loadCashfree() {
   });
 }
 
+/* ── TICKER + SCAN DATA ─────────────────────────── */
+const TICKER_ITEMS = [
+  "🔥 React demand up 34% this quarter",
+  "💰 SDE-2 median ₹32 LPA in Bangalore",
+  "⚡ Amazon hiring 2,400+ engineers globally",
+  "📈 72% of resumes rejected before a human reads them",
+  "🎯 Python overtakes Java in new job postings",
+  "💡 AI/ML roles up 89% year-over-year",
+  "🏆 Tailored resumes get 3× more interview callbacks",
+  "📊 Average recruiter spends 7 seconds on a resume",
+  "🌍 Remote tech roles up 45% since 2023",
+  "⚠️ 9 out of 10 ATS systems reject unoptimized resumes",
+  "🎓 Cloud-certified freshers earn 40% more at entry level",
+  "💼 System design is the #1 skill gap for SDE-2 roles",
+];
+
+const CAREER_SCAN_DATA = {
+  roles: ["Software Engineer","Frontend Developer","Backend Developer","Full Stack Dev","Data Scientist","DevOps Engineer","Product Manager","QA Engineer"],
+  exps: ["Fresher","1–2 yrs","3–5 yrs","5+ yrs"],
+  data: {
+    "Software Engineer": {
+      "Fresher":  { score:52, gaps:["DSA & Algorithms","System Design basics","Cloud (AWS/GCP)"],      salary:"₹4–8 LPA",   jobs:342 },
+      "1–2 yrs":  { score:61, gaps:["System Design","Docker & Kubernetes","API architecture"],          salary:"₹10–18 LPA", jobs:891 },
+      "3–5 yrs":  { score:68, gaps:["Distributed systems","Team leadership","Performance tuning"],      salary:"₹22–38 LPA", jobs:614 },
+      "5+ yrs":   { score:74, gaps:["Strategic planning","P&L ownership","Cross-team execution"],       salary:"₹40–70 LPA", jobs:287 },
+    },
+    "Frontend Developer": {
+      "Fresher":  { score:49, gaps:["React & Next.js","TypeScript","Responsive CSS architecture"],      salary:"₹3–7 LPA",   jobs:218 },
+      "1–2 yrs":  { score:58, gaps:["TypeScript advanced","Testing (Vitest/Cypress)","Web perf"],      salary:"₹8–15 LPA",  jobs:674 },
+      "3–5 yrs":  { score:66, gaps:["Design systems","Micro-frontends","Accessibility (a11y)"],        salary:"₹18–30 LPA", jobs:423 },
+      "5+ yrs":   { score:72, gaps:["Architecture decisions","Tech leadership","Mentoring juniors"],   salary:"₹35–55 LPA", jobs:201 },
+    },
+    "Backend Developer": {
+      "Fresher":  { score:50, gaps:["Database design","REST/GraphQL APIs","Cloud basics"],              salary:"₹4–8 LPA",   jobs:304 },
+      "1–2 yrs":  { score:60, gaps:["Microservices","Caching (Redis)","Message queues (Kafka)"],       salary:"₹10–20 LPA", jobs:782 },
+      "3–5 yrs":  { score:67, gaps:["Distributed systems","Security best practices","gRPC"],           salary:"₹22–40 LPA", jobs:512 },
+      "5+ yrs":   { score:73, gaps:["System architecture","SRE practices","Cost optimisation"],        salary:"₹40–70 LPA", jobs:243 },
+    },
+    "Full Stack Dev": {
+      "Fresher":  { score:47, gaps:["React + Node.js depth","SQL & databases","DevOps basics"],        salary:"₹4–9 LPA",   jobs:412 },
+      "1–2 yrs":  { score:59, gaps:["TypeScript","CI/CD pipelines","Cloud deployment (AWS)"],          salary:"₹10–18 LPA", jobs:934 },
+      "3–5 yrs":  { score:66, gaps:["System design","Team management","Performance optimization"],     salary:"₹20–35 LPA", jobs:615 },
+      "5+ yrs":   { score:71, gaps:["Tech strategy","Hiring & mentoring","Architecture decisions"],    salary:"₹38–65 LPA", jobs:198 },
+    },
+    "Data Scientist": {
+      "Fresher":  { score:45, gaps:["ML fundamentals","Python data stack","Statistics & probability"],  salary:"₹4–8 LPA",   jobs:187 },
+      "1–2 yrs":  { score:57, gaps:["Deep learning","MLOps pipelines","Feature engineering"],          salary:"₹9–16 LPA",  jobs:412 },
+      "3–5 yrs":  { score:65, gaps:["LLMs & Generative AI","A/B testing at scale","ML in prod"],       salary:"₹18–32 LPA", jobs:298 },
+      "5+ yrs":   { score:70, gaps:["AI research leadership","Cross-team strategy","Exec reporting"],  salary:"₹35–60 LPA", jobs:142 },
+    },
+    "DevOps Engineer": {
+      "Fresher":  { score:48, gaps:["Linux administration","CI/CD pipelines","Docker basics"],          salary:"₹4–7 LPA",   jobs:163 },
+      "1–2 yrs":  { score:59, gaps:["Kubernetes advanced","Terraform/IaC","Observability (Grafana)"],  salary:"₹9–15 LPA",  jobs:387 },
+      "3–5 yrs":  { score:67, gaps:["SRE practices","Cost optimisation (FinOps)","DevSecOps"],         salary:"₹18–30 LPA", jobs:274 },
+      "5+ yrs":   { score:73, gaps:["Platform engineering","Team leadership","Budget ownership"],       salary:"₹35–55 LPA", jobs:139 },
+    },
+    "Product Manager": {
+      "Fresher":  { score:44, gaps:["User research methods","Metrics & OKRs","Product roadmapping"],   salary:"₹8–14 LPA",  jobs:94 },
+      "1–2 yrs":  { score:55, gaps:["SQL for PMs","A/B testing","Stakeholder management"],             salary:"₹14–22 LPA", jobs:213 },
+      "3–5 yrs":  { score:64, gaps:["P&L ownership","GTM strategy","Hiring PM teams"],                 salary:"₹25–42 LPA", jobs:168 },
+      "5+ yrs":   { score:70, gaps:["Executive influence","Company strategy","Board presentations"],   salary:"₹45–80 LPA", jobs:87 },
+    },
+    "QA Engineer": {
+      "Fresher":  { score:51, gaps:["Selenium/Cypress","API testing (Postman)","CI/CD integration"],   salary:"₹3–6 LPA",   jobs:234 },
+      "1–2 yrs":  { score:60, gaps:["Performance testing (JMeter)","Test architecture","BDD/TDD"],     salary:"₹7–13 LPA",  jobs:512 },
+      "3–5 yrs":  { score:67, gaps:["SDET skills","Security testing","Test strategy design"],           salary:"₹14–24 LPA", jobs:321 },
+      "5+ yrs":   { score:72, gaps:["QA leadership","Process design","Quality culture building"],      salary:"₹28–45 LPA", jobs:147 },
+    },
+  },
+};
+
+/* ── MARKET TICKER ──────────────────────────────── */
+function MarketTicker() {
+  const doubled = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  return (
+    <div style={{ background:"#1a1916", overflow:"hidden", padding:"7px 0", position:"relative", borderBottom:"1px solid rgba(247,246,242,.07)" }}>
+      <div style={{ position:"absolute",left:0,top:0,bottom:0,width:80,background:"linear-gradient(90deg,#1a1916,transparent)",zIndex:2,pointerEvents:"none" }} />
+      <div style={{ position:"absolute",right:0,top:0,bottom:0,width:80,background:"linear-gradient(270deg,#1a1916,transparent)",zIndex:2,pointerEvents:"none" }} />
+      <div style={{ display:"flex", gap:40, animation:"tickerMove 55s linear infinite", width:"max-content", paddingLeft:80 }}>
+        {doubled.map((item, i) => (
+          <span key={i} style={{ fontSize:".7rem", fontWeight:600, color:"rgba(247,246,242,.6)", flexShrink:0, letterSpacing:".01em" }}>
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── QUICK CAREER SCAN ──────────────────────────── */
+function QuickCareerScan() {
+  const [role, setRole] = useState("Software Engineer");
+  const [exp, setExp] = useState("1–2 yrs");
+  const [scanning, setScanning] = useState(false);
+  const [result, setResult] = useState(null);
+  const [scoreAnim, setScoreAnim] = useState(0);
+  const [scanMsg, setScanMsg] = useState("");
+
+  const SCAN_MSGS = ["Analysing job market data...","Checking skill demand trends...","Calculating salary benchmarks...","Building your profile snapshot..."];
+
+  const scan = () => {
+    setScanning(true);
+    setResult(null);
+    setScoreAnim(0);
+    let msgIdx = 0;
+    setScanMsg(SCAN_MSGS[0]);
+    const msgInterval = setInterval(() => {
+      msgIdx = (msgIdx + 1) % SCAN_MSGS.length;
+      setScanMsg(SCAN_MSGS[msgIdx]);
+    }, 450);
+    setTimeout(() => {
+      clearInterval(msgInterval);
+      const d = CAREER_SCAN_DATA.data[role]?.[exp] ?? { score:60, gaps:["Data unavailable"], salary:"₹10–20 LPA", jobs:200 };
+      setScanning(false);
+      setResult(d);
+      let s = 0;
+      const scoreInterval = setInterval(() => {
+        s += 3;
+        if (s >= d.score) { setScoreAnim(d.score); clearInterval(scoreInterval); }
+        else setScoreAnim(s);
+      }, 18);
+    }, 1800);
+  };
+
+  const scoreColor = result
+    ? scoreAnim >= 70 ? "#4ade80" : scoreAnim >= 55 ? "#fbbf24" : "#f87171"
+    : "#e85a2a";
+
+  return (
+    <div style={{ background:"rgba(255,255,255,.05)", border:"1px solid rgba(247,246,242,.1)", borderRadius:"var(--r2)", padding:"22px" }}>
+      <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:14 }}>
+        <span style={{ fontSize:".9rem" }}>⚡</span>
+        <div style={{ fontWeight:800, fontSize:".88rem", color:"#f7f6f2", letterSpacing:"-.02em" }}>Quick Career Scan</div>
+        <span style={{ fontSize:".62rem", fontWeight:700, background:"rgba(232,90,42,.2)", color:"#e85a2a", padding:"2px 8px", borderRadius:99, marginLeft:"auto", border:"1px solid rgba(232,90,42,.3)" }}>No upload needed</span>
+      </div>
+
+      <div style={{ marginBottom:10 }}>
+        <div style={{ fontSize:".66rem", fontWeight:600, color:"rgba(247,246,242,.4)", marginBottom:5, textTransform:"uppercase", letterSpacing:".05em" }}>Your role</div>
+        <select value={role} onChange={e => { setRole(e.target.value); setResult(null); }} style={{ width:"100%", padding:"8px 12px", border:"1px solid rgba(247,246,242,.15)", borderRadius:"var(--r)", fontSize:".82rem", color:"#f7f6f2", background:"rgba(247,246,242,.08)", cursor:"pointer", outline:"none" }}>
+          {CAREER_SCAN_DATA.roles.map(r => <option key={r} style={{ background:"#1a1916" }}>{r}</option>)}
+        </select>
+      </div>
+
+      <div style={{ marginBottom:14 }}>
+        <div style={{ fontSize:".66rem", fontWeight:600, color:"rgba(247,246,242,.4)", marginBottom:6, textTransform:"uppercase", letterSpacing:".05em" }}>Experience level</div>
+        <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
+          {CAREER_SCAN_DATA.exps.map(e => (
+            <button key={e} onClick={() => { setExp(e); setResult(null); }} style={{ padding:"5px 12px", borderRadius:99, fontSize:".74rem", fontWeight:600, border:"1.5px solid", borderColor: exp === e ? "#e85a2a" : "rgba(247,246,242,.15)", background: exp === e ? "rgba(232,90,42,.2)" : "transparent", color: exp === e ? "#e85a2a" : "rgba(247,246,242,.6)", cursor:"pointer", transition:"all .15s" }}>
+              {e}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {!result && !scanning && (
+        <button onClick={scan} style={{ width:"100%", padding:"10px", borderRadius:"var(--r)", background:"#e85a2a", color:"#fff", fontWeight:700, fontSize:".84rem", border:"none", cursor:"pointer", transition:"all .15s", fontFamily:"var(--font-body)" }}>
+          Preview My Career Analysis →
+        </button>
+      )}
+
+      {scanning && (
+        <div style={{ textAlign:"center", padding:"12px 0" }}>
+          <div style={{ fontSize:".78rem", color:"rgba(247,246,242,.5)", marginBottom:8 }}>{scanMsg}</div>
+          <div style={{ height:3, background:"rgba(247,246,242,.1)", borderRadius:99, overflow:"hidden" }}>
+            <div style={{ height:"100%", background:"#e85a2a", borderRadius:99, animation:"scanProgress 1.8s ease-out forwards" }} />
+          </div>
+        </div>
+      )}
+
+      {result && !scanning && (
+        <div style={{ animation:"fadeSlideUp .35s ease" }}>
+          <div style={{ display:"flex", gap:10, padding:"11px", background:"rgba(255,255,255,.05)", borderRadius:"var(--r)", marginBottom:8 }}>
+            <div style={{ textAlign:"center", minWidth:52 }}>
+              <div style={{ fontFamily:"var(--font-head)", fontSize:"1.7rem", fontWeight:800, color:scoreColor, letterSpacing:"-.04em", lineHeight:1 }}>{scoreAnim}</div>
+              <div style={{ fontSize:".58rem", color:"rgba(247,246,242,.35)", fontWeight:600, marginTop:2 }}>avg score</div>
+            </div>
+            <div style={{ flex:1, borderLeft:"1px solid rgba(247,246,242,.08)", paddingLeft:10 }}>
+              <div style={{ fontSize:".68rem", fontWeight:700, color:"rgba(247,246,242,.5)", marginBottom:5, textTransform:"uppercase", letterSpacing:".04em" }}>Top skill gaps</div>
+              {result.gaps.map((g) => (
+                <div key={g} style={{ display:"flex", alignItems:"center", gap:5, fontSize:".72rem", color:"rgba(247,246,242,.75)", marginBottom:3 }}>
+                  <span style={{ color:"#f87171", fontSize:".7rem" }}>✗</span> {g}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ display:"flex", gap:6, marginBottom:8 }}>
+            <div style={{ flex:1, background:"rgba(45,138,78,.15)", border:"1px solid rgba(45,138,78,.2)", borderRadius:"var(--r)", padding:"7px 10px", textAlign:"center" }}>
+              <div style={{ fontSize:".6rem", color:"#4ade80", fontWeight:600, marginBottom:1 }}>Market salary</div>
+              <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:".88rem", color:"#4ade80" }}>{result.salary}</div>
+            </div>
+            <div style={{ flex:1, background:"rgba(37,99,235,.12)", border:"1px solid rgba(37,99,235,.2)", borderRadius:"var(--r)", padding:"7px 10px", textAlign:"center" }}>
+              <div style={{ fontSize:".6rem", color:"#60a5fa", fontWeight:600, marginBottom:1 }}>Active jobs</div>
+              <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:".88rem", color:"#60a5fa" }}>{result.jobs}+</div>
+            </div>
+          </div>
+          <div style={{ background:"rgba(232,90,42,.12)", border:"1px solid rgba(232,90,42,.25)", borderRadius:"var(--r)", padding:"7px 11px", fontSize:".7rem", color:"#e85a2a", fontWeight:600, textAlign:"center", marginBottom:6 }}>
+            These are market averages — upload your resume for your exact score
+          </div>
+          <button onClick={() => setResult(null)} style={{ width:"100%", padding:"5px", fontSize:".68rem", fontWeight:600, background:"transparent", border:"none", color:"rgba(247,246,242,.3)", cursor:"pointer" }}>
+            Try another role ↺
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── LIVE ACTIVITY FEED ─────────────────────────── */
+function LiveActivityFeed() {
+  const activities = [
+    { name:"Priya M.", city:"Mumbai", action:"scored 89/100", time:"2 min ago" },
+    { name:"Rahul K.", city:"Bangalore", action:"improved by 34 pts", time:"4 min ago" },
+    { name:"Ananya S.", city:"Hyderabad", action:"matched 12 jobs", time:"7 min ago" },
+    { name:"Arjun T.", city:"Delhi NCR", action:"scored 76/100", time:"9 min ago" },
+    { name:"Meera R.", city:"Pune", action:"got interview prep", time:"11 min ago" },
+    { name:"Dev P.", city:"Chennai", action:"scored 91/100", time:"13 min ago" },
+    { name:"Sneha V.", city:"Bangalore", action:"improved by 28 pts", time:"15 min ago" },
+    { name:"Kiran J.", city:"Mumbai", action:"matched 8 jobs", time:"18 min ago" },
+    { name:"Rohan M.", city:"Noida", action:"scored 83/100", time:"21 min ago" },
+    { name:"Divya S.", city:"Ahmedabad", action:"got salary insights", time:"24 min ago" },
+  ];
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => { setIdx(i => (i + 1) % activities.length); setVisible(true); }, 300);
+    }, 3500);
+    return () => clearInterval(t);
+  }, []);
+
+  const a = activities[idx];
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:8, padding:"7px 10px", background:"var(--bg2)", borderRadius:"var(--r)", border:"1px solid var(--border)", marginTop:8, transition:"opacity .3s", opacity: visible ? 1 : 0 }}>
+      <div style={{ width:6, height:6, borderRadius:"50%", background:"#2d8a4e", flexShrink:0, animation:"pulse 2s infinite" }} />
+      <div style={{ fontSize:".68rem", color:"var(--ink2)", flex:1, lineHeight:1.3 }}>
+        <strong style={{ color:"var(--ink)" }}>{a.name}</strong> from {a.city} just {a.action}
+      </div>
+      <div style={{ fontSize:".62rem", color:"var(--ink3)", flexShrink:0 }}>{a.time}</div>
+    </div>
+  );
+}
+
 /* ── PAGES ──────────────────────────────────────── */
 
 /* HOME */
@@ -606,6 +853,7 @@ function HomePage({ setPage, setResumeData }) {
   return (
     <div>
       <AdSlot type="leaderboard" label="Advertisement — Top Banner" />
+      <MarketTicker />
 
       <style>{`
         .home-hero { display:grid; grid-template-columns:1fr 400px; gap:48px; align-items:center; max-width:1100px; margin:0 auto; padding:44px 2rem 36px; }
@@ -617,10 +865,12 @@ function HomePage({ setPage, setResumeData }) {
         .home-stat + .home-stat { border-left:1px solid var(--border); }
         .quick-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:99px; font-size:.75rem; font-weight:600; background:var(--bg2); color:var(--ink2); border:1px solid var(--border); cursor:pointer; transition:all .15s; white-space:nowrap; }
         .quick-pill:hover { background:var(--accent-dim); color:var(--accent); border-color:rgba(232,90,42,.3); }
+        .scan-grid { display:grid; grid-template-columns:1fr 420px; gap:40px; align-items:center; position:relative; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
         @media(max-width:768px){
           .home-hero { grid-template-columns:1fr; gap:24px; padding:24px 1rem 20px; }
           .home-stat + .home-stat { border-left:none; border-top:1px solid var(--border); padding-top:12px; }
+          .scan-grid { grid-template-columns:1fr; gap:20px; }
         }
       `}</style>
 
@@ -705,6 +955,7 @@ function HomePage({ setPage, setResumeData }) {
             <div style={{ fontSize:"1.1rem" }}>🔒</div>
             <div style={{ fontSize:".72rem", color:"var(--ink2)", lineHeight:1.5 }}>Your resume is never stored. Analysed in real-time and deleted immediately.</div>
           </div>
+          <LiveActivityFeed />
         </div>
       </div>
 
@@ -724,6 +975,43 @@ function HomePage({ setPage, setResumeData }) {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* QUICK CAREER SCAN */}
+      <section style={{ padding:"0 2rem 32px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ background:"linear-gradient(135deg, #1a1916 0%, #252320 100%)", borderRadius:16, padding:"36px 32px", position:"relative", overflow:"hidden" }}>
+            <div style={{ position:"absolute", top:0, right:0, width:400, height:400, background:"radial-gradient(ellipse at 80% 20%, rgba(232,90,42,.12) 0%, transparent 60%)", pointerEvents:"none" }} />
+            <div className="scan-grid">
+              <div style={{ position:"relative" }}>
+                <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".68rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"#e85a2a", background:"rgba(232,90,42,.12)", border:"1px solid rgba(232,90,42,.25)", padding:"3px 10px", borderRadius:99, marginBottom:14 }}>
+                  ⚡ Instant · No signup needed
+                </div>
+                <h2 style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"clamp(1.3rem,2.5vw,2rem)", color:"#f7f6f2", letterSpacing:"-.04em", lineHeight:1.2, marginBottom:12 }}>
+                  See exactly what's holding<br/>your career back
+                </h2>
+                <p style={{ color:"rgba(247,246,242,.55)", fontSize:".85rem", lineHeight:1.75, marginBottom:24 }}>
+                  Pick your role and experience. Instantly see the skill gaps companies care about right now, your typical ATS score, and what salary you should be targeting — no resume needed.
+                </p>
+                <div style={{ display:"flex", flexDirection:"column", gap:9 }}>
+                  {[
+                    ["📊","Your estimated ATS score for this role"],
+                    ["🔍","Top 3 skills you're likely missing"],
+                    ["💰","Current market salary for your profile"],
+                    ["💼","Number of active openings right now"],
+                  ].map(([icon, text]) => (
+                    <div key={text} style={{ display:"flex", alignItems:"center", gap:8, fontSize:".78rem", color:"rgba(247,246,242,.6)" }}>
+                      <span>{icon}</span> {text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ position:"relative" }}>
+                <QuickCareerScan />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
