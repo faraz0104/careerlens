@@ -1376,7 +1376,54 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                 <div style={{ background: "#1a1916", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div style={{ color: "#f7f6f2", fontWeight: 700, fontSize: ".9rem" }}>✨ Your Improved Resume is Ready</div>
                   <div style={{ display: "flex", gap: 8 }}>
-                    {!showResumeUpgrade && <button className="btn btn-primary btn-sm" onClick={() => window.print()}>⬇ Download PDF</button>}
+                    {!showResumeUpgrade && <button className="btn btn-primary btn-sm" onClick={() => {
+                      const r = generatedResume;
+                      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>Resume - ${r.name}</title><style>
+                        *{box-sizing:border-box;margin:0;padding:0}
+                        body{font-family:Georgia,serif;color:#1a1916;padding:40px 48px;line-height:1.6;font-size:13px}
+                        h1{font-size:22px;font-weight:700;margin-bottom:4px}
+                        .role{color:#e85a2a;font-weight:600;font-size:14px;margin-bottom:8px}
+                        .contact{font-size:11px;color:#5a5650;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:12px}
+                        h2{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#e85a2a;border-bottom:1px solid #e5e2de;padding-bottom:4px;margin:18px 0 8px}
+                        .section{margin-bottom:18px}
+                        .exp-header{display:flex;justify-content:space-between;margin-bottom:2px}
+                        .exp-title{font-weight:700;font-size:13px}
+                        .exp-duration{font-size:11px;color:#5a5650}
+                        .exp-company{font-style:italic;font-size:12px;color:#5a5650;margin-bottom:5px}
+                        ul{padding-left:16px;margin:0}
+                        li{margin-bottom:3px;font-size:12px}
+                        .skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+                        .skill-label{font-size:10px;font-weight:700;color:#5a5650;margin-bottom:3px;text-transform:uppercase}
+                        .skill-val{font-size:12px}
+                        p{font-size:12px;line-height:1.7}
+                        @media print{body{padding:24px 32px}}
+                      </style></head><body>
+                        <h1>${r.name}</h1>
+                        <div class="role">${r.role}</div>
+                        <div class="contact">
+                          <span>📧 ${r.email}</span><span>📱 ${r.phone}</span>
+                          <span>📍 ${r.location}</span><span>🔗 ${r.linkedin}</span>
+                        </div>
+                        <div class="section"><h2>Professional Summary</h2><p>${r.summary}</p></div>
+                        ${r.experience?.length ? `<div class="section"><h2>Work Experience</h2>${r.experience.map(e => `
+                          <div style="margin-bottom:14px">
+                            <div class="exp-header"><span class="exp-title">${e.title}</span><span class="exp-duration">${e.duration}</span></div>
+                            <div class="exp-company">${e.company}</div>
+                            <ul>${e.bullets?.map(b => `<li>${b}</li>`).join("") || ""}</ul>
+                          </div>`).join("")}</div>` : ""}
+                        <div class="section"><h2>Skills</h2><div class="skills-grid">
+                          <div><div class="skill-label">Technical</div><div class="skill-val">${r.skills?.technical?.join(" · ")}</div></div>
+                          <div><div class="skill-label">Soft Skills</div><div class="skill-val">${r.skills?.soft?.join(" · ")}</div></div>
+                        </div></div>
+                        ${r.education ? `<div class="section"><h2>Education</h2><div class="exp-title">${r.education.degree}</div><div class="exp-company">${r.education.institution} · ${r.education.year}</div></div>` : ""}
+                        ${r.certifications?.length ? `<div class="section"><h2>Certifications</h2><ul>${r.certifications.map(c => `<li>${c}</li>`).join("")}</ul></div>` : ""}
+                      </body></html>`;
+                      const win = window.open("", "_blank");
+                      win.document.write(html);
+                      win.document.close();
+                      win.focus();
+                      setTimeout(() => { win.print(); }, 500);
+                    }}>⬇ Download PDF</button>}
                     <button className="btn btn-ghost btn-sm" style={{ color: "#f7f6f2", borderColor: "rgba(247,246,242,.2)" }} onClick={() => { setGeneratedResume(null); setShowResumeUpgrade(false); }}>✕ Close</button>
                   </div>
                 </div>
