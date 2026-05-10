@@ -771,40 +771,53 @@ function ResumeDemoAnimation() {
   const [scoreVal, setScoreVal] = useState(0);
   const [shownGaps, setShownGaps] = useState(0);
   const [shownJobs, setShownJobs] = useState(0);
-  const timerRef = useRef(null);
 
   const GAPS = ["System Design basics", "Docker & Kubernetes", "Cloud (AWS/GCP)"];
   const JOBS = [
     { co:"Razorpay", role:"SDE-2", match:94 },
-    { co:"Swiggy", role:"Frontend Eng", match:88 },
+    { co:"Swiggy", role:"Frontend", match:88 },
     { co:"CRED", role:"React Dev", match:91 },
   ];
 
+  // Main loop: track ALL timer IDs so every one gets cleaned up
   useEffect(() => {
-    let scoreIv;
-    const run = () => {
+    const ids = [];
+    const t = (fn, delay) => { const id = setTimeout(fn, delay); ids.push(id); };
+    const CYCLE = 9200;
+
+    const startCycle = () => {
       setPhase(0); setScoreVal(0); setShownGaps(0); setShownJobs(0);
-      timerRef.current = setTimeout(() => {
-        setPhase(1);
-        let s = 0;
-        scoreIv = setInterval(() => {
-          s += 3; if (s >= 73) { s = 73; clearInterval(scoreIv); }
-          setScoreVal(s);
-        }, 22);
-        timerRef.current = setTimeout(() => {
-          setPhase(2);
-          [0,1,2].forEach(i => setTimeout(() => setShownGaps(i+1), i*450));
-          timerRef.current = setTimeout(() => {
-            setPhase(3);
-            [0,1,2].forEach(i => setTimeout(() => setShownJobs(i+1), i*380));
-            timerRef.current = setTimeout(run, 3200);
-          }, 2200);
-        }, 1900);
-      }, 1400);
+      t(() => setPhase(1), 1400);
+      t(() => { setPhase(2); setShownGaps(0); }, 3500);
+      t(() => setShownGaps(1), 3900);
+      t(() => setShownGaps(2), 4350);
+      t(() => setShownGaps(3), 4800);
+      t(() => { setPhase(3); setShownJobs(0); }, 5700);
+      t(() => setShownJobs(1), 6080);
+      t(() => setShownJobs(2), 6460);
+      t(() => setShownJobs(3), 6840);
     };
-    run();
-    return () => { clearTimeout(timerRef.current); clearInterval(scoreIv); };
+
+    startCycle();
+    const loop = setInterval(() => {
+      ids.forEach(clearTimeout);
+      ids.length = 0;
+      startCycle();
+    }, CYCLE);
+
+    return () => { clearInterval(loop); ids.forEach(clearTimeout); };
   }, []);
+
+  // Score count-up tied to phase 1 only, auto-cleans when phase changes
+  useEffect(() => {
+    if (phase !== 1) { if (phase === 0) setScoreVal(0); return; }
+    let s = 0;
+    const iv = setInterval(() => {
+      s += 3; setScoreVal(s);
+      if (s >= 73) clearInterval(iv);
+    }, 22);
+    return () => clearInterval(iv);
+  }, [phase]);
 
   const r = 26, c = 2 * Math.PI * r;
   const scoreColor = scoreVal >= 70 ? "#4ade80" : scoreVal >= 50 ? "#fbbf24" : "#e85a2a";
