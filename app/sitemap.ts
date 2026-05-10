@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { ALL_TECHS } from "@/lib/interview-data";
-import { BLOG_POSTS } from "@/lib/blog-data";
+import { BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.carrerlens.com";
@@ -50,5 +50,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...appPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages];
+  const blogCategoryPages: MetadataRoute.Sitemap = BLOG_CATEGORIES.map(cat => ({
+    url: `${base}/blog/category/${cat.toLowerCase().replace(/\s+/g, "-")}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [...appPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
 }

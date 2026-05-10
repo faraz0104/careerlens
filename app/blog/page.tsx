@@ -35,9 +35,25 @@ export default function BlogPage() {
     ],
   };
 
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "CareerLens Blog — Career Tips, Salary Insights & Tech Trends",
+    description: "Expert articles on tech careers, salary data, interview prep, and the skills shaping the IT job market.",
+    url: "https://www.carrerlens.com/blog",
+    numberOfItems: BLOG_POSTS.length,
+    itemListElement: BLOG_POSTS.map((post, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `https://www.carrerlens.com/blog/${post.slug}`,
+      name: post.title,
+    })),
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
 
       <div style={{ minHeight: "100vh", background: "#f7f6f2", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         {/* NAV */}
