@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS resume_stats (
 
 -- Seed with the number already shown on the site
 INSERT INTO resume_stats (id, value)
-VALUES ('total_scans', 3200)
+VALUES ('total_scans', 1000)
 ON CONFLICT DO NOTHING;
 
 -- Atomic increment function (avoids race conditions)

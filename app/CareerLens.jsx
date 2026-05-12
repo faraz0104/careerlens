@@ -1147,7 +1147,7 @@ function HomePage({ setPage, setResumeData }) {
 
           <div style={{ display:"flex", background:"var(--bg2)", borderRadius:"var(--r)", padding:"14px 0", flexWrap:"wrap" }}>
             {[
-              [totalScans != null ? totalScans.toLocaleString("en-IN") + "+" : "3,200+", "Resumes analyzed"],
+              [totalScans != null ? totalScans.toLocaleString("en-IN") + "+" : "1,000+", "Resumes analyzed"],
               ["50+","Companies covered"],
               ["₹0","To get started"],
               ["30s","To get results"],
