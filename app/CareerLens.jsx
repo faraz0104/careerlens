@@ -2391,204 +2391,287 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
 
 /* JOBS */
 function JobsPage({ resumeData, isPro, setPage }) {
-  const [filter, setFilter] = useState("all");
-  const [aiJobs, setAiJobs] = useState([]);
-  const [loadingJobs, setLoadingJobs] = useState(false);
+  const [searchInput, setSearchInput] = useState(resumeData?.role || "Software Engineer");
+  const [searchQuery, setSearchQuery] = useState(resumeData?.role || "Software Engineer");
+  const [locationFilter, setLocationFilter] = useState("India");
+  const [freshness, setFreshness] = useState("");
+  const [jobType, setJobType] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("");
+  const [sortBy, setSortBy] = useState("relevance");
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [pageNum, setPageNum] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [coldCompany, setColdCompany] = useState("");
-  const [coldRole, setColdRole] = useState("");
+  const [coldRole, setColdRole] = useState(resumeData?.role || "");
   const [coldEmail, setColdEmail] = useState("");
   const [coldLoading, setColdLoading] = useState(false);
 
-  const generateColdEmail = async () => {
-    if (!coldCompany.trim() || !coldRole.trim()) return;
-    setColdLoading(true);
-    setColdEmail("");
-    const result = await callClaude(
-      "You are an expert at cold outreach emails that actually get replies from hiring managers and recruiters.",
-      `Write a cold email to a hiring manager at ${coldCompany} for a ${coldRole} position.
-
-Candidate:
-Name: ${resumeData?.name || "the candidate"}
-Current role: ${resumeData?.role || "Software Developer"}
-Experience: ${resumeData?.experience || "3 years"}
-Top skills: ${resumeData?.skills?.slice(0, 4).join(", ") || "software development"}
-
-Write a cold email with:
-- Subject line (magnetic, specific to ${coldCompany})
-- 4-line email body max
-- Line 1: Specific compliment about ${coldCompany} (product, culture, recent news)
-- Line 2: One specific achievement that's relevant to ${coldRole}
-- Line 3: Clear ask (15-min call, not "any openings?")
-- Line 4: Sign-off
-
-No fluff. No "I hope this email finds you well". Sound like a human, not a template.
-
-Format:
-Subject: [subject line]
-
-[email body]`,
-      600
-    );
-    setColdEmail(result);
-    setColdLoading(false);
+  const doFetch = async (pg = 1, append = false) => {
+    if (pg === 1) { setLoading(true); if (!append) setJobs([]); }
+    else setLoadingMore(true);
+    try {
+      const res = await fetch("/api/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          skills: resumeData?.skills || [],
+          role: searchQuery || "Software Engineer",
+          experience: resumeData?.experience || "",
+          missing: resumeData?.missing || [],
+          freshness, jobType, experienceLevel, locationFilter, pageNum: pg,
+        }),
+      });
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : (data.jobs || []);
+      if (append) setJobs(prev => [...prev, ...list.map((j, i) => ({ ...j, id: prev.length + i + 1 }))]);
+      else setJobs(list);
+      setPageNum(pg);
+      setHasMore(list.length >= 8);
+    } catch { /* keep existing */ }
+    setLoading(false);
+    setLoadingMore(false);
   };
 
-  useEffect(() => {
-    setLoadingJobs(true);
-    setAiJobs([]);
-    const body = resumeData
-      ? { skills: resumeData.skills, role: resumeData.role, experience: resumeData.experience, missing: resumeData.missing }
-      : { skills: [], role: "Software Engineer", experience: "any", missing: [] };
-    fetch("/api/jobs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then(r => r.json())
-      .then(jobs => { setAiJobs(Array.isArray(jobs) ? jobs : []); setLoadingJobs(false); })
-      .catch(() => setLoadingJobs(false));
-  }, [resumeData]);
+  useEffect(() => { doFetch(1, false); }, [searchQuery, freshness, jobType, experienceLevel, locationFilter]);
 
-  const FREE_LIMIT = 10;
-  const allJobs = aiJobs.length > 0 ? aiJobs : MOCK_JOBS;
-  const filtered = filter === "all" ? allJobs : allJobs.filter(j => j.match >= 85);
-  const visibleJobs = isPro ? filtered : filtered.slice(0, FREE_LIMIT);
-  const lockedJobs = isPro ? [] : filtered.slice(FREE_LIMIT);
+  const sortedJobs = [...jobs].sort((a, b) => {
+    if (sortBy === "latest") {
+      const p = s => { if (!s) return 99; if (s.includes("h")) return 0; const d = parseInt(s); return s.includes("mo") ? d * 30 : d; };
+      return p(a.posted) - p(b.posted);
+    }
+    if (sortBy === "salary") {
+      const s = x => { const m = (x.salary || "").match(/₹(\d+)/); return m ? parseInt(m[1]) : 0; };
+      return s(b) - s(a);
+    }
+    return (b.match || 0) - (a.match || 0);
+  });
+
+  const Chip = ({ label, active, onClick }) => (
+    <button onClick={onClick} style={{
+      padding: "4px 11px", borderRadius: "99px", fontSize: ".73rem", fontWeight: 600, cursor: "pointer",
+      border: active ? "1.5px solid var(--accent)" : "1.5px solid var(--border2)",
+      background: active ? "var(--accent-dim)" : "#fff",
+      color: active ? "var(--accent)" : "var(--ink2)", whiteSpace: "nowrap", transition: "all .12s",
+    }}>{label}</button>
+  );
+
+  const matchColor = m => m >= 85 ? "var(--green)" : m >= 70 ? "var(--amber)" : "var(--ink3)";
+  const matchBg = m => m >= 85 ? "var(--green-dim)" : m >= 70 ? "var(--amber-dim)" : "var(--bg2)";
+  const postedDot = p => {
+    if (!p) return "⚪";
+    if (p.includes("h") || p === "Today" || p === "1d ago" || p === "2d ago") return "🟢";
+    if (p === "3d ago" || p === "4d ago" || p === "5d ago") return "🟡";
+    return "⚪";
+  };
+  const postedTextColor = p => {
+    if (!p) return "var(--ink3)";
+    if (p.includes("h") || p === "Today" || ["1d","2d","3d"].some(x => p.startsWith(x))) return "var(--green)";
+    if (["4d","5d","6d","7d"].some(x => p.startsWith(x))) return "var(--amber)";
+    return "var(--ink3)";
+  };
+
+  const generateColdEmail = async () => {
+    if (!coldCompany.trim() || !coldRole.trim()) return;
+    setColdLoading(true); setColdEmail("");
+    const result = await callClaude(
+      "You are an expert at cold outreach emails that actually get replies from hiring managers.",
+      `Write a cold email to a hiring manager at ${coldCompany} for a ${coldRole} role.\n\nCandidate: ${resumeData?.name || "the candidate"}, ${resumeData?.experience || "3 years"} exp, skills: ${resumeData?.skills?.slice(0,4).join(", ") || "software development"}.\n\nFormat:\nSubject: [line]\n\n[4-line body: compliment about ${coldCompany} | one achievement | ask for 15-min call | sign-off]\n\nNo fluff. Sound human.`,
+      500
+    );
+    setColdEmail(result); setColdLoading(false);
+  };
+
+  const LOCS = ["India","Bangalore","Hyderabad","Pune","Mumbai","Chennai","Delhi NCR","Remote"];
 
   return (
     <div className="page">
-      <AdSlot type="leaderboard" />
-      <div className="page-header">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-          <div>
-            <div className="page-title">Job Matches</div>
-            <div className="page-sub">
-              {loadingJobs ? "Finding real job openings..." :
-               resumeData ? `Matched to your ${resumeData.role} profile — ${allJobs.length} live jobs` :
-               `${allJobs.length} live jobs · Upload your resume for personalised matches`}
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: 6 }}>
-            {["all","top matches"].map(f => (
-              <button key={f} className={`btn btn-sm ${filter===f?"btn-primary":"btn-ghost"}`} onClick={() => setFilter(f)} style={{ textTransform: "capitalize" }}>{f}</button>
-            ))}
-          </div>
+      {/* Search bar */}
+      <div style={{ background:"#fff", border:"1.5px solid var(--border2)", borderRadius:"var(--r2)", padding:"12px 16px", marginBottom:14, display:"flex", gap:10, alignItems:"center", boxShadow:"var(--shadow)" }}>
+        <span style={{ fontSize:"1rem", flexShrink:0 }}>🔍</span>
+        <input
+          style={{ flex:1, border:"none", background:"transparent", fontSize:".88rem", fontFamily:"var(--font-body)", color:"var(--ink)" }}
+          placeholder="Job title, skills or company — e.g. React Developer, Python, Google"
+          value={searchInput}
+          onChange={e => setSearchInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && setSearchQuery(searchInput)}
+        />
+        <div style={{ width:1, height:22, background:"var(--border2)", flexShrink:0 }} />
+        <select
+          style={{ border:"none", background:"transparent", fontSize:".82rem", color:"var(--ink2)", fontFamily:"var(--font-body)", cursor:"pointer", padding:"0 4px" }}
+          value={locationFilter} onChange={e => setLocationFilter(e.target.value)}
+        >
+          {LOCS.map(l => <option key={l}>{l}</option>)}
+        </select>
+        <button className="btn btn-primary btn-sm" style={{ flexShrink:0 }} onClick={() => setSearchQuery(searchInput)}>Search</button>
+      </div>
+
+      {/* Filter bar */}
+      <div style={{ background:"#fff", border:"1px solid var(--border)", borderRadius:"var(--r)", padding:"10px 14px", marginBottom:14, display:"flex", gap:7, flexWrap:"wrap", alignItems:"center" }}>
+        <span style={{ fontSize:".7rem", fontWeight:700, color:"var(--ink3)", textTransform:"uppercase", letterSpacing:".06em", flexShrink:0 }}>When:</span>
+        {[["Any time",""],["Today","today"],["3 days","3days"],["This week","week"],["This month","month"]].map(([l,v]) =>
+          <Chip key={l} label={l} active={freshness===v} onClick={() => setFreshness(v)} />
+        )}
+        <div style={{ width:1, height:18, background:"var(--border2)", margin:"0 2px", flexShrink:0 }} />
+        <span style={{ fontSize:".7rem", fontWeight:700, color:"var(--ink3)", textTransform:"uppercase", letterSpacing:".06em", flexShrink:0 }}>Type:</span>
+        {[["All",""],["Full-time","FULLTIME"],["Remote","REMOTE"],["Contract","CONTRACTOR"],["Internship","INTERN"]].map(([l,v]) =>
+          <Chip key={l} label={l} active={jobType===v} onClick={() => setJobType(v)} />
+        )}
+        <div style={{ width:1, height:18, background:"var(--border2)", margin:"0 2px", flexShrink:0 }} />
+        <span style={{ fontSize:".7rem", fontWeight:700, color:"var(--ink3)", textTransform:"uppercase", letterSpacing:".06em", flexShrink:0 }}>Exp:</span>
+        {[["Any",""],["Fresher","fresher"],["1–3 yrs","junior"],["3–7 yrs","mid"],["7+ yrs","senior"]].map(([l,v]) =>
+          <Chip key={l} label={l} active={experienceLevel===v} onClick={() => setExperienceLevel(v)} />
+        )}
+        <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:6 }}>
+          <span style={{ fontSize:".71rem", color:"var(--ink3)", fontWeight:600 }}>Sort:</span>
+          <select style={{ fontSize:".75rem", border:"1.5px solid var(--border2)", borderRadius:6, padding:"4px 8px", background:"#fff", fontFamily:"var(--font-body)", color:"var(--ink)", cursor:"pointer" }} value={sortBy} onChange={e => setSortBy(e.target.value)}>
+            <option value="relevance">Relevance</option>
+            <option value="latest">Latest first</option>
+            <option value="salary">Top salary</option>
+          </select>
         </div>
       </div>
 
-      {!resumeData && (
-        <div className="info-box info-accent mb-4">
-          <span>📄</span><span>Upload your resume to see your personal match % for each job and know exactly why you're not getting called back.</span>
-        </div>
-      )}
+      {/* Main 2-col */}
+      <div style={{ display:"flex", gap:16, alignItems:"flex-start" }}>
+        {/* Jobs list */}
+        <div style={{ flex:1, minWidth:0 }}>
+          {/* Results header */}
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12, padding:"0 2px" }}>
+            <div style={{ fontSize:".82rem", color:"var(--ink2)", fontWeight:500 }}>
+              {loading ? "Searching jobs…" : (
+                <><strong style={{ color:"var(--ink)", fontWeight:700 }}>{jobs.length}{hasMore?"+ ":"  "}</strong>
+                jobs for <strong style={{ color:"var(--accent)" }}>{searchQuery}</strong>
+                {locationFilter !== "India" ? ` in ${locationFilter}` : " across India"}</>
+              )}
+            </div>
+            {!resumeData && (
+              <button className="btn btn-sm btn-ghost" style={{ fontSize:".71rem" }} onClick={() => setPage("resume")}>
+                📄 Upload resume for match %
+              </button>
+            )}
+          </div>
 
-      <div className="two-col">
-        <div>
-          {loadingJobs && (
-            <div style={{ textAlign: "center", padding: "48px 24px", color: "var(--ink2)" }}>
-              <span className="spin" style={{ color: "var(--accent)", fontSize: "1.2rem" }} />
-              <div style={{ marginTop: 12, fontSize: ".85rem" }}>Finding jobs that match your skills...</div>
+          {/* Loading skeleton */}
+          {loading && (
+            <div style={{ textAlign:"center", padding:"64px 24px", color:"var(--ink2)" }}>
+              <span className="spin" style={{ fontSize:"1.4rem", color:"var(--accent)" }} />
+              <div style={{ marginTop:14, fontSize:".85rem", fontWeight:500 }}>Searching jobs in {locationFilter}…</div>
+              <div style={{ marginTop:4, fontSize:".74rem", color:"var(--ink3)" }}>Fetching from LinkedIn, Naukri, Indeed & more</div>
             </div>
           )}
 
-          {!loadingJobs && visibleJobs.map(job => (
-            <div key={job.id} className="job-card">
-              <div className="job-logo">{job.logo}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="job-title">{job.title}</div>
-                <div className="job-company">{job.company} · {job.location} · {job.type}</div>
-                <div className="job-tags">
-                  {(job.skills || []).map(s => <span key={s} className="tag tag-gray">{s}</span>)}
-                  <span style={{ fontSize: ".74rem", color: "var(--ink3)", marginLeft: 4 }}>{job.salary}</span>
+          {/* Job cards */}
+          {!loading && sortedJobs.map(job => (
+            <div key={job.id}
+              style={{ background:"#fff", border:"1.5px solid var(--border)", borderRadius:"var(--r2)", padding:"16px 18px", marginBottom:10, transition:"border-color .15s, box-shadow .15s" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor="var(--accent)"; e.currentTarget.style.boxShadow="0 2px 14px rgba(232,90,42,0.1)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor="var(--border)"; e.currentTarget.style.boxShadow="none"; }}
+            >
+              <div style={{ display:"flex", gap:14 }}>
+                <div style={{ width:46, height:46, borderRadius:10, background:"var(--bg2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.4rem", flexShrink:0, border:"1px solid var(--border)" }}>
+                  {job.logo}
                 </div>
-                {job.why && <div style={{ fontSize: ".73rem", color: "var(--green)", marginTop: 5, fontWeight: 500 }}>✓ {job.why}</div>}
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-                <div className="job-match">{job.match}%</div>
-                <div style={{ fontSize: ".7rem", color: "var(--ink3)" }}>match</div>
-                <button className="btn btn-sm btn-primary" onClick={() => { const url = job.apply_url || `https://www.naukri.com/jobs-in-india?k=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`; window.open(url, "_blank", "noopener,noreferrer"); }}>Apply →</button>
-                <div style={{ fontSize: ".7rem", color: "var(--ink3)" }}>{job.posted}</div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10, marginBottom:3 }}>
+                    <div style={{ fontFamily:"var(--font-head)", fontWeight:700, fontSize:".95rem", color:"var(--ink)", lineHeight:1.3 }}>{job.title}</div>
+                    {resumeData && (
+                      <div style={{ background:matchBg(job.match), color:matchColor(job.match), padding:"2px 10px", borderRadius:"99px", fontSize:".71rem", fontWeight:700, flexShrink:0, border:`1px solid ${job.match>=85?"rgba(45,138,78,.25)":job.match>=70?"rgba(194,121,10,.25)":"var(--border)"}` }}>
+                        {job.match}% match
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ fontSize:".8rem", color:"var(--ink2)", marginBottom:7 }}>
+                    <strong style={{ color:"var(--ink)", fontWeight:600 }}>{job.company}</strong>{" · "}{job.location}{" · "}{job.type}
+                  </div>
+                  <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap", marginBottom: job.why ? 6 : 10 }}>
+                    {job.salary && job.salary !== "Salary not listed" && (
+                      <span style={{ fontWeight:700, fontSize:".81rem", color:"var(--green)", background:"var(--green-dim)", padding:"2px 8px", borderRadius:6 }}>{job.salary}</span>
+                    )}
+                    {(job.skills||[]).slice(0,4).map(s => (
+                      <span key={s} style={{ fontSize:".71rem", padding:"2px 8px", borderRadius:6, background:"var(--bg2)", color:"var(--ink2)", fontWeight:500 }}>{s}</span>
+                    ))}
+                  </div>
+                  {job.why && <div style={{ fontSize:".73rem", color:"var(--green)", fontWeight:500, marginBottom:9 }}>✓ {job.why}</div>}
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                    <span style={{ fontSize:".72rem", color:postedTextColor(job.posted), fontWeight:600 }}>
+                      {postedDot(job.posted)} {job.posted || "Recently"}
+                    </span>
+                    <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); window.open(job.apply_url || `https://www.naukri.com/jobs-in-india?k=${encodeURIComponent(job.title)}`, "_blank", "noopener,noreferrer"); }}>
+                      Apply now →
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
 
-          {!isPro && lockedJobs.length > 0 && !loadingJobs && (
-            <div style={{ position: "relative", borderRadius: "var(--r2)", overflow: "hidden", marginTop: 8 }}>
-              <div style={{ filter: "blur(4px)", pointerEvents: "none", opacity: 0.5 }}>
-                {lockedJobs.slice(0, 3).map(job => (
-                  <div key={job.id} className="job-card">
-                    <div className="job-logo">{job.logo}</div>
-                    <div style={{ flex: 1 }}>
-                      <div className="job-title">{job.title}</div>
-                      <div className="job-company">{job.company} · {job.location}</div>
-                    </div>
-                    <div className="job-match">{job.match}%</div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: "rgba(247,246,242,0.88)", gap: 10, padding: 20 }}>
-                <div style={{ fontSize: "1.4rem" }}>🔒</div>
-                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1rem", textAlign: "center" }}>{lockedJobs.length} more job matches hidden</div>
-                <div style={{ fontSize: ".78rem", color: "var(--ink2)", textAlign: "center" }}>Upgrade to Pro to see all {allJobs.length} personalised matches</div>
-                <button className="btn btn-primary btn-sm" onClick={() => setPage("pricing")}>Unlock all jobs →</button>
-              </div>
+          {/* Empty state */}
+          {!loading && sortedJobs.length === 0 && (
+            <div style={{ textAlign:"center", padding:"64px 24px", color:"var(--ink2)" }}>
+              <div style={{ fontSize:"2.2rem", marginBottom:12 }}>🔍</div>
+              <div style={{ fontFamily:"var(--font-head)", fontWeight:700, fontSize:"1.05rem", marginBottom:6 }}>No jobs found</div>
+              <div style={{ fontSize:".82rem" }}>Try a different role, location or remove some filters.</div>
             </div>
+          )}
+
+          {/* Load more */}
+          {!loading && hasMore && sortedJobs.length > 0 && (
+            <button className="btn btn-ghost w-full" style={{ marginTop:10, fontSize:".83rem" }} onClick={() => doFetch(pageNum + 1, true)} disabled={loadingMore}>
+              {loadingMore ? <><span className="spin" /> Loading more…</> : "Load more jobs →"}
+            </button>
           )}
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        {/* Sidebar */}
+        <div style={{ width:272, flexShrink:0, display:"flex", flexDirection:"column", gap:14 }}>
           <div className="card">
             <div className="card-head"><div className="card-title">Job sources</div></div>
-            <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {[["LinkedIn","1,284 jobs","🔵"],["Naukri","3,421 jobs","🟠"],["Indeed","891 jobs","🔷"],["AngelList","234 jobs","🚀"],["Company sites","567 jobs","🏢"]].map(([s,n,i]) => (
-                <div key={s} style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 0", borderBottom: "1px solid var(--border)", fontSize: ".8rem" }}>
-                  <span>{i}</span><span style={{ flex: 1, fontWeight: 600 }}>{s}</span><span style={{ color: "var(--ink3)" }}>{n}</span>
+            <div className="card-body" style={{ display:"flex", flexDirection:"column", gap:0 }}>
+              {[["LinkedIn","🔵","1,284"],["Naukri","🟠","3,421"],["Indeed","🔷","891"],["AngelList","🚀","234"],["Company sites","🏢","567"]].map(([s,i,n]) => (
+                <div key={s} style={{ display:"flex", alignItems:"center", gap:8, padding:"7px 0", borderBottom:"1px solid var(--border)", fontSize:".79rem" }}>
+                  <span>{i}</span><span style={{ flex:1, fontWeight:600 }}>{s}</span><span style={{ color:"var(--ink3)", fontSize:".73rem" }}>{n} jobs</span>
                 </div>
               ))}
             </div>
           </div>
 
           {isPro ? (
-            <div className="card" style={{ marginTop: 8 }}>
-              <div className="card-head">
-                <div className="card-title">✉️ Cold Email to Hiring Manager</div>
-                <span className="pro-badge">PRO</span>
-              </div>
+            <div className="card">
+              <div className="card-head"><div className="card-title">✉️ Cold Email</div><span className="pro-badge">PRO</span></div>
               <div className="card-body">
-                <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-                  <div className="input-group" style={{ flex: 1, marginBottom: 0 }}>
-                    <label className="input-label">Company</label>
-                    <input className="input" placeholder="e.g. Google, Zepto, Razorpay" value={coldCompany} onChange={e => setColdCompany(e.target.value)} />
-                  </div>
-                  <div className="input-group" style={{ flex: 1, marginBottom: 0 }}>
-                    <label className="input-label">Role you want</label>
-                    <input className="input" placeholder="e.g. Senior SDE, Product Manager" value={coldRole} onChange={e => setColdRole(e.target.value)} />
-                  </div>
+                <div className="input-group">
+                  <label className="input-label">Company</label>
+                  <input className="input" placeholder="e.g. Razorpay, Google" value={coldCompany} onChange={e => setColdCompany(e.target.value)} />
                 </div>
-                <button className="btn btn-primary w-full" onClick={generateColdEmail} disabled={coldLoading || !coldCompany.trim() || !coldRole.trim()}>
-                  {coldLoading ? <><span className="spin" />Writing email...</> : "Write cold email →"}
+                <div className="input-group">
+                  <label className="input-label">Role</label>
+                  <input className="input" placeholder="e.g. Senior SDE" value={coldRole} onChange={e => setColdRole(e.target.value)} />
+                </div>
+                <button className="btn btn-primary w-full btn-sm" onClick={generateColdEmail} disabled={coldLoading || !coldCompany.trim() || !coldRole.trim()}>
+                  {coldLoading ? <><span className="spin" />Writing…</> : "Write cold email →"}
                 </button>
                 {coldEmail && (
-                  <div style={{ marginTop: 14, padding: "14px", background: "var(--bg)", borderRadius: "var(--r)", border: "1px solid var(--border)" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                      <span style={{ fontWeight: 700, fontSize: ".85rem" }}>Your cold email</span>
-                      <button className="btn btn-sm btn-ghost" onClick={() => { navigator.clipboard.writeText(coldEmail); }}>Copy</button>
+                  <div style={{ marginTop:12, padding:12, background:"var(--bg)", borderRadius:"var(--r)", border:"1px solid var(--border)" }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
+                      <span style={{ fontWeight:700, fontSize:".82rem" }}>Your email</span>
+                      <button className="btn btn-sm btn-ghost" style={{ fontSize:".7rem", padding:"2px 8px" }} onClick={() => navigator.clipboard.writeText(coldEmail)}>Copy</button>
                     </div>
-                    <div style={{ fontSize: ".8rem", lineHeight: 1.9, whiteSpace: "pre-wrap" }}>{coldEmail}</div>
+                    <div style={{ fontSize:".76rem", lineHeight:1.9, whiteSpace:"pre-wrap" }}>{coldEmail}</div>
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="card" style={{ background: "var(--ink)", color: "var(--bg)", marginTop: 8 }}>
-              <div className="card-body" style={{ padding: "20px" }}>
-                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", marginBottom: 8 }}>✉️ Cold Email Generator — Pro Only</div>
-                <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.65)", marginBottom: 14, lineHeight: 1.6 }}>Enter any company + role → AI writes a 4-line cold email to the hiring manager that actually gets replies. No fluff, no templates.</div>
-                <button className="btn btn-sm" style={{ background: "var(--accent)", color: "#fff" }} onClick={() => setPage("pricing")}>Upgrade to Pro →</button>
+            <div className="card" style={{ background:"var(--ink)", color:"var(--bg)" }}>
+              <div className="card-body" style={{ padding:18 }}>
+                <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:".9rem", marginBottom:8 }}>✉️ Cold Email Generator</div>
+                <div style={{ fontSize:".76rem", color:"rgba(247,246,242,.65)", marginBottom:12, lineHeight:1.6 }}>Skip portals. Email hiring managers directly. AI writes a 4-line email that gets replies.</div>
+                <button className="btn btn-sm" style={{ background:"var(--accent)", color:"#fff" }} onClick={() => setPage("pricing")}>Upgrade to Pro →</button>
               </div>
             </div>
           )}
-          <AdSlot type="rectangle" label="Advertisement" />
         </div>
       </div>
     </div>
