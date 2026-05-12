@@ -142,8 +142,22 @@ FORMAT SCORE rubric:
       );
     }
 
-    // Increment global scan counter atomically (fire-and-forget)
-    Promise.resolve(supabase.rpc("increment_resume_scans")).catch(() => {});
+    // Increment global scan counter (fire-and-forget)
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from("resume_stats")
+          .select("value")
+          .eq("id", "total_scans")
+          .single();
+        if (data) {
+          await supabase
+            .from("resume_stats")
+            .update({ value: data.value + 1 })
+            .eq("id", "total_scans");
+        }
+      } catch (_) {}
+    })();
 
     return Response.json(data);
   } catch (error) {
