@@ -143,7 +143,7 @@ FORMAT SCORE rubric:
     }
 
     // Increment global scan counter atomically (fire-and-forget)
-    supabase.rpc("increment_resume_scans").catch(() => {});
+    Promise.resolve(supabase.rpc("increment_resume_scans")).catch(() => {});
 
     return Response.json(data);
   } catch (error) {
