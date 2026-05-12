@@ -10,12 +10,14 @@ export async function GET() {
       .eq("id", "total_scans")
       .single();
 
-    if (error || !data) {
-      return Response.json({ total_scans: null });
+    if (error) {
+      console.error("resume_stats read error:", error.message, error.code);
+      return Response.json({ total_scans: null, debug: error.message });
     }
 
-    return Response.json({ total_scans: data.value });
-  } catch {
-    return Response.json({ total_scans: null });
+    return Response.json({ total_scans: data?.value ?? null });
+  } catch (e) {
+    console.error("stats route exception:", e.message);
+    return Response.json({ total_scans: null, debug: e.message });
   }
 }
