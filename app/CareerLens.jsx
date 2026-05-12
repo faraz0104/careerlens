@@ -929,6 +929,14 @@ function HomePage({ setPage, setResumeData }) {
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState("");
   const [uploadError, setUploadError] = useState("");
+  const [totalScans, setTotalScans] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then(r => r.json())
+      .then(d => { if (d.total_scans != null) setTotalScans(d.total_scans); })
+      .catch(() => {});
+  }, []);
   const fileRef = useRef();
 
   const handleFile = async (file) => {
@@ -1138,7 +1146,12 @@ function HomePage({ setPage, setResumeData }) {
           </div>
 
           <div style={{ display:"flex", background:"var(--bg2)", borderRadius:"var(--r)", padding:"14px 0", flexWrap:"wrap" }}>
-            {[["3,200+","Resumes analyzed"],["50+","Companies covered"],["₹0","To get started"],["30s","To get results"]].map(([n,l]) => (
+            {[
+              [totalScans != null ? totalScans.toLocaleString("en-IN") + "+" : "3,200+", "Resumes analyzed"],
+              ["50+","Companies covered"],
+              ["₹0","To get started"],
+              ["30s","To get results"],
+            ].map(([n,l]) => (
               <div key={l} className="home-stat">
                 <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.15rem", letterSpacing:"-.03em" }}>{n}</div>
                 <div style={{ fontSize:".68rem", color:"var(--ink3)", marginTop:2 }}>{l}</div>

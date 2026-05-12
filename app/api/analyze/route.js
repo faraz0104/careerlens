@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { supabase } from "@/lib/supabase";
 import { rateLimit } from "@/lib/rateLimit";
 
 export async function POST(req) {
@@ -140,6 +141,9 @@ FORMAT SCORE rubric:
         { status: 422 }
       );
     }
+
+    // Increment global scan counter atomically (fire-and-forget)
+    supabase.rpc("increment_resume_scans").catch(() => {});
 
     return Response.json(data);
   } catch (error) {
