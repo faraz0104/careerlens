@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { BLOG_POSTS, getBlogPost, getRelatedPosts } from "@/lib/blog-data";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { getPostBySlug, getAllPostSlugs, getAllPosts } from "@/lib/mdx";
 import { BLOG_FAQS } from "@/lib/blog-faqs";
 
 interface Props {
@@ -9,14 +10,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return BLOG_POSTS.map(post => ({ slug: post.slug }));
+  return getAllPostSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = getPostBySlug(slug);
   if (!post) return {};
-  const faqs = BLOG_FAQS[slug] ?? [];
   return {
     title: `${post.metaTitle} | CareerLens`,
     description: post.metaDesc,
@@ -32,14 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       modifiedTime: post.updatedAt || post.publishedAt,
       authors: [post.author],
       tags: post.tags,
-      images: [
-        {
-          url: `/blog/${post.slug}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
+      images: [{ url: `/blog/${post.slug}/opengraph-image`, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: "summary_large_image",
@@ -54,20 +47,67 @@ function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
-function wordCount(post: ReturnType<typeof getBlogPost>) {
-  if (!post) return 0;
-  const text = post.intro + post.sections.map(s => s.heading + s.body).join(" ");
-  return text.split(/\s+/).length;
+function extractHeadings(mdx: string): string[] {
+  return (mdx.match(/^## (.+)$/gm) ?? []).map((h) => h.replace(/^## /, ""));
 }
+
+function wordCount(content: string) {
+  return content.split(/\s+/).length;
+}
+
+const mdxComponents = {
+  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h2 style={{ fontWeight: 800, fontSize: "1.15rem", color: "#1a1916", letterSpacing: "-.03em", lineHeight: 1.3, margin: "36px 0 14px", paddingBottom: 10, borderBottom: "2px solid #f0ede8" }} {...props} />
+  ),
+  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+    <h3 style={{ fontWeight: 700, fontSize: "1rem", color: "#1a1916", margin: "24px 0 10px" }} {...props} />
+  ),
+  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p style={{ color: "#3a3632", fontSize: ".93rem", lineHeight: 1.85, margin: "0 0 16px" }} {...props} />
+  ),
+  ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
+    <ul style={{ paddingLeft: 22, margin: "0 0 16px", color: "#3a3632", fontSize: ".93rem", lineHeight: 1.85 }} {...props} />
+  ),
+  ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
+    <ol style={{ paddingLeft: 22, margin: "0 0 16px", color: "#3a3632", fontSize: ".93rem", lineHeight: 1.85 }} {...props} />
+  ),
+  li: (props: React.HTMLAttributes<HTMLLIElement>) => (
+    <li style={{ marginBottom: 6 }} {...props} />
+  ),
+  strong: (props: React.HTMLAttributes<HTMLElement>) => (
+    <strong style={{ fontWeight: 700, color: "#1a1916" }} {...props} />
+  ),
+  blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
+    <blockquote style={{ borderLeft: "3px solid #e85a2a", paddingLeft: 18, margin: "20px 0", color: "#5a5650", fontStyle: "italic" }} {...props} />
+  ),
+  code: (props: React.HTMLAttributes<HTMLElement>) => (
+    <code style={{ background: "#f0ede8", padding: "2px 6px", borderRadius: 4, fontSize: ".85em", fontFamily: "monospace", color: "#c0392b" }} {...props} />
+  ),
+  pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
+    <pre style={{ background: "#1a1916", color: "#f7f6f2", padding: "16px 20px", borderRadius: 10, overflow: "auto", fontSize: ".85rem", margin: "0 0 20px", lineHeight: 1.6 }} {...props} />
+  ),
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a style={{ color: "#e85a2a", textDecoration: "underline", textUnderlineOffset: 3 }} {...props} />
+  ),
+  hr: () => (
+    <hr style={{ border: "none", borderTop: "2px solid #f0ede8", margin: "32px 0" }} />
+  ),
+};
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = getBlogPost(slug);
+  const post = getPostBySlug(slug);
   if (!post) notFound();
 
-  const related = getRelatedPosts(post.relatedSlugs);
+  const allPosts = getAllPosts();
+  const related = post.relatedSlugs
+    .map((s) => allPosts.find((p) => p.slug === s))
+    .filter(Boolean) as typeof allPosts;
+
   const faqs = BLOG_FAQS[slug] ?? [];
-  const wc = wordCount(post);
+  const headings = extractHeadings(post.content);
+  const wc = wordCount(post.content);
+  const categorySlug = post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -76,12 +116,7 @@ export default async function BlogPostPage({ params }: Props) {
     description: post.metaDesc,
     image: `https://www.carrerlens.com/blog/${post.slug}/opengraph-image`,
     author: { "@type": "Organization", name: post.author, url: "https://www.carrerlens.com" },
-    publisher: {
-      "@type": "Organization",
-      name: "CareerLens",
-      url: "https://www.carrerlens.com",
-      logo: { "@type": "ImageObject", url: "https://www.carrerlens.com/logo.png" },
-    },
+    publisher: { "@type": "Organization", name: "CareerLens", url: "https://www.carrerlens.com", logo: { "@type": "ImageObject", url: "https://www.carrerlens.com/logo.png" } },
     datePublished: post.publishedAt,
     dateModified: post.updatedAt || post.publishedAt,
     mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.carrerlens.com/blog/${post.slug}` },
@@ -96,11 +131,7 @@ export default async function BlogPostPage({ params }: Props) {
   const faqJsonLd = faqs.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map(faq => ({
-      "@type": "Question",
-      name: faq.q,
-      acceptedAnswer: { "@type": "Answer", text: faq.a },
-    })),
+    mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
   } : null;
 
   const breadcrumbJsonLd = {
@@ -109,7 +140,7 @@ export default async function BlogPostPage({ params }: Props) {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: "https://www.carrerlens.com" },
       { "@type": "ListItem", position: 2, name: "Blog", item: "https://www.carrerlens.com/blog" },
-      { "@type": "ListItem", position: 3, name: post.category, item: `https://www.carrerlens.com/blog/category/${post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}` },
+      { "@type": "ListItem", position: 3, name: post.category, item: `https://www.carrerlens.com/blog/category/${categorySlug}` },
       { "@type": "ListItem", position: 4, name: post.title, item: `https://www.carrerlens.com/blog/${post.slug}` },
     ],
   };
@@ -121,10 +152,11 @@ export default async function BlogPostPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
       <div style={{ minHeight: "100vh", background: "#f7f6f2", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+
         {/* NAV */}
         <nav style={{ background: "#1a1916", padding: "0 2rem", position: "sticky", top: 0, zIndex: 100 }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", height: 52, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8, color: "#f7f6f2", fontWeight: 800, fontSize: "1rem", letterSpacing: "-.02em" }}>
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8, color: "#f7f6f2", fontWeight: 800, fontSize: "1rem" }}>
               <span style={{ background: "#e85a2a", color: "#fff", width: 26, height: 26, borderRadius: 6, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: ".75rem", fontWeight: 900 }}>C</span>
               CareerLens
             </Link>
@@ -142,18 +174,18 @@ export default async function BlogPostPage({ params }: Props) {
             <span style={{ margin: "0 6px" }}>›</span>
             <Link href="/blog" style={{ color: "#9a958f", textDecoration: "none" }}>Blog</Link>
             <span style={{ margin: "0 6px" }}>›</span>
-            <Link href={`/blog/category/${post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`} style={{ color: "#9a958f", textDecoration: "none" }}>{post.category}</Link>
+            <Link href={`/blog/category/${categorySlug}`} style={{ color: "#9a958f", textDecoration: "none" }}>{post.category}</Link>
             <span style={{ margin: "0 6px" }}>›</span>
             <span style={{ color: "#5a5650" }}>{post.title.slice(0, 50)}{post.title.length > 50 ? "…" : ""}</span>
           </div>
         </div>
 
-        {/* ARTICLE HERO */}
+        {/* HERO */}
         <div style={{ background: post.coverColor, padding: "40px 2rem 36px" }}>
           <div style={{ maxWidth: 780, margin: "0 auto" }}>
             <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
-              <Link href={`/blog/category/${post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`} style={{ textDecoration: "none", background: "#e85a2a", color: "#fff", fontSize: ".68rem", fontWeight: 700, padding: "3px 10px", borderRadius: 20, letterSpacing: ".05em", textTransform: "uppercase" }}>{post.category}</Link>
-              {post.tags.slice(0, 3).map(tag => (
+              <Link href={`/blog/category/${categorySlug}`} style={{ textDecoration: "none", background: "#e85a2a", color: "#fff", fontSize: ".68rem", fontWeight: 700, padding: "3px 10px", borderRadius: 20, letterSpacing: ".05em", textTransform: "uppercase" }}>{post.category}</Link>
+              {post.tags.slice(0, 3).map((tag) => (
                 <span key={tag} style={{ background: "rgba(255,255,255,.12)", color: "rgba(247,246,242,.75)", fontSize: ".68rem", fontWeight: 600, padding: "3px 10px", borderRadius: 20 }}>{tag}</span>
               ))}
             </div>
@@ -183,32 +215,21 @@ export default async function BlogPostPage({ params }: Props) {
         {/* CONTENT + SIDEBAR */}
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 2rem", display: "grid", gridTemplateColumns: "1fr 300px", gap: 40, alignItems: "start" }}>
 
-          {/* ARTICLE BODY */}
+          {/* ARTICLE */}
           <article itemScope itemType="https://schema.org/Article">
             <meta itemProp="headline" content={post.metaTitle} />
             <meta itemProp="datePublished" content={post.publishedAt} />
             <meta itemProp="author" content={post.author} />
 
-            {/* Intro */}
+            {/* Intro callout */}
             <p style={{ fontSize: "1.05rem", color: "#3a3632", lineHeight: 1.85, fontWeight: 500, margin: "0 0 32px", borderLeft: "3px solid #e85a2a", paddingLeft: 20 }}>
               {post.intro}
             </p>
 
-            {/* Sections */}
-            {post.sections.map((section, i) => (
-              <section key={i} style={{ marginBottom: 36 }}>
-                <h2 style={{ fontWeight: 800, fontSize: "1.15rem", color: "#1a1916", letterSpacing: "-.03em", lineHeight: 1.3, margin: "0 0 14px", paddingBottom: 10, borderBottom: "2px solid #f0ede8" }}>
-                  {section.heading}
-                </h2>
-                {section.body.split("\n\n").map((para, j) => (
-                  <p key={j} style={{ color: "#3a3632", fontSize: ".93rem", lineHeight: 1.85, margin: "0 0 16px" }}>
-                    {para}
-                  </p>
-                ))}
-              </section>
-            ))}
+            {/* MDX Content */}
+            <MDXRemote source={post.content} components={mdxComponents} />
 
-            {/* MID-ARTICLE CTA */}
+            {/* Mid-article CTA */}
             <div style={{ background: "#f0ede8", borderRadius: 12, padding: "18px 22px", margin: "36px 0", display: "flex", gap: 16, alignItems: "center" }}>
               <span style={{ fontSize: "1.5rem" }}>📄</span>
               <div style={{ flex: 1 }}>
@@ -220,30 +241,24 @@ export default async function BlogPostPage({ params }: Props) {
               </Link>
             </div>
 
-            {/* FAQ SECTION */}
+            {/* FAQs */}
             {faqs.length > 0 && (
               <section style={{ marginTop: 48 }}>
                 <h2 style={{ fontWeight: 800, fontSize: "1.2rem", color: "#1a1916", letterSpacing: "-.03em", margin: "0 0 20px" }}>
                   Frequently Asked Questions
                 </h2>
-                <div>
-                  {faqs.map((faq, i) => (
-                    <details key={i} style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 10, marginBottom: 8, overflow: "hidden" }}>
-                      <summary style={{
-                        padding: "15px 18px", cursor: "pointer", fontWeight: 700, fontSize: ".88rem", color: "#1a1916",
-                        display: "flex", alignItems: "flex-start", gap: 10, lineHeight: 1.4,
-                        listStyle: "none", userSelect: "none",
-                      }}>
-                        <span style={{ color: "#e85a2a", fontSize: "1rem", flexShrink: 0, marginTop: 1 }}>Q</span>
-                        <span style={{ flex: 1 }}>{faq.q}</span>
-                        <span style={{ color: "#9a958f", fontSize: ".75rem", fontWeight: 400, flexShrink: 0 }}>▼</span>
-                      </summary>
-                      <div style={{ padding: "0 18px 15px 38px", color: "#3a3632", fontSize: ".86rem", lineHeight: 1.8, borderTop: "1px solid #f0ede8", paddingTop: 12 }}>
-                        {faq.a}
-                      </div>
-                    </details>
-                  ))}
-                </div>
+                {faqs.map((faq, i) => (
+                  <details key={i} style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 10, marginBottom: 8, overflow: "hidden" }}>
+                    <summary style={{ padding: "15px 18px", cursor: "pointer", fontWeight: 700, fontSize: ".88rem", color: "#1a1916", display: "flex", alignItems: "flex-start", gap: 10, lineHeight: 1.4, listStyle: "none", userSelect: "none" }}>
+                      <span style={{ color: "#e85a2a", fontSize: "1rem", flexShrink: 0, marginTop: 1 }}>Q</span>
+                      <span style={{ flex: 1 }}>{faq.q}</span>
+                      <span style={{ color: "#9a958f", fontSize: ".75rem", fontWeight: 400, flexShrink: 0 }}>▼</span>
+                    </summary>
+                    <div style={{ padding: "12px 18px 15px 38px", color: "#3a3632", fontSize: ".86rem", lineHeight: 1.8, borderTop: "1px solid #f0ede8" }}>
+                      {faq.a}
+                    </div>
+                  </details>
+                ))}
               </section>
             )}
 
@@ -251,15 +266,13 @@ export default async function BlogPostPage({ params }: Props) {
             <div style={{ marginTop: 40, paddingTop: 24, borderTop: "1px solid #e5e2de" }}>
               <div style={{ fontSize: ".76rem", fontWeight: 700, color: "#9a958f", marginBottom: 10, textTransform: "uppercase", letterSpacing: ".06em" }}>Tags</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {post.tags.map(tag => (
-                  <span key={tag} style={{ background: "#f0ede8", color: "#5a5650", fontSize: ".76rem", fontWeight: 600, padding: "5px 12px", borderRadius: 20 }}>
-                    {tag}
-                  </span>
+                {post.tags.map((tag) => (
+                  <span key={tag} style={{ background: "#f0ede8", color: "#5a5650", fontSize: ".76rem", fontWeight: 600, padding: "5px 12px", borderRadius: 20 }}>{tag}</span>
                 ))}
               </div>
             </div>
 
-            {/* BOTTOM CTA */}
+            {/* Bottom CTA */}
             <div style={{ marginTop: 36, background: "linear-gradient(135deg, #1a1916, #2d2c28)", borderRadius: 14, padding: "24px 28px" }}>
               <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".07em", textTransform: "uppercase", color: "#e8a020", marginBottom: 8 }}>Free — No sign-up required</div>
               <div style={{ color: "#f7f6f2", fontWeight: 700, fontSize: "1rem", marginBottom: 6 }}>Get your ATS score and missing skills analysis</div>
@@ -273,25 +286,27 @@ export default async function BlogPostPage({ params }: Props) {
           {/* SIDEBAR */}
           <aside style={{ position: "sticky", top: 68 }}>
             {/* Table of Contents */}
-            <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
-              <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 14 }}>In This Article</div>
-              {post.sections.map((s, i) => (
-                <div key={i} style={{ fontSize: ".78rem", color: "#5a5650", padding: "6px 0", borderBottom: "1px solid #f0ede8", lineHeight: 1.4 }}>
-                  {s.heading.replace(/^\d+\.\s/, "")}
-                </div>
-              ))}
-              {faqs.length > 0 && (
-                <div style={{ fontSize: ".78rem", color: "#5a5650", padding: "6px 0", lineHeight: 1.4, fontStyle: "italic" }}>
-                  FAQs ({faqs.length} questions)
-                </div>
-              )}
-            </div>
+            {headings.length > 0 && (
+              <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
+                <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 14 }}>In This Article</div>
+                {headings.map((h, i) => (
+                  <div key={i} style={{ fontSize: ".78rem", color: "#5a5650", padding: "6px 0", borderBottom: "1px solid #f0ede8", lineHeight: 1.4 }}>
+                    {h.replace(/^\d+\.\s/, "")}
+                  </div>
+                ))}
+                {faqs.length > 0 && (
+                  <div style={{ fontSize: ".78rem", color: "#5a5650", padding: "6px 0", lineHeight: 1.4, fontStyle: "italic" }}>
+                    FAQs ({faqs.length} questions)
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Related Posts */}
             {related.length > 0 && (
               <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
                 <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 14 }}>Related Articles</div>
-                {related.map(rel => (
+                {related.map((rel) => (
                   <Link key={rel.slug} href={`/blog/${rel.slug}`} style={{ textDecoration: "none", display: "flex", gap: 12, alignItems: "flex-start", padding: "10px 0", borderBottom: "1px solid #f0ede8" }}>
                     <span style={{ fontSize: "1.3rem", flexShrink: 0 }}>{rel.coverEmoji}</span>
                     <div>
@@ -319,7 +334,7 @@ export default async function BlogPostPage({ params }: Props) {
               ))}
             </div>
 
-            {/* Interview Q&A links */}
+            {/* Interview guides */}
             <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px" }}>
               <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 12 }}>Top Interview Guides</div>
               {[
@@ -343,9 +358,9 @@ export default async function BlogPostPage({ params }: Props) {
             <div style={{ maxWidth: 1100, margin: "0 auto" }}>
               <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#1a1916", marginBottom: 24 }}>Continue reading</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
-                {related.map(rel => (
+                {related.map((rel) => (
                   <Link key={rel.slug} href={`/blog/${rel.slug}`} style={{ textDecoration: "none" }}>
-                    <div style={{ border: "1px solid #e5e2de", borderRadius: 10, overflow: "hidden", background: "#fff", transition: "box-shadow .2s, border-color .2s" }} className="more-card">
+                    <div style={{ border: "1px solid #e5e2de", borderRadius: 10, overflow: "hidden", background: "#fff" }}>
                       <div style={{ background: rel.coverColor, padding: "16px 18px", display: "flex", alignItems: "center", gap: 10 }}>
                         <span style={{ fontSize: "1.5rem" }}>{rel.coverEmoji}</span>
                         <span style={{ color: "rgba(247,246,242,.8)", fontSize: ".72rem", fontWeight: 600 }}>{rel.category}</span>
@@ -358,33 +373,16 @@ export default async function BlogPostPage({ params }: Props) {
                   </Link>
                 ))}
               </div>
-              <div style={{ textAlign: "center", marginTop: 28 }}>
-                <Link href="/blog" style={{ display: "inline-block", border: "1px solid #e5e2de", background: "#fff", color: "#1a1916", padding: "10px 24px", borderRadius: 9, fontWeight: 600, fontSize: ".85rem", textDecoration: "none" }}>
-                  View All Articles →
-                </Link>
-              </div>
             </div>
           </div>
         )}
 
-        {/* FOOTER */}
-        <div style={{ borderTop: "1px solid #e5e2de", padding: "24px 2rem", textAlign: "center", fontSize: ".75rem", color: "#9a958f" }}>
+        <footer style={{ borderTop: "1px solid #e5e2de", padding: "24px 2rem", textAlign: "center", fontSize: ".75rem", color: "#9a958f" }}>
           © 2026 CareerLens ·{" "}
-          <Link href="/" style={{ color: "#9a958f" }}>Home</Link> ·{" "}
           <Link href="/blog" style={{ color: "#9a958f" }}>Blog</Link> ·{" "}
           <Link href="/interview-questions" style={{ color: "#9a958f" }}>Interview Q&A</Link> ·{" "}
-          <Link href="/pricing" style={{ color: "#9a958f" }}>Pricing</Link>
-        </div>
-
-        <style>{`
-          .more-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); border-color: #e85a2a !important; }
-          details summary::-webkit-details-marker { display: none; }
-          details[open] summary span:last-child { transform: rotate(180deg); }
-          @media (max-width: 768px) {
-            aside { display: none !important; }
-            div[style*="grid-template-columns: 1fr 300px"] { grid-template-columns: 1fr !important; }
-          }
-        `}</style>
+          <Link href="/" style={{ color: "#9a958f" }}>Home</Link>
+        </footer>
       </div>
     </>
   );

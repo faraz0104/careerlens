@@ -1,0 +1,53 @@
+---
+title: "System Design Interview in 30 Days: A Step-by-Step Study Plan"
+metaTitle: "System Design Interview Prep in 30 Days | Step-by-Step Study Plan 2025"
+metaDesc: "A structured 30-day study plan to prepare for system design interviews at top tech companies — covering scalability, databases, caching, load balancing, and real design problems."
+category: "Interview Prep"
+readTime: "9 min read"
+publishedAt: "2026-05-01"
+author: "CareerLens Editorial"
+authorRole: "Career Research Team"
+coverEmoji: "🏗️"
+coverColor: "#0f2a1a"
+intro: "System design is the round that separates senior engineers from everyone else — and increasingly, it's appearing in mid-level interviews at product companies too. The good news: unlike DSA, system design has a learnable framework. If you follow this 30-day plan with genuine effort, you'll go from 'I don't know where to start' to handling any real-world system design problem confidently."
+tags: ["system design","interview","career","backend","scalability"]
+relatedSlugs: ["top-10-in-demand-tech-skills-india-2026","software-engineer-salary-india-2025","ai-tools-every-developer-must-know-2025"]
+---
+
+System design is the round that separates senior engineers from everyone else — and increasingly, it's appearing in mid-level interviews at product companies too. The good news: unlike DSA, system design has a learnable framework. If you follow this 30-day plan with genuine effort, you'll go from 'I don't know where to start' to handling any real-world system design problem confidently.
+
+## The Framework First: How to Approach Any System Design Question
+
+Before diving into specific systems, learn the interview framework. Every system design answer should follow this structure: 1. Clarify requirements (5 min): What features? Read-heavy or write-heavy? How many users? Consistency requirements? 2. Estimate scale (3 min): Users, QPS (queries per second), storage, bandwidth. 3. High-level design (10 min): Draw the major components — clients, API servers, databases, caches, queues. 4. Deep dive (15 min): Pick 2-3 interesting components and explain your design decisions in detail. 5. Address bottlenecks (5 min): Where does your system fail at 10x scale? How would you fix it?
+
+This framework works for URL shorteners, Twitter feeds, Uber backends, and YouTube — master the structure and you'll never be completely lost in an interview again.
+
+## Days 1–7: Core Concepts You Must Know Cold
+
+Week 1 is pure concepts. Don't skip this to jump to 'cool' system designs — you'll hit walls later. Networking basics: DNS resolution, load balancers (L4 vs L7), CDNs (what content they cache, how TTL works). APIs: REST vs GraphQL vs gRPC, API gateway patterns, rate limiting algorithms (token bucket, sliding window). Databases: SQL vs NoSQL (when to use each), ACID vs BASE, read replicas, database sharding strategies (range-based, hash-based, directory-based).
+
+Caching: in-memory (Redis, Memcached), cache eviction (LRU, LFU, TTL), cache invalidation patterns (write-through, write-back, cache-aside), and cache stampede. Message queues: Kafka vs RabbitMQ, when to use async messaging, exactly-once semantics, consumer groups. Spend 2 hours per day reading. Best resources: ByteByteGo Newsletter (free), the ByteByteGo book, and Alex Xu's System Design Interview Vol 1.
+
+## Days 8–15: Learn 6 Core System Designs
+
+Week 2: study and practice these 6 systems — they cover the patterns that appear in 80% of interviews. Day 8-9: URL Shortener (tinyURL) — teaches: hash generation, NoSQL vs SQL for key-value, redirection, analytics. Day 10-11: Rate Limiter — teaches: token bucket/sliding window algorithms, Redis for distributed state, API gateway placement. Day 12-13: Design Twitter/Instagram Feed — teaches: fan-out on write vs fan-out on read, timeline generation, denormalization for performance.
+
+Day 14: Distributed Key-Value Store (like DynamoDB) — teaches: consistent hashing, replication, CAP theorem, quorum reads/writes. Day 15: YouTube/Netflix — teaches: CDN, video transcoding pipelines, chunked uploads, recommendation systems at high level. For each system: draw the diagram from memory, then compare to a reference solution (ByteByteGo, Educative, or Engineering blogs). Note where your design differed and why.
+
+## Days 16–22: Go Deep on Databases and Distributed Systems
+
+This week is about the questions that separate good candidates from great ones: Why would you choose Cassandra over PostgreSQL for a specific use case? How do you handle eventual consistency in a distributed system? What is a distributed transaction and why is it hard?
+
+Topics to master: Database indexing (B-tree internals at a high level), database partitioning strategies, the CAP theorem (Consistency, Availability, Partition tolerance — and why you can only guarantee 2 of 3), the PACELC model (more practical than CAP), distributed locking (Redis SETNX, Zookeeper), leader election, and consensus algorithms (Paxos/Raft at a conceptual level). You don't need to implement Raft — you need to understand why it exists and what problem it solves.
+
+## Days 23–27: Practice Mode — 5 Full Design Sessions
+
+Stop reading. Start designing. Use a whiteboard or Excalidraw. Set a timer for 45 minutes and design: Day 23: Google Drive / Dropbox. Day 24: Uber / Ola ride-hailing backend. Day 25: WhatsApp messaging system. Day 26: Search Autocomplete / Typeahead. Day 27: Hotel Booking system (like MakeMyTrip/Booking.com).
+
+For each, follow the interview framework from Day 1. After designing, compare your solution to a reference (search 'system design [name] blog' or use ByteByteGo). Be honest about gaps. The goal isn't a perfect design — it's a structured, reasoned design that you can defend and evolve during a 45-minute conversation.
+
+## Days 28–30: Mock Interviews and Weak Area Review
+
+Days 28-29: Do 2-3 mock system design interviews with peers (use Pramp or find a study partner on Discord communities like TechInterviewHandbook or NeetCode). The act of explaining your design out loud, handling follow-up questions, and managing the 45-minute clock is very different from reading or writing — you need to practice the verbal aspect.
+
+Day 30: Review your top 5 weakest areas. For most candidates, this is: distributed databases (how sharding actually works), consistency models (eventual vs strong vs causal), and estimating QPS/storage accurately. Before any interview, re-read the system designs for the company's actual products — Google interviewers love discussing Google-scale systems, Amazon interviewers care about AWS services, Swiggy/Zomato interviewers may ask about food delivery-specific challenges.

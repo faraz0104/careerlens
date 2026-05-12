@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
+import { getAllPosts, getAllCategories } from "@/lib/mdx";
+
+const BLOG_POSTS = getAllPosts();
+const BLOG_CATEGORIES = getAllCategories();
 
 export const metadata: Metadata = {
   title: "CareerLens Blog — Career Tips, Salary Insights & Tech Trends 2026",

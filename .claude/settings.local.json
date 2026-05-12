@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\91956\\\\Desktop\\\\careerlens\\\\app\\\\api\\\\analyze\")",
+      "Bash(node -e \"require\\('pdf-parse/lib/pdf-parse.js'\\)\")",
+      "Bash(findstr /i pdf)",
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\91956\\\\Desktop\\\\careerlens\\\\node_modules\" -Directory | Where-Object { $_.Name -match \"pdf\" })",
+      "Bash(git init *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\91956\\Desktop\\careerlens\\app\\api"
+    ]
+  }
+}

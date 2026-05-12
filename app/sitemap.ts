@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { ALL_TECHS } from "@/lib/interview-data";
-import { BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
+import { getAllPosts, getAllCategories } from "@/lib/mdx";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.carrerlens.com";
@@ -39,18 +39,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   );
 
+  const posts = getAllPosts();
+  const categories = getAllCategories();
+
   const blogIndex: MetadataRoute.Sitemap = [
     { url: `${base}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.95 },
   ];
 
-  const blogPages: MetadataRoute.Sitemap = BLOG_POSTS.map(post => ({
+  const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.updatedAt || post.publishedAt),
     changeFrequency: "weekly" as const,
     priority: 0.9,
   }));
 
-  const blogCategoryPages: MetadataRoute.Sitemap = BLOG_CATEGORIES.map(cat => ({
+  const blogCategoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
     url: `${base}/blog/category/${cat.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
     lastModified: now,
     changeFrequency: "weekly" as const,

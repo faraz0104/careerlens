@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { BLOG_POSTS, BLOG_CATEGORIES } from "@/lib/blog-data";
+import { getAllPosts, getAllCategories } from "@/lib/mdx";
+
+const BLOG_POSTS = getAllPosts();
+const BLOG_CATEGORIES = getAllCategories();
 
 interface Props {
   params: Promise<{ category: string }>;
