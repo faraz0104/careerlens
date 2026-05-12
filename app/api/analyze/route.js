@@ -26,53 +26,97 @@ export async function POST(req) {
 
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 2000,
+      max_tokens: 2800,
       messages: [
         {
           role: "user",
           content: [
             {
               type: "document",
-              source: {
-                type: "base64",
-                media_type: "application/pdf",
-                data: base64,
-              },
+              source: { type: "base64", media_type: "application/pdf", data: base64 },
             },
             {
               type: "text",
-              text: `First check if this document is a resume or CV. A resume contains a person's work experience, education, and/or skills. If it is NOT a resume (e.g. it's an invoice, ID card, certificate, article, blank page, or any other document), return ONLY this JSON:
+              text: `First check if this document is a resume/CV. If NOT a resume, return ONLY:
 {"is_resume": false, "error": "This doesn't look like a resume. Please upload your CV or resume in PDF format."}
 
-If it IS a resume, analyze it and return ONLY a valid JSON object with no extra text, no markdown, no backticks:
+If it IS a resume, analyze it deeply and return ONLY valid JSON (no markdown, no backticks):
+
 {
   "is_resume": true,
-  "name": "full name from resume",
+  "name": "full name",
   "role": "current or most recent job title",
   "experience": "X years",
-  "score": <integer, see rubric below>,
-  "skills": ["skill1", "skill2", "skill3"],
+  "score": <integer 20-95, see main rubric>,
+  "breakdown": {
+    "ats": {
+      "score": <integer 0-100>,
+      "label": "ATS Compatibility",
+      "reason": "One specific sentence explaining this score — name the exact missing keywords or what's hurting ATS parsing"
+    },
+    "skills": {
+      "score": <integer 0-100>,
+      "label": "Skills & Keywords",
+      "reason": "One specific sentence — e.g. 'Has 7 of 12 expected skills for a Senior SDE role. Missing: Docker, Kubernetes, CI/CD'"
+    },
+    "content": {
+      "score": <integer 0-100>,
+      "label": "Content Quality",
+      "reason": "One specific sentence — count actual bullets with metrics vs total. E.g. '3 of 9 experience bullets have measurable impact. Add % or numbers to the other 6.'"
+    },
+    "format": {
+      "score": <integer 0-100>,
+      "label": "Formatting",
+      "reason": "One specific sentence about actual formatting issues or strengths found in this resume"
+    }
+  },
+  "keywords_found": ["keyword1", "keyword2"],
+  "keywords_missing": ["missing1", "missing2", "missing3", "missing4", "missing5"],
+  "bullets_with_metrics": <integer — count of bullet points that have a number, %, $ or measurable result>,
+  "bullets_total": <integer — total number of experience bullet points in the resume>,
+  "action_verb_quality": <integer 0-100 — score for use of strong action verbs vs weak ones like "responsible for", "helped with", "worked on">,
+  "skills": ["skill1", "skill2", "skill3", "skill4", "skill5"],
   "missing": ["important missing skill1", "missing skill2", "missing skill3"],
-  "summary": "2 sentence summary of the resume",
+  "summary": "2 sentence summary of the candidate",
   "improvements": [
-    "specific improvement 1",
-    "specific improvement 2",
-    "specific improvement 3",
-    "specific improvement 4",
-    "specific improvement 5"
+    "specific, actionable improvement 1 with example",
+    "specific, actionable improvement 2 with example",
+    "specific, actionable improvement 3 with example",
+    "specific, actionable improvement 4 with example",
+    "specific, actionable improvement 5 with example"
   ]
 }
 
-SCORING RUBRIC — be strict and honest, most resumes score 40-65:
-20-35: Bare minimum info, no structure, no quantified achievements, generic descriptions
-36-50: Basic structure present but missing metrics, weak action verbs, poor ATS keywords, job descriptions are vague duties not achievements
-51-65: Decent structure, some metrics, but still has generic phrases ("responsible for", "helped with"), missing key skills section, inconsistent formatting
-66-75: Good structure, has quantified achievements (%, numbers, $), strong action verbs, relevant skills listed, minor formatting issues
-76-85: Strong resume — clear impact metrics, tailored skills, ATS-optimised keywords, clean formatting, no fluff
-86-95: Exceptional — every bullet has measurable impact, perfectly ATS-optimised, strong personal brand, no wasted space
+MAIN SCORE RUBRIC (be strict — most real resumes score 40–65):
+20–35: Bare minimum info, no structure, no metrics, generic descriptions
+36–50: Basic structure but no metrics, weak verbs, poor ATS keywords, vague duty lists
+51–65: Decent structure, some metrics, but generic phrases ("responsible for"), inconsistent formatting
+66–75: Good — quantified achievements, strong verbs, relevant skills, minor formatting issues
+76–85: Strong — clear impact metrics throughout, ATS-optimised keywords, clean formatting
+86–95: Exceptional — every bullet has measurable impact, perfectly ATS-optimised, strong brand
 
-Deduct points for: no quantified achievements (-15), generic job descriptions (-10), missing skills section (-8), poor formatting (-5), unexplained gaps (-5), objective statement instead of summary (-5), using "responsible for" or "helped with" (-8).
-Add points for: strong action verbs (+5), specific metrics in every bullet (+15), industry keywords (+8), clear career progression (+5), links to portfolio/GitHub (+3).`,
+ATS SCORE rubric:
+- 80–100: Uses role-specific technical keywords throughout, no text in images/tables, clean section headers, no headers/footers with critical info
+- 60–79: Has most keywords, minor ATS issues
+- 40–59: Missing major keywords for the role, or has ATS-unfriendly formatting
+- 0–39: Major ATS issues — tables, columns, missing keywords, images with text
+
+SKILLS SCORE rubric:
+- Count keywords found vs what's expected for this role/seniority
+- 80+: Has 80%+ of expected skills
+- 60–79: Has 60–79% of expected skills
+- Below 60: Has fewer than 60% of expected skills
+
+CONTENT SCORE rubric:
+- Based on ratio of bullets_with_metrics / bullets_total, plus action verb quality
+- 80+: 70%+ of bullets have metrics + strong verbs
+- 60–79: 40–69% have metrics
+- Below 60: Under 40% have metrics or heavy use of passive/weak language
+
+FORMAT SCORE rubric:
+- 80+: One page (or clean 2-page for 8+ years exp), consistent fonts, clear sections, ATS-readable
+- 60–79: Minor inconsistencies, slightly long, but readable
+- Below 60: Multiple columns, tables, graphics, excessive length, or hard to parse`,
             },
           ],
         },
@@ -86,11 +130,8 @@ Add points for: strong action verbs (+5), specific metrics in every bullet (+15)
       data = JSON.parse(text);
     } catch {
       const match = text.match(/\{[\s\S]*\}/);
-      if (match) {
-        data = JSON.parse(match[0]);
-      } else {
-        throw new Error("Could not parse AI response");
-      }
+      if (match) data = JSON.parse(match[0]);
+      else throw new Error("Could not parse AI response");
     }
 
     if (data.is_resume === false) {

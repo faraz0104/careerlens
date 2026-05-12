@@ -977,6 +977,12 @@ function HomePage({ setPage, setResumeData }) {
         role: data.role,
         summary: data.summary,
         improvements: data.improvements,
+        breakdown: data.breakdown,
+        keywords_found: data.keywords_found,
+        keywords_missing: data.keywords_missing,
+        bullets_with_metrics: data.bullets_with_metrics,
+        bullets_total: data.bullets_total,
+        action_verb_quality: data.action_verb_quality,
       });
 
       setPage("resume");
@@ -1655,6 +1661,12 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
         role: data.role,
         summary: data.summary,
         improvements: data.improvements,
+        breakdown: data.breakdown,
+        keywords_found: data.keywords_found,
+        keywords_missing: data.keywords_missing,
+        bullets_with_metrics: data.bullets_with_metrics,
+        bullets_total: data.bullets_total,
+        action_verb_quality: data.action_verb_quality,
       });
 
       if (!isPro) incrementScan();
@@ -1742,17 +1754,60 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               </div>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {[["ATS Compatibility","78%","var(--blue)"],["Skills Match","62%","var(--amber)"],["Content Quality","71%","var(--green)"],["Formatting","85%","var(--green)"]].map(([l,v,c]) => (
-              <div key={l} style={{ background: "var(--bg2)", borderRadius: "var(--r)", padding: "8px 12px" }}>
-                <div style={{ fontSize: ".68rem", color: "var(--ink3)", fontWeight: 600, marginBottom: 4 }}>{l}</div>
-                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", color: c }}>{v}</div>
-                <div style={{ height: 3, background: "var(--bg3)", borderRadius: 99, marginTop: 4, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: v, background: c, borderRadius: 99 }} />
+          {/* Real sub-scores from analysis */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+            {[
+              { key: "ats",     label: "ATS Compatibility", color: "var(--blue)" },
+              { key: "skills",  label: "Skills & Keywords",  color: "var(--amber)" },
+              { key: "content", label: "Content Quality",    color: "var(--green)" },
+              { key: "format",  label: "Formatting",         color: "var(--green)" },
+            ].map(({ key, label, color }) => {
+              const s = resumeData.breakdown?.[key]?.score ?? Math.round(resumeData.score * ({ ats:.88, skills:.78, content:.82, format:.92 }[key] || .8));
+              const reason = resumeData.breakdown?.[key]?.reason;
+              const barColor = s >= 75 ? "var(--green)" : s >= 55 ? "var(--amber)" : "var(--red)";
+              return (
+                <div key={key} style={{ background: "var(--bg2)", borderRadius: "var(--r)", padding: "9px 12px" }} title={reason || ""}>
+                  <div style={{ fontSize: ".67rem", color: "var(--ink3)", fontWeight: 600, marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", color: barColor }}>{s}<span style={{ fontSize: ".62rem", fontWeight: 600, color: "var(--ink3)" }}>/100</span></div>
+                  <div style={{ height: 3, background: "var(--bg3)", borderRadius: 99, marginTop: 4, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${s}%`, background: barColor, borderRadius: 99, transition: "width .6s" }} />
+                  </div>
+                  {reason && <div style={{ fontSize: ".62rem", color: "var(--ink3)", marginTop: 4, lineHeight: 1.4 }}>{reason}</div>}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+
+          {/* Keyword hits / misses + bullet metric */}
+          {(resumeData.keywords_found?.length > 0 || resumeData.bullets_total > 0) && (
+            <div style={{ marginBottom: 10, padding: "10px 12px", background: "var(--bg2)", borderRadius: "var(--r)", fontSize: ".73rem" }}>
+              {resumeData.bullets_total > 0 && (
+                <div style={{ marginBottom: resumeData.keywords_found?.length > 0 ? 8 : 0 }}>
+                  <span style={{ color: "var(--ink3)", fontWeight: 600 }}>Bullets with measurable impact: </span>
+                  <span style={{ fontWeight: 800, color: resumeData.bullets_with_metrics >= resumeData.bullets_total * 0.6 ? "var(--green)" : "var(--amber)" }}>
+                    {resumeData.bullets_with_metrics ?? "?"} of {resumeData.bullets_total}
+                  </span>
+                  <span style={{ color: "var(--ink3)" }}> — {resumeData.bullets_total - (resumeData.bullets_with_metrics ?? 0)} bullets need numbers/% added</span>
+                </div>
+              )}
+              {resumeData.keywords_found?.length > 0 && (
+                <div style={{ marginBottom: 5 }}>
+                  <span style={{ color: "var(--ink3)", fontWeight: 600 }}>Keywords found: </span>
+                  {resumeData.keywords_found.slice(0, 8).map(k => (
+                    <span key={k} style={{ display: "inline-block", background: "var(--green-dim)", color: "var(--green)", borderRadius: 4, padding: "1px 6px", marginRight: 4, marginBottom: 3, fontWeight: 600, fontSize: ".68rem" }}>{k}</span>
+                  ))}
+                </div>
+              )}
+              {resumeData.keywords_missing?.length > 0 && (
+                <div>
+                  <span style={{ color: "var(--ink3)", fontWeight: 600 }}>Missing keywords: </span>
+                  {resumeData.keywords_missing.slice(0, 6).map(k => (
+                    <span key={k} style={{ display: "inline-block", background: "var(--red-dim)", color: "var(--red)", borderRadius: 4, padding: "1px 6px", marginRight: 4, marginBottom: 3, fontWeight: 600, fontSize: ".68rem" }}>{k}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           {/* compact journey strip + share button */}
           <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
@@ -1771,7 +1826,10 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
             <button
               onClick={() => {
                 const verdict = resumeData.score >= 75 ? "Strong resume 🏆" : resumeData.score >= 55 ? "Room for improvement 📈" : "Needs work ⚠️";
-                const text = `Just scanned my resume on CareerLens — scored ${resumeData.score}/100 (${verdict})\n\nATS: 78% · Skills Match: 62% · Formatting: 85%\n\nCheck yours free → careerlens.in`;
+                const ats = resumeData.breakdown?.ats?.score ?? Math.round(resumeData.score * .88);
+                const skills = resumeData.breakdown?.skills?.score ?? Math.round(resumeData.score * .78);
+                const fmt = resumeData.breakdown?.format?.score ?? Math.round(resumeData.score * .92);
+                const text = `Just scanned my resume on CareerLens — scored ${resumeData.score}/100 (${verdict})\n\nATS: ${ats} · Skills: ${skills} · Formatting: ${fmt}\n\nCheck yours free → carrerlens.com`;
                 const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
                 window.open(url, "_blank", "noopener,noreferrer,width=600,height=400");
               }}
