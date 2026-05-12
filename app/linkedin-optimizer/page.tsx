@@ -2,21 +2,20 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "Free LinkedIn Profile Optimizer India – More Recruiter Views in 2024",
+  title: "Free LinkedIn Profile Optimizer India 2026 — Get 3x More Recruiter Views | CareerLens",
   description:
-    "Optimize your LinkedIn About section with AI to rank higher in recruiter searches. Get more profile views, more connection requests, and more job interviews. Free for Indian professionals.",
+    "AI rewrites your LinkedIn About section with recruiter-search keywords for your role. Get found by the right companies, get more InMails, get more interviews. Free, instant, no login.",
   keywords: [
-    "LinkedIn profile optimizer India",
+    "LinkedIn profile optimizer India 2026",
+    "how to improve LinkedIn profile for jobs India",
     "LinkedIn about section generator India",
-    "LinkedIn bio optimizer India",
-    "how to optimize LinkedIn profile India",
-    "LinkedIn profile tips India 2024",
-    "LinkedIn for software engineers India",
-    "LinkedIn recruiter search optimization India",
+    "LinkedIn bio optimizer free India",
+    "how to get recruiter attention LinkedIn India",
+    "LinkedIn profile for software engineers India",
+    "LinkedIn keywords IT professionals India",
+    "LinkedIn profile for freshers India 2026",
     "improve LinkedIn profile India",
     "LinkedIn headline generator India",
-    "LinkedIn keywords for IT professionals India",
-    "LinkedIn profile for freshers India",
   ],
   alternates: {
     canonical: "https://www.carrerlens.com/linkedin-optimizer",

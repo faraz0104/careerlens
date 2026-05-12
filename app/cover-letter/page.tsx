@@ -2,21 +2,21 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "Free AI Cover Letter Generator India – Personalised in 10 Seconds",
+  title: "Free AI Cover Letter Generator India 2026 — Personalised in 10 Seconds | CareerLens",
   description:
-    "Generate a professional, personalised cover letter for any job in India in 10 seconds. Paste the job description → AI writes a tailored cover letter that hiring managers actually read. Free to try.",
+    "Paste any job description and get a personalised cover letter in 10 seconds. Tailored to each company — not a template. Beats ATS filters and impresses hiring managers. Free, no login required.",
   keywords: [
-    "cover letter generator India",
+    "cover letter generator India 2026",
     "AI cover letter generator free India",
     "cover letter for software engineer India",
     "cover letter generator online India",
-    "professional cover letter India 2024",
+    "professional cover letter India 2026",
     "cover letter for fresher India",
     "cover letter TCS Infosys Wipro",
     "cover letter for IT jobs India",
     "how to write cover letter India",
     "cover letter generator no signup",
-    "best cover letter generator India",
+    "best cover letter generator India 2026",
     "cover letter for product manager India",
   ],
   alternates: {

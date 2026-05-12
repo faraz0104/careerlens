@@ -2,28 +2,30 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "Career Roadmap India – How to Become a Software Engineer, Data Scientist & More",
+  title: "AI Career Roadmap India 2026 — Step-by-Step Path to Your Dream IT Role | CareerLens",
   description:
-    "Get a personalised AI-generated career roadmap based on your resume. Step-by-step paths to become a software engineer, data scientist, product manager, DevOps engineer and more in India.",
+    "Get a personalised AI career roadmap based on your resume. Know exactly which skills to learn next to become a software engineer, data scientist, or product manager in India. Free, instant.",
   keywords: [
-    "career roadmap India",
+    "career roadmap India 2026",
     "how to become software engineer India",
     "data scientist career path India",
     "product manager roadmap India",
     "DevOps career path India",
-    "AI career roadmap India",
+    "AI career roadmap India 2026",
     "career guidance India freshers",
     "skills to learn for IT jobs India",
-    "career switch IT India",
-    "career planning India 2024",
+    "career switch IT India 2026",
+    "career planning India 2026",
+    "what skills to learn for software engineer India",
+    "career path IT freshers India",
   ],
   alternates: {
     canonical: "https://www.carrerlens.com/roadmap",
   },
   openGraph: {
-    title: "Career Roadmap India – Personalised AI-Powered Career Path",
+    title: "AI Career Roadmap India 2026 — Personalised Step-by-Step Path | CareerLens",
     description:
-      "Get a step-by-step personalised career roadmap based on your current skills. AI identifies gaps and creates a learning path to reach your dream role in India.",
+      "Know exactly which skills to learn next. AI builds a personalised roadmap to your target IT role based on your current resume. Free, instant, no login.",
     url: "https://www.carrerlens.com/roadmap",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },

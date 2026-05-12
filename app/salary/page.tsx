@@ -2,26 +2,27 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "IT Salary Calculator India 2024 – Software Engineer, Data Scientist & More",
+  title: "Software Engineer Salary India 2026 — Know Your Market Rate | CareerLens",
   description:
-    "Find out what you should be earning. Free salary calculator for software engineers, data scientists, product managers and other IT roles in India. Compare by city, experience level, and company.",
+    "What should you be earning? Free salary calculator for software engineers, data scientists & IT roles in India 2026. Compare by city, experience & company. See if you're underpaid.",
   keywords: [
-    "IT salary India 2024",
-    "software engineer salary India",
+    "software engineer salary India 2026",
+    "IT salary India 2026",
     "fresher salary India IT",
-    "data scientist salary India",
-    "product manager salary India",
-    "salary calculator India",
-    "average salary Bangalore Mumbai Delhi Hyderabad",
-    "TCS Infosys Wipro salary",
+    "data scientist salary India 2026",
+    "am I underpaid software engineer India",
+    "salary calculator India 2026",
+    "average developer salary Bangalore Hyderabad Pune",
+    "TCS Infosys Wipro salary 2026",
     "FAANG salary India",
-    "how much do software engineers earn India",
+    "12 lpa in hand salary India",
+    "how much do software engineers earn India 2026",
   ],
   alternates: {
     canonical: "https://www.carrerlens.com/salary",
   },
   openGraph: {
-    title: "IT Salary Calculator India 2024 – Find Your Market Rate",
+    title: "Software Engineer Salary India 2026 — Know Your Market Rate | CareerLens",
     description:
       "Discover your market salary for software engineering, data science, product management and other IT roles across Indian cities. AI-powered insights based on real market data.",
     url: "https://www.carrerlens.com/salary",

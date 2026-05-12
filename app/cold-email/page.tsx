@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "Cold Email Generator India – Email Hiring Managers & Get Interviews",
+  title: "Free Cold Email Generator India 2026 — Email Hiring Managers & Get Interviews | CareerLens",
   description:
-    "AI writes a personalised cold email to any hiring manager in India. Enter company + role → get a 4-line email that actually gets replies. Used by 10,000+ job seekers. Free to try.",
+    "AI writes a personalised cold email to any hiring manager in India. Enter company + role → get a 4-line email that actually gets replies. Skip job portals — go direct. Free to try.",
   keywords: [
     "cold email hiring manager India",
     "cold email template for job India",

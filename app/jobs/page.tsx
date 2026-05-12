@@ -2,22 +2,21 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "AI Job Matching India – Find Jobs + Cold Email Hiring Managers",
+  title: "AI Job Matching India 2026 — Jobs Matched to Your Resume | CareerLens",
   description:
-    "Get AI-curated job recommendations based on your resume plus a cold email to the hiring manager at any company. Find software engineer, data scientist, product manager jobs in India with match score.",
+    "Get jobs matched to your exact resume with a match score. See live openings from LinkedIn, Naukri & Indeed for your role. Plus cold email generator to reach hiring managers directly. Free.",
   keywords: [
-    "AI job matching India",
-    "jobs for freshers India 2024",
-    "software engineer jobs India",
-    "IT jobs India Bangalore Mumbai Hyderabad",
+    "jobs matched to my resume India",
+    "AI job matching India 2026",
+    "software engineer jobs India 2026",
+    "IT jobs for freshers India 2026",
+    "jobs in Bangalore Hyderabad Pune 2026",
     "cold email hiring manager India",
-    "job search AI India",
-    "job recommendations based on resume India",
-    "tech jobs India 2024",
-    "product manager jobs India",
-    "data scientist jobs India",
-    "remote jobs India",
-    "startup jobs India",
+    "job search tools India",
+    "tech jobs India 2026",
+    "remote jobs India 2026",
+    "startup jobs India 2026",
+    "job recommendations based on skills India",
   ],
   alternates: {
     canonical: "https://www.carrerlens.com/jobs",

@@ -2,32 +2,30 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "Interview Questions India – Google, Amazon, TCS, Infosys, Wipro & More",
+  title: "AI Interview Prep India 2026 — Company-Specific Questions | CareerLens",
   description:
-    "Company-specific interview questions for Google, Amazon, Microsoft, TCS, Infosys, Wipro, Flipkart, Swiggy and 20+ top companies in India. AI-generated behavioral, technical and coding questions.",
+    "Crack interviews at Google, Amazon, TCS, Infosys, Flipkart & 20+ companies. AI generates company-specific behavioral, technical & coding questions based on your resume. Free to try.",
   keywords: [
-    "interview questions India",
+    "interview preparation India 2026",
     "Google interview questions India",
     "Amazon interview questions India",
-    "Microsoft interview questions",
-    "TCS interview questions 2024",
-    "Infosys interview preparation",
-    "Wipro interview questions",
-    "Flipkart interview questions",
-    "Swiggy Zomato interview prep",
-    "software engineer interview India",
+    "TCS interview questions 2026",
+    "Infosys interview preparation 2026",
+    "company specific interview questions India",
+    "AI interview prep India",
+    "software engineer interview questions India",
     "behavioral interview questions India",
-    "technical interview questions India",
-    "coding interview preparation India",
-    "FAANG interview India",
+    "FAANG interview prep India",
+    "how to crack TCS interview",
+    "how to prepare for Amazon interview India",
   ],
   alternates: {
     canonical: "https://www.carrerlens.com/interview",
   },
   openGraph: {
-    title: "Interview Questions India – Google, Amazon, TCS, Infosys & 20+ Companies",
+    title: "AI Interview Prep India 2026 — Company-Specific Questions | CareerLens",
     description:
-      "Prepare for interviews at top Indian and global companies with AI-generated company-specific questions covering behavioral, technical, and coding rounds.",
+      "AI generates company-specific interview questions for Google, Amazon, TCS, Infosys & 20+ companies based on your resume. Behavioral, technical & coding rounds covered.",
     url: "https://www.carrerlens.com/interview",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },

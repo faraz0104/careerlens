@@ -2,22 +2,20 @@ import type { Metadata } from "next";
 import App from "../CareerLens";
 
 export const metadata: Metadata = {
-  title: "Free AI Resume Analyzer India – ATS Score, Cover Letter & LinkedIn Optimizer",
+  title: "Free AI Resume Checker India 2026 — ATS Score + Skill Gaps + Job Matches | CareerLens",
   description:
-    "Upload your resume and get an instant ATS score, skill gap analysis, AI-generated cover letter for any job, LinkedIn profile optimizer, and resume tailoring per JD. Free for Indian job seekers.",
+    "Get your resume ATS score instantly. See exactly which keywords you're missing, which skills cost you callbacks, and get matched to live jobs — all free, no login, in 30 seconds.",
   keywords: [
-    "free resume analyzer India",
+    "free resume checker India 2026",
     "ATS resume scanner India",
-    "AI resume checker online India",
-    "resume score checker India",
-    "resume review for freshers India",
-    "cover letter generator India",
-    "LinkedIn profile optimizer India",
-    "resume tailoring per job description India",
-    "AI resume feedback India",
-    "resume ATS score India 2024",
-    "resume improvement tips India",
-    "best resume analyzer India",
+    "resume ATS score checker free",
+    "why is my resume not getting shortlisted",
+    "resume review freshers India",
+    "AI resume analyzer India",
+    "resume keyword checker India",
+    "resume score checker free",
+    "best resume analyzer India 2026",
+    "resume improvement tool India",
   ],
   alternates: {
     canonical: "https://www.carrerlens.com/resume",
