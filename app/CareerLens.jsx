@@ -1112,10 +1112,10 @@ function HomePage({ setPage, setResumeData }) {
             Free · Results in 60 seconds
           </div>
           <h1 style={{ fontFamily:"var(--font-head)", fontSize:"clamp(1.9rem,4.5vw,3rem)", fontWeight:800, letterSpacing:"-.04em", lineHeight:1.1, marginBottom:14 }}>
-            Know your resume score<br/><em style={{ color:"var(--accent)", fontStyle:"normal" }}>before the recruiter does.</em>
+            Stop getting rejected.<br/><em style={{ color:"var(--accent)", fontStyle:"normal" }}>Start getting interviews.</em>
           </h1>
           <p style={{ fontSize:".95rem", color:"var(--ink2)", lineHeight:1.7, marginBottom:24, maxWidth:460 }}>
-            Upload your resume → get your ATS score, skill gaps, real job matches, and company-specific interview questions. Free, instant, no login needed.
+            Your resume may be getting rejected before any human sees it. Find out exactly why — ATS score, skill gaps, instant fixes, and real job matches. Free, 30 seconds, no login.
           </p>
 
           <div style={{ marginBottom:24 }}>
@@ -1132,7 +1132,7 @@ function HomePage({ setPage, setResumeData }) {
           </div>
 
           <div style={{ display:"flex", background:"var(--bg2)", borderRadius:"var(--r)", padding:"14px 0", flexWrap:"wrap" }}>
-            {[["50+","Companies covered"],["7","Countries using it"],["₹0","To get started"],["60s","To get results"]].map(([n,l]) => (
+            {[["3,200+","Resumes analyzed"],["50+","Companies covered"],["₹0","To get started"],["30s","To get results"]].map(([n,l]) => (
               <div key={l} className="home-stat">
                 <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.15rem", letterSpacing:"-.03em" }}>{n}</div>
                 <div style={{ fontSize:".68rem", color:"var(--ink3)", marginTop:2 }}>{l}</div>
@@ -1753,19 +1753,31 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               </div>
             ))}
           </div>
-          {/* compact journey strip */}
-          <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
-            <span style={{ fontSize: ".68rem", fontWeight: 700, color: "var(--ink3)", marginRight: 2 }}>Next:</span>
-            {[
-              { label: "🎯 View Jobs", page: "jobs" },
-              { label: "🏢 Interview", page: "interview" },
-              { label: "✉️ Cover Letter", page: "resume" },
-            ].map((s, i, arr) => (
-              <span key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <span onClick={() => setPage(s.page)} style={{ fontSize: ".72rem", fontWeight: 600, color: "var(--accent)", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>{s.label}</span>
-                {i < arr.length - 1 && <span style={{ color: "var(--ink3)", fontSize: ".65rem" }}>·</span>}
-              </span>
-            ))}
+          {/* compact journey strip + share button */}
+          <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
+              <span style={{ fontSize: ".68rem", fontWeight: 700, color: "var(--ink3)", marginRight: 2 }}>Next:</span>
+              {[
+                { label: "🎯 View Jobs", page: "jobs" },
+                { label: "🏢 Interview", page: "interview" },
+                { label: "✉️ Cover Letter", page: "resume" },
+              ].map((s, i, arr) => (
+                <span key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <span onClick={() => setPage(s.page)} style={{ fontSize: ".72rem", fontWeight: 600, color: "var(--accent)", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>{s.label}</span>
+                  {i < arr.length - 1 && <span style={{ color: "var(--ink3)", fontSize: ".65rem" }}>·</span>}
+                </span>
+              ))}
+            </div>
+            <button
+              onClick={() => {
+                const verdict = resumeData.score >= 75 ? "Strong resume 🏆" : resumeData.score >= 55 ? "Room for improvement 📈" : "Needs work ⚠️";
+                const text = `Just scanned my resume on CareerLens — scored ${resumeData.score}/100 (${verdict})\n\nATS: 78% · Skills Match: 62% · Formatting: 85%\n\nCheck yours free → careerlens.in`;
+                const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+                window.open(url, "_blank", "noopener,noreferrer,width=600,height=400");
+              }}
+              style={{ display: "flex", alignItems: "center", gap: 5, background: "#000", color: "#fff", border: "none", borderRadius: "var(--r)", padding: "6px 12px", fontSize: ".72rem", fontWeight: 700, cursor: "pointer", flexShrink: 0 }}>
+              𝕏 Share my score
+            </button>
           </div>
         </div>
 
