@@ -924,19 +924,11 @@ function LiveActivityFeed() {
 /* ── PAGES ──────────────────────────────────────── */
 
 /* HOME */
-function HomePage({ setPage, setResumeData }) {
+function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [fileName, setFileName] = useState("");
   const [uploadError, setUploadError] = useState("");
-  const [totalScans, setTotalScans] = useState(null);
-
-  useEffect(() => {
-    fetch("/api/stats")
-      .then(r => r.json())
-      .then(d => { if (d.total_scans != null) setTotalScans(d.total_scans); })
-      .catch(() => {});
-  }, []);
   const fileRef = useRef();
 
   const handleFile = async (file) => {
@@ -993,6 +985,7 @@ function HomePage({ setPage, setResumeData }) {
         action_verb_quality: data.action_verb_quality,
       });
 
+      onScanComplete?.();
       setPage("resume");
     } catch (error) {
       setUploadError(error.message);
@@ -1449,7 +1442,7 @@ function ShareableCard({ title, shareText, children }) {
 }
 
 /* RESUME */
-function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage }) {
+function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage, totalScans, onScanComplete }) {
   const [loading, setLoading] = useState(false);
   const [aiTip, setAiTip] = useState("");
   const [jd, setJd] = useState("");
@@ -1683,6 +1676,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
       });
 
       if (!isPro) incrementScan();
+      onScanComplete?.();
       showToast("Resume analysed successfully!");
     } catch (error) {
       showToast("Error analyzing resume: " + error.message);
@@ -1741,7 +1735,9 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
       <div className="page-header">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <div className="page-title">Resume Analysis — {resumeData.name}</div>
+            <div className="page-title">Resume Analysis — {resumeData.name}
+              {totalScans != null && <span style={{ fontSize:".7rem", fontWeight:600, color:"var(--ink3)", marginLeft:10, background:"var(--bg2)", padding:"2px 8px", borderRadius:99 }}>#{totalScans.toLocaleString("en-IN")} analyzed</span>}
+            </div>
             <div className="page-sub">{resumeData.role} · {resumeData.experience} experience</div>
           </div>
           <label style={{ cursor: "pointer" }}>
@@ -3564,8 +3560,18 @@ export default function App({ defaultTab = "home" } = {}) {
   const [resumeData, setResumeData] = useState(null);
   const [isPro, setIsPro] = useState(false);
   const [toast, setToast] = useState(null);
+  const [totalScans, setTotalScans] = useState(null);
 
   const showToast = (msg) => setToast(msg);
+
+  const fetchStats = useCallback(() => {
+    fetch("/api/stats")
+      .then(r => r.json())
+      .then(d => { if (d.total_scans != null) setTotalScans(d.total_scans); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => { fetchStats(); }, [fetchStats]);
 
   useEffect(() => {
     if (localStorage.getItem("cl_is_pro") === "true") {
@@ -3635,8 +3641,8 @@ export default function App({ defaultTab = "home" } = {}) {
         </div>
 
         <main style={{ flex: 1 }}>
-          {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} />}
-          {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} setPage={navigate} />}
+          {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} totalScans={totalScans} onScanComplete={fetchStats} />}
+          {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} setPage={navigate} totalScans={totalScans} onScanComplete={fetchStats} />}
           {page === "jobs" && <JobsPage resumeData={resumeData} isPro={isPro} setPage={navigate} />}
           {page === "interview" && <InterviewPage isPro={isPro} setPage={navigate} />}
           {page === "coding" && <CodingPage isPro={isPro} />}
