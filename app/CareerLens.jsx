@@ -1787,36 +1787,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
             })}
           </div>
 
-          {/* Keyword hits / misses + bullet metric */}
-          {(resumeData.keywords_found?.length > 0 || resumeData.bullets_total > 0) && (
-            <div style={{ marginBottom: 10, padding: "10px 12px", background: "var(--bg2)", borderRadius: "var(--r)", fontSize: ".73rem" }}>
-              {resumeData.bullets_total > 0 && (
-                <div style={{ marginBottom: resumeData.keywords_found?.length > 0 ? 8 : 0 }}>
-                  <span style={{ color: "var(--ink3)", fontWeight: 600 }}>Bullets with measurable impact: </span>
-                  <span style={{ fontWeight: 800, color: resumeData.bullets_with_metrics >= resumeData.bullets_total * 0.6 ? "var(--green)" : "var(--amber)" }}>
-                    {resumeData.bullets_with_metrics ?? "?"} of {resumeData.bullets_total}
-                  </span>
-                  <span style={{ color: "var(--ink3)" }}> — {resumeData.bullets_total - (resumeData.bullets_with_metrics ?? 0)} bullets need numbers/% added</span>
-                </div>
-              )}
-              {resumeData.keywords_found?.length > 0 && (
-                <div style={{ marginBottom: 5 }}>
-                  <span style={{ color: "var(--ink3)", fontWeight: 600 }}>Keywords found: </span>
-                  {resumeData.keywords_found.slice(0, 8).map(k => (
-                    <span key={k} style={{ display: "inline-block", background: "var(--green-dim)", color: "var(--green)", borderRadius: 4, padding: "1px 6px", marginRight: 4, marginBottom: 3, fontWeight: 600, fontSize: ".68rem" }}>{k}</span>
-                  ))}
-                </div>
-              )}
-              {resumeData.keywords_missing?.length > 0 && (
-                <div>
-                  <span style={{ color: "var(--ink3)", fontWeight: 600 }}>Missing keywords: </span>
-                  {resumeData.keywords_missing.slice(0, 6).map(k => (
-                    <span key={k} style={{ display: "inline-block", background: "var(--red-dim)", color: "var(--red)", borderRadius: 4, padding: "1px 6px", marginRight: 4, marginBottom: 3, fontWeight: 600, fontSize: ".68rem" }}>{k}</span>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+
           {/* compact journey strip + share button */}
           <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
