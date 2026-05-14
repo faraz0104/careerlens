@@ -1747,77 +1747,10 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
         </div>
       </div>
 
-      {/* SCORE + JOBS — side by side */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16, alignItems: "start" }}>
+      {/* JOBS — full width */}
+      <div style={{ marginBottom: 16 }}>
 
-        {/* LEFT: Score Summary */}
-        <div style={{ background: "#fff", border: "2px solid var(--border)", borderRadius: "var(--r2)", padding: "18px 20px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
-            <ScoreRing score={resumeData.score} />
-            <div>
-              <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1.05rem", color: "var(--ink)", lineHeight: 1.2 }}>
-                {resumeData.score >= 75 ? "Strong resume" : resumeData.score >= 55 ? "Room for improvement" : "Needs significant work"}
-              </div>
-              <div style={{ fontSize: ".74rem", color: resumeData.score >= 75 ? "var(--green)" : resumeData.score >= 55 ? "var(--amber)" : "var(--red)", fontWeight: 700, marginTop: 2 }}>
-                {resumeData.score >= 75 ? "🏆 Top tier" : resumeData.score >= 60 ? "📈 Above average" : "⚠️ Below average"} · Stronger than {resumeData.score <= 40 ? Math.round(resumeData.score * 0.4) : resumeData.score <= 60 ? Math.round(resumeData.score * 0.6) : resumeData.score <= 75 ? Math.round(resumeData.score * 0.72) : Math.round(resumeData.score * 0.85)}% of candidates
-              </div>
-            </div>
-          </div>
-          {/* Real sub-scores from analysis */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
-            {[
-              { key: "ats",     label: "ATS Compatibility", color: "var(--blue)" },
-              { key: "skills",  label: "Skills & Keywords",  color: "var(--amber)" },
-              { key: "content", label: "Content Quality",    color: "var(--green)" },
-              { key: "format",  label: "Formatting",         color: "var(--green)" },
-            ].map(({ key, label, color }) => {
-              const s = resumeData.breakdown?.[key]?.score ?? Math.round(resumeData.score * ({ ats:.88, skills:.78, content:.82, format:.92 }[key] || .8));
-              const barColor = s >= 75 ? "var(--green)" : s >= 55 ? "var(--amber)" : "var(--red)";
-              return (
-                <div key={key} style={{ background: "var(--bg2)", borderRadius: "var(--r)", padding: "9px 12px" }}>
-                  <div style={{ fontSize: ".67rem", color: "var(--ink3)", fontWeight: 600, marginBottom: 3 }}>{label}</div>
-                  <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", color: barColor }}>{s}<span style={{ fontSize: ".62rem", fontWeight: 600, color: "var(--ink3)" }}>/100</span></div>
-                  <div style={{ height: 3, background: "var(--bg3)", borderRadius: 99, marginTop: 4, overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${s}%`, background: barColor, borderRadius: 99, transition: "width .6s" }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-
-          {/* compact journey strip + share button */}
-          <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
-              <span style={{ fontSize: ".68rem", fontWeight: 700, color: "var(--ink3)", marginRight: 2 }}>Next:</span>
-              {[
-                { label: "🎯 View Jobs", page: "jobs" },
-                { label: "🏢 Interview", page: "interview" },
-                { label: "✉️ Cover Letter", page: "resume" },
-              ].map((s, i, arr) => (
-                <span key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <span onClick={() => setPage(s.page)} style={{ fontSize: ".72rem", fontWeight: 600, color: "var(--accent)", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}>{s.label}</span>
-                  {i < arr.length - 1 && <span style={{ color: "var(--ink3)", fontSize: ".65rem" }}>·</span>}
-                </span>
-              ))}
-            </div>
-            <button
-              onClick={() => {
-                const verdict = resumeData.score >= 75 ? "Strong resume 🏆" : resumeData.score >= 55 ? "Room for improvement 📈" : "Needs work ⚠️";
-                const ats = resumeData.breakdown?.ats?.score ?? Math.round(resumeData.score * .88);
-                const skills = resumeData.breakdown?.skills?.score ?? Math.round(resumeData.score * .78);
-                const fmt = resumeData.breakdown?.format?.score ?? Math.round(resumeData.score * .92);
-                const text = `Just scanned my resume on CareerLens — scored ${resumeData.score}/100 (${verdict})\n\nATS: ${ats} · Skills: ${skills} · Formatting: ${fmt}\n\nCheck yours free → carrerlens.com`;
-                const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-                window.open(url, "_blank", "noopener,noreferrer,width=600,height=400");
-              }}
-              style={{ display: "flex", alignItems: "center", gap: 5, background: "#000", color: "#fff", border: "none", borderRadius: "var(--r)", padding: "6px 12px", fontSize: ".72rem", fontWeight: 700, cursor: "pointer", flexShrink: 0 }}>
-              𝕏 Share my score
-            </button>
-          </div>
-        </div>
-
-        {/* RIGHT: Job Match Section */}
+        {/* Job Match Section */}
         <div style={{ background: "#fff", border: "2px solid var(--border)", borderRadius: "var(--r2)", overflow: "hidden" }}>
           {/* Header */}
           <div style={{ background: "linear-gradient(135deg, #1a1916, #2a1a0e)", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
