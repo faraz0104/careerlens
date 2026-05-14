@@ -175,7 +175,7 @@ export async function POST(req) {
         const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
           from: "CareerLens <onboarding@resend.dev>",
-          to: "faraz01041997@gmail.com",
+          to: "khan97faraz@gmail.com",
           subject: `🔍 Job search — ${role} in ${locationFilter}`,
           html: `
             <p style="font-family:sans-serif;font-size:14px;">
