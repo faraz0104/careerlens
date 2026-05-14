@@ -1772,16 +1772,14 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               { key: "format",  label: "Formatting",         color: "var(--green)" },
             ].map(({ key, label, color }) => {
               const s = resumeData.breakdown?.[key]?.score ?? Math.round(resumeData.score * ({ ats:.88, skills:.78, content:.82, format:.92 }[key] || .8));
-              const reason = resumeData.breakdown?.[key]?.reason;
               const barColor = s >= 75 ? "var(--green)" : s >= 55 ? "var(--amber)" : "var(--red)";
               return (
-                <div key={key} style={{ background: "var(--bg2)", borderRadius: "var(--r)", padding: "9px 12px" }} title={reason || ""}>
+                <div key={key} style={{ background: "var(--bg2)", borderRadius: "var(--r)", padding: "9px 12px" }}>
                   <div style={{ fontSize: ".67rem", color: "var(--ink3)", fontWeight: 600, marginBottom: 3 }}>{label}</div>
                   <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".95rem", color: barColor }}>{s}<span style={{ fontSize: ".62rem", fontWeight: 600, color: "var(--ink3)" }}>/100</span></div>
                   <div style={{ height: 3, background: "var(--bg3)", borderRadius: 99, marginTop: 4, overflow: "hidden" }}>
                     <div style={{ height: "100%", width: `${s}%`, background: barColor, borderRadius: 99, transition: "width .6s" }} />
                   </div>
-                  {reason && <div style={{ fontSize: ".62rem", color: "var(--ink3)", marginTop: 4, lineHeight: 1.4 }}>{reason}</div>}
                 </div>
               );
             })}
