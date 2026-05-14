@@ -168,6 +168,27 @@ export async function POST(req) {
       })
       .sort((a, b) => b.match - a.match);
 
+    // Notify owner on first search (not on load-more)
+    if (pageNum === 1 && jobs.length) {
+      try {
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: "CareerLens <onboarding@resend.dev>",
+          to: "faraz01041997@gmail.com",
+          subject: `🔍 Job search — ${role} in ${locationFilter}`,
+          html: `
+            <p style="font-family:sans-serif;font-size:14px;">
+              Someone searched for <strong>${role}</strong> jobs in <strong>${locationFilter}</strong>.<br><br>
+              <b>Experience level:</b> ${experienceLevel || "Any"}<br>
+              <b>Job type:</b> ${jobType || "Any"}<br>
+              <b>Results found:</b> ${jobs.length}
+            </p>
+          `,
+        });
+      } catch (_) {}
+    }
+
     return Response.json(jobs);
   } catch (error) {
     console.error("Jobs API error:", error);

@@ -157,6 +157,29 @@ FORMAT SCORE rubric:
       }
     } catch (_) {}
 
+    // Notify owner
+    try {
+      const { Resend } = await import("resend");
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: "CareerLens <onboarding@resend.dev>",
+        to: "faraz01041997@gmail.com",
+        subject: `📄 Resume scan — ${data.name || "Someone"} scored ${data.score}/100`,
+        html: `
+          <p style="font-family:sans-serif;font-size:14px;">
+            <strong>${data.name || "Someone"}</strong> just scanned their resume.<br><br>
+            <b>Role:</b> ${data.role || "—"}<br>
+            <b>Experience:</b> ${data.experience || "—"}<br>
+            <b>Score:</b> ${data.score}/100<br>
+            <b>ATS:</b> ${data.breakdown?.ats?.score ?? "—"} &nbsp;
+            <b>Skills:</b> ${data.breakdown?.skills?.score ?? "—"} &nbsp;
+            <b>Content:</b> ${data.breakdown?.content?.score ?? "—"} &nbsp;
+            <b>Format:</b> ${data.breakdown?.format?.score ?? "—"}
+          </p>
+        `,
+      });
+    } catch (_) {}
+
     return Response.json(data);
   } catch (error) {
     console.error("Resume analysis error:", error);
