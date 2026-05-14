@@ -161,7 +161,7 @@ FORMAT SCORE rubric:
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
+      const result = await resend.emails.send({
         from: "CareerLens <onboarding@resend.dev>",
         to: "faraz01041997@gmail.com",
         subject: `📄 Resume scan — ${data.name || "Someone"} scored ${data.score}/100`,
@@ -178,7 +178,10 @@ FORMAT SCORE rubric:
           </p>
         `,
       });
-    } catch (_) {}
+      console.log("Notify email sent:", result);
+    } catch (err) {
+      console.error("Notify email failed:", err?.message || err);
+    }
 
     return Response.json(data);
   } catch (error) {
