@@ -123,7 +123,7 @@ function buildEmail(sub, jobs) {
     ${jobCards}
 
     <div style="text-align:center;margin:24px 0;">
-      <a href="https://www.carrerlens.com/jobs" style="display:inline-block;background:#e85a2a;color:#fff;padding:13px 32px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;letter-spacing:-.01em;">
+      <a href="https://www.carrerlens.com/jobs?utm_source=email&utm_medium=alert&utm_campaign=job_match" style="display:inline-block;background:#e85a2a;color:#fff;padding:13px 32px;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;letter-spacing:-.01em;">
         See all your matches + match % →
       </a>
     </div>

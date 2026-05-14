@@ -2242,7 +2242,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               { label: "Market Fit", score: marketFit, icon: "📈", color: marketFit >= 70 ? "var(--green)" : "var(--amber)" },
             ];
             const worst = [...categories].sort((a,b) => a.score - b.score)[0];
-            const shareText = `🎯 My Placement Readiness: ${overall}%\n\n📄 Resume Quality: ${resumeScore}/100\n🏢 Interview Ready: ${interviewReady}/100\n💡 Skills: ${skillStrength}/100\n📈 Market Fit: ${marketFit}/100\n\nGet your score free → carrerlens.com`;
+            const shareText = `🎯 My Placement Readiness: ${overall}%\n\n📄 Resume Quality: ${resumeScore}/100\n🏢 Interview Ready: ${interviewReady}/100\n💡 Skills: ${skillStrength}/100\n📈 Market Fit: ${marketFit}/100\n\nGet your score free → carrerlens.com?utm_source=linkedin&utm_medium=social&utm_campaign=placement_share`;
             return (
               <ShareableCard title="🎯 Placement Readiness" shareText={shareText}>
                 <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 18 }}>
