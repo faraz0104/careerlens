@@ -16,3 +16,15 @@ CREATE OR REPLACE FUNCTION increment_resume_scans()
 RETURNS void AS $$
   UPDATE resume_stats SET value = value + 1 WHERE id = 'total_scans';
 $$ LANGUAGE sql SECURITY DEFINER;
+
+-- Pro access codes (run this to enable promo code gifting)
+CREATE TABLE IF NOT EXISTS pro_codes (
+  code       TEXT PRIMARY KEY,
+  note       TEXT,                        -- who you gave it to, e.g. "Niki LinkedIn"
+  redeemed   BOOLEAN NOT NULL DEFAULT false,
+  redeemed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Example: insert a code manually in Supabase SQL Editor like:
+-- INSERT INTO pro_codes (code, note) VALUES ('NIKI2026', 'Niki Avraam - LinkedIn feedback');

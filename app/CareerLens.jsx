@@ -3132,6 +3132,33 @@ function PricingPage({ isPro, setIsPro, showToast }) {
   const [emailInput, setEmailInput] = useState("");
   const [emailError, setEmailError] = useState("");
   const [isIndia, setIsIndia] = useState(true);
+  const [proCode, setProCode] = useState("");
+  const [codeLoading, setCodeLoading] = useState(false);
+
+  const redeemCode = async () => {
+    if (!proCode.trim()) return;
+    setCodeLoading(true);
+    try {
+      const res = await fetch("/api/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: proCode.trim() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem("cl_is_pro", "true");
+        setIsPro(true);
+        showToast("Pro access activated! Welcome ✦");
+        setProCode("");
+      } else {
+        showToast(data.error || "Invalid code");
+      }
+    } catch {
+      showToast("Something went wrong");
+    } finally {
+      setCodeLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/geo").then(r => r.json()).then(d => setIsIndia(d.isIndia)).catch(() => {});
@@ -3266,6 +3293,30 @@ function PricingPage({ isPro, setIsPro, showToast }) {
         </div>
       </div>
       <AdSlot type="rectangle" label="Advertisement" />
+
+      {/* PROMO CODE */}
+      {!isPro && (
+        <div style={{ marginTop: 32, textAlign: "center" }}>
+          <div style={{ fontSize: ".78rem", color: "var(--ink3)", marginBottom: 10 }}>Have an invite or promo code?</div>
+          <div style={{ display: "flex", gap: 8, justifyContent: "center", maxWidth: 340, margin: "0 auto" }}>
+            <input
+              type="text"
+              placeholder="Enter code"
+              value={proCode}
+              onChange={e => setProCode(e.target.value.toUpperCase())}
+              onKeyDown={e => e.key === "Enter" && redeemCode()}
+              style={{ flex: 1, padding: "9px 14px", borderRadius: "var(--r)", border: "1.5px solid var(--border)", fontSize: ".85rem", fontFamily: "var(--font-body)", letterSpacing: ".08em", textTransform: "uppercase", outline: "none" }}
+            />
+            <button
+              className="btn btn-primary"
+              onClick={redeemCode}
+              disabled={codeLoading || !proCode.trim()}
+              style={{ padding: "9px 18px", fontSize: ".85rem" }}>
+              {codeLoading ? "..." : "Apply"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* EMAIL PROMPT MODAL */}
       {emailPrompt && (
