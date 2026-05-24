@@ -2684,15 +2684,63 @@ function JobsPage({ resumeData, isPro, setPage, defaultJobRole }) {
 }
 
 /* INTERVIEW */
+const INTERVIEW_TOPICS = {
+  behavioral: [
+    "Leadership & Influence", "Conflict Resolution", "Failure & Learning",
+    "Teamwork & Collaboration", "Working Under Pressure", "Problem Solving",
+    "Innovation & Initiative", "Communication", "Adaptability & Change", "Career Growth",
+    "Prioritisation & Time Management", "Stakeholder Management", "Mentoring & Coaching",
+    "Ownership & Accountability", "Diversity & Inclusion",
+  ],
+  technical: [
+    "System Design", "Databases & SQL", "Networking & Web", "Data Structures",
+    "Algorithms & Complexity", "Cloud & DevOps", "Security & Auth", "API Design & REST",
+    "Performance & Scalability", "Architecture Patterns", "Microservices",
+    "Frontend Fundamentals", "Backend Fundamentals", "Testing & QA", "AI & Machine Learning",
+  ],
+  coding: [
+    "Arrays & Strings", "Linked Lists", "Trees & Graphs", "Dynamic Programming",
+    "Sorting & Searching", "Hash Maps", "Recursion & Backtracking", "Stacks & Queues",
+    "Bit Manipulation", "Two Pointers", "Sliding Window", "Greedy Algorithms",
+    "Heaps & Priority Queues", "Tries", "System Design Coding",
+  ],
+};
+
 function InterviewPage({ isPro, setPage }) {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [questionType, setQuestionType] = useState("behavioral");
+  const [selectedTopic, setSelectedTopic] = useState(null);
   const [expandedQ, setExpandedQ] = useState(null);
   const [aiAnswer, setAiAnswer] = useState({});
   const [loadingQ, setLoadingQ] = useState(null);
   const [generatedQs, setGeneratedQs] = useState({});
   const [generatingQs, setGeneratingQs] = useState(false);
+  const [topicQs, setTopicQs] = useState({});
+  const [loadingTopic, setLoadingTopic] = useState(null);
   const requestedQs = useRef(new Set());
+
+  const loadTopicQuestions = async (topic) => {
+    const key = `${questionType}-${topic}`;
+    if (topicQs[key]) { setSelectedTopic(topic); setExpandedQ(null); setPracticeQ(null); return; }
+    setLoadingTopic(topic);
+    setSelectedTopic(topic);
+    setExpandedQ(null);
+    setPracticeQ(null);
+    const companyCtx = selectedCompany ? ` as asked at ${selectedCompany.name}` : " at top Indian and global tech companies";
+    const codingExtra = questionType === "coding"
+      ? `, also add "difficulty": "easy|medium|hard" and "company": "Company name" to each`
+      : "";
+    const result = await callClaude(
+      "You are an expert interview question generator. Return ONLY a valid JSON array with no extra text or markdown.",
+      `Generate 12 ${questionType} interview questions on the topic "${topic}"${companyCtx}. Make them specific, realistic and varied in difficulty. Return ONLY a JSON array: [{"q":"question text","hint":"concise answer hint or approach"}${codingExtra}]`,
+      2000
+    );
+    try {
+      const match = result.match(/\[[\s\S]*\]/);
+      if (match) setTopicQs(prev => ({ ...prev, [key]: JSON.parse(match[0]) }));
+    } catch {}
+    setLoadingTopic(null);
+  };
 
   // Mock interview practice state
   const [practiceQ, setPracticeQ] = useState(null);
@@ -2763,9 +2811,12 @@ function InterviewPage({ isPro, setPage }) {
     setLoadingQ(null);
   };
 
-  const questions = selectedCompany && generatedQs[`${selectedCompany.id}-${questionType}`]
-    ? generatedQs[`${selectedCompany.id}-${questionType}`]
-    : MOCK_INTERVIEW_QS[questionType] || [];
+  const topicKey = selectedTopic ? `${questionType}-${selectedTopic}` : null;
+  const questions = topicKey && topicQs[topicKey]
+    ? topicQs[topicKey]
+    : selectedCompany && generatedQs[`${selectedCompany.id}-${questionType}`]
+      ? generatedQs[`${selectedCompany.id}-${questionType}`]
+      : MOCK_INTERVIEW_QS[questionType] || [];
 
   const FREE_Q_LIMIT = 5;
   const visibleQs = isPro ? questions : questions.slice(0, FREE_Q_LIMIT);
@@ -2801,18 +2852,41 @@ function InterviewPage({ isPro, setPage }) {
 
       <div className="tabs">
         {["behavioral","technical","coding"].map(t => (
-          <button key={t} className={`tab ${questionType===t?"active":""}`} onClick={() => setQuestionType(t)} style={{ textTransform: "capitalize" }}>{t}</button>
+          <button key={t} className={`tab ${questionType===t?"active":""}`} onClick={() => { setQuestionType(t); setSelectedTopic(null); setExpandedQ(null); setPracticeQ(null); }} style={{ textTransform: "capitalize" }}>{t}</button>
         ))}
+      </div>
+
+      {/* Topic browser */}
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: ".72rem", fontWeight: 700, color: "var(--ink3)", textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 8 }}>
+          Browse by topic — {INTERVIEW_TOPICS[questionType].length} topics · 12 questions each
+        </div>
+        <div style={{ overflowX: "auto", paddingBottom: 4 }}>
+          <div style={{ display: "flex", gap: 6, width: "max-content" }}>
+            <button onClick={() => { setSelectedTopic(null); setExpandedQ(null); setPracticeQ(null); }}
+              style={{ padding: "5px 13px", borderRadius: 99, fontSize: ".74rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", border: !selectedTopic ? "1.5px solid var(--accent)" : "1.5px solid var(--border2)", background: !selectedTopic ? "var(--accent-dim)" : "#fff", color: !selectedTopic ? "var(--accent)" : "var(--ink2)", transition: "all .12s" }}>
+              All questions
+            </button>
+            {INTERVIEW_TOPICS[questionType].map(topic => (
+              <button key={topic} onClick={() => loadTopicQuestions(topic)}
+                style={{ padding: "5px 13px", borderRadius: 99, fontSize: ".74rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", border: selectedTopic === topic ? "1.5px solid var(--accent)" : "1.5px solid var(--border2)", background: selectedTopic === topic ? "var(--accent-dim)" : "#fff", color: selectedTopic === topic ? "var(--accent)" : "var(--ink2)", transition: "all .12s", display: "flex", alignItems: "center", gap: 5 }}>
+                {loadingTopic === topic ? <span className="spin" style={{ width: 10, height: 10, borderWidth: 1.5, color: "var(--accent)" }} /> : null}
+                {topic}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="two-col">
         <div>
-          {generatingQs && (
+          {(generatingQs || loadingTopic) && (
             <div style={{ textAlign: "center", padding: "32px", color: "var(--ink2)", fontSize: ".85rem" }}>
-              <span className="spin" style={{ color: "var(--accent)" }} /> &nbsp;Generating real {selectedCompany?.name} questions...
+              <span className="spin" style={{ color: "var(--accent)" }} /> &nbsp;
+              {loadingTopic ? `Loading "${loadingTopic}" questions...` : `Generating real ${selectedCompany?.name} questions...`}
             </div>
           )}
-          {!generatingQs && visibleQs.map((q, i) => (
+          {!generatingQs && !loadingTopic && visibleQs.map((q, i) => (
             <div key={i} className="question-card">
               <div className="q-top">
                 <div className="q-num">{i+1}</div>
@@ -2909,7 +2983,7 @@ function InterviewPage({ isPro, setPage }) {
             </div>
           ))}
 
-          {!isPro && lockedQsCount > 0 && !generatingQs && (
+          {!isPro && lockedQsCount > 0 && !generatingQs && !loadingTopic && (
             <div style={{ border: "1px solid var(--border)", borderRadius: "var(--r2)", padding: "20px", textAlign: "center", background: "var(--bg2)", marginTop: 8 }}>
               <div style={{ fontSize: "1.2rem", marginBottom: 6 }}>🔒</div>
               <div style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: ".9rem", marginBottom: 4 }}>{lockedQsCount} more questions locked</div>
