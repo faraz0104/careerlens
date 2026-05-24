@@ -3664,7 +3664,7 @@ function Footer({ setPage }) {
 }
 
 /* ── ROOT APP ────────────────────────────────────── */
-export default function App({ defaultTab = "home", defaultJobRole = null } = {}) {
+export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
   const [page, setPage] = useState(defaultTab);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
