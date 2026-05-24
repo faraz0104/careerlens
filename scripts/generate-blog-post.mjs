@@ -128,7 +128,8 @@ CONTENT REQUIREMENTS:
 - End with an "## FAQ" section with 3-4 questions and answers (these rank as featured snippets)
 - Last section should be "## Bottom Line" with 3-5 bullet point takeaways
 - Naturally mention CareerLens once or twice where it genuinely helps (e.g., "you can check your salary benchmark on CareerLens" or "run your resume through CareerLens to see your ATS score")
-- NO keyword stuffing — write naturally, mention the topic keyword 3-5 times`;
+- NO keyword stuffing — write naturally, mention the topic keyword 3-5 times
+- CRITICAL: Never write "<" followed immediately by a number (e.g. write "less than 2%" NOT "<2%", write "under 10%" NOT "<10%"). This breaks the MDX parser and will cause a build failure.`;
 
   console.log("Calling Claude API to generate blog post...");
 

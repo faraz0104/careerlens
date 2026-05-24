@@ -39,6 +39,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   );
 
+  const jobCategories = [
+    "software-engineer-jobs-india", "frontend-developer-jobs-india",
+    "backend-developer-jobs-india", "data-scientist-jobs-india",
+    "product-manager-jobs-india", "devops-jobs-india",
+    "digital-marketing-jobs-india", "ux-designer-jobs-india",
+    "finance-jobs-india", "hr-jobs-india",
+  ];
+  const jobCategoryPages: MetadataRoute.Sitemap = jobCategories.map((cat) => ({
+    url: `${base}/jobs/${cat}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.85,
+  }));
+
   const posts = getAllPosts();
   const categories = getAllCategories();
 
@@ -60,5 +74,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...appPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
+  return [...appPages, ...jobCategoryPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
 }

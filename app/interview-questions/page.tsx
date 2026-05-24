@@ -3,12 +3,12 @@ import Link from "next/link";
 import { ALL_TECHS } from "@/lib/interview-data";
 
 export const metadata: Metadata = {
-  title: "Interview Questions – Free Study Guide for Every Technology (2025) | CareerLens",
-  description: "Free interview questions and answers for React, JavaScript, Java, Python, Node.js, SQL, TypeScript, System Design, DSA, HTML & CSS, and Angular. Crack your next tech interview.",
+  title: "Interview Questions – Free Study Guide for Every Technology 2026 | CareerLens",
+  description: "Free interview questions and answers for React, JavaScript, Java, Python, Node.js, SQL, TypeScript, System Design, DSA, HTML & CSS, and Angular. Updated 2026. Crack your next tech interview.",
   alternates: { canonical: "https://www.carrerlens.com/interview-questions" },
   openGraph: {
-    title: "Interview Questions – Free Study Guide for Every Technology (2025)",
-    description: "Free interview Q&A for React, JavaScript, Java, Python, Node.js, SQL, TypeScript, System Design, DSA, and more. Updated for 2025.",
+    title: "Interview Questions – Free Study Guide for Every Technology 2026",
+    description: "Free interview Q&A for React, JavaScript, Java, Python, Node.js, SQL, TypeScript, System Design, DSA, and more. Updated for 2026.",
     url: "https://www.carrerlens.com/interview-questions",
   },
 };
@@ -37,7 +37,7 @@ export default function InterviewQuestionsIndex() {
       <div style={{ background: "#1a1916", padding: "48px 2rem 56px", textAlign: "center" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".72rem", fontWeight: 700, letterSpacing: ".07em", textTransform: "uppercase", color: "#e85a2a", background: "rgba(232,90,42,.15)", border: "1px solid rgba(232,90,42,.3)", padding: "4px 12px", borderRadius: 99, marginBottom: 18 }}>
-            ✦ Free for Indian Job Seekers · Updated 2025
+            ✦ Free for Indian Job Seekers · Updated 2026
           </div>
           <h1 style={{ color: "#f7f6f2", fontWeight: 800, fontSize: "clamp(1.8rem, 4vw, 2.6rem)", letterSpacing: "-.04em", lineHeight: 1.15, margin: "0 0 16px" }}>
             Interview Questions &amp; Answers

@@ -25,6 +25,38 @@ export const metadata: Metadata = {
   },
 };
 
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Is CareerLens free to use?",
+      acceptedAnswer: { "@type": "Answer", text: "Yes, CareerLens has a free plan that includes resume ATS scanning, basic job matching, and interview questions. The Pro plan (₹299/month) unlocks unlimited scans, AI cover letter generation, resume tailoring per job description, salary negotiation scripts, and all interview questions." },
+    },
+    {
+      "@type": "Question",
+      name: "What does CareerLens Pro include?",
+      acceptedAnswer: { "@type": "Answer", text: "CareerLens Pro includes: unlimited resume scans, AI cover letter for any job, resume tailored to job description, cold email to hiring manager, salary negotiation script, 15+ personalised job matches with exact match %, all company interview questions with AI model answers, and a personalised career roadmap." },
+    },
+    {
+      "@type": "Question",
+      name: "How much does CareerLens cost?",
+      acceptedAnswer: { "@type": "Answer", text: "CareerLens Pro costs ₹299 per month or ₹1,999 per year (save 44%). There is no free trial but you can use the free plan indefinitely with basic features." },
+    },
+    {
+      "@type": "Question",
+      name: "Can I cancel CareerLens Pro anytime?",
+      acceptedAnswer: { "@type": "Answer", text: "Yes, you can cancel CareerLens Pro at any time. There are no lock-in contracts or hidden fees." },
+    },
+  ],
+};
+
 export default function PricingPage() {
-  return <App defaultTab="pricing" />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <App defaultTab="pricing" />
+    </>
+  );
 }
