@@ -2694,6 +2694,40 @@ function InterviewPage({ isPro, setPage }) {
   const [generatingQs, setGeneratingQs] = useState(false);
   const requestedQs = useRef(new Set());
 
+  // Mock interview practice state
+  const [practiceQ, setPracticeQ] = useState(null);
+  const [practiceAnswers, setPracticeAnswers] = useState({});
+  const [practiceFeedback, setPracticeFeedback] = useState({});
+  const [practiceLoading, setPracticeLoading] = useState(null);
+  const [practiceHistory, setPracticeHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("cl_practice_history") || "[]"); } catch { return []; }
+  });
+
+  const getFeedback = async (q, idx) => {
+    const answer = practiceAnswers[idx];
+    if (!answer?.trim()) return;
+    setPracticeLoading(idx);
+    const prompt = questionType === "behavioral"
+      ? `Interview question: "${q.q}"\n\nCandidate answer: "${answer}"\n\nScore using STAR method. Return ONLY valid JSON:\n{"score":7,"good":"one sentence on what they did well","missing":"one sentence on what was missing","better":"rewrite the weak part better in 2-3 sentences"}`
+      : `Technical question: "${q.q}"\n\nCandidate answer: "${answer}"\n\nEvaluate the answer. Return ONLY valid JSON:\n{"score":7,"good":"what concepts they got right","missing":"key concepts that were missing","better":"the complete correct explanation in 2-3 sentences"}`;
+    const result = await callClaude(
+      "You are a senior interviewer scoring a candidate's answer. Be specific and constructive. Return ONLY valid JSON, no markdown.",
+      prompt, 600
+    );
+    try {
+      const match = result.match(/\{[\s\S]*\}/);
+      if (match) {
+        const fb = JSON.parse(match[0]);
+        setPracticeFeedback(prev => ({ ...prev, [idx]: fb }));
+        const entry = { question: q.q, answer, score: fb.score, date: new Date().toISOString(), type: questionType };
+        const newHistory = [entry, ...practiceHistory].slice(0, 20);
+        setPracticeHistory(newHistory);
+        localStorage.setItem("cl_practice_history", JSON.stringify(newHistory));
+      }
+    } catch {}
+    setPracticeLoading(null);
+  };
+
   useEffect(() => {
     if (!selectedCompany) return;
     const key = `${selectedCompany.id}-${questionType}`;
@@ -2786,20 +2820,90 @@ function InterviewPage({ isPro, setPage }) {
                 {q.difficulty && <span className={`tag difficulty-${q.difficulty}`}>{q.difficulty}</span>}
                 {q.company && <span className="tag tag-blue">{q.company}</span>}
               </div>
-              <div style={{ display: "flex", gap: 6, marginLeft: 34 }}>
+              <div style={{ display: "flex", gap: 6, marginLeft: 34, flexWrap: "wrap" }}>
                 <button className="btn btn-sm btn-ghost" onClick={() => setExpandedQ(expandedQ === i ? null : i)}>
                   {expandedQ === i ? "Hide hint" : "Show hint"}
                 </button>
+                {questionType !== "coding" && (
+                  <button className="btn btn-sm" onClick={() => { setPracticeQ(practiceQ === i ? null : i); setPracticeFeedback(prev => ({ ...prev, [i]: null })); }}
+                    style={{ background: practiceQ === i ? "var(--accent)" : "var(--accent-dim)", color: practiceQ === i ? "#fff" : "var(--accent)", border: "1px solid rgba(232,90,42,.3)" }}>
+                    {practiceQ === i ? "✕ Close" : "✍ Practice"}
+                  </button>
+                )}
                 {isPro && (
                   <button className="btn btn-sm btn-green" onClick={() => getAIAnswer(q, i)} disabled={loadingQ === i}>
-                    {loadingQ === i ? <><span className="spin" />Loading...</> : "✦ AI model answer"}
+                    {loadingQ === i ? <><span className="spin" />Loading...</> : "✦ AI answer"}
                   </button>
                 )}
               </div>
+
               {expandedQ === i && (
                 <div className="q-answer">
                   <strong>💡 Hint:</strong> {q.hint}
                   {aiAnswer[i] && <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid var(--border)" }}><strong>✦ AI Answer:</strong> {aiAnswer[i]}</div>}
+                </div>
+              )}
+
+              {/* Practice mode */}
+              {practiceQ === i && (
+                <div style={{ marginTop: 12, marginLeft: 34 }}>
+                  <textarea
+                    placeholder={questionType === "behavioral"
+                      ? "Type your answer using the STAR method — Situation, Task, Action, Result..."
+                      : "Explain your answer clearly — concepts, examples, trade-offs..."}
+                    value={practiceAnswers[i] || ""}
+                    onChange={e => setPracticeAnswers(prev => ({ ...prev, [i]: e.target.value }))}
+                    rows={5}
+                    style={{ width: "100%", padding: "10px 13px", borderRadius: "var(--r)", border: "1.5px solid var(--border2)", fontSize: ".83rem", fontFamily: "var(--font-body)", color: "var(--ink)", background: "var(--bg)", resize: "vertical", lineHeight: 1.6 }}
+                  />
+                  <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                    <button className="btn btn-primary btn-sm"
+                      onClick={() => getFeedback(q, i)}
+                      disabled={practiceLoading === i || !practiceAnswers[i]?.trim()}>
+                      {practiceLoading === i ? <><span className="spin" /> Analysing...</> : "Get feedback →"}
+                    </button>
+                    <span style={{ fontSize: ".72rem", color: "var(--ink3)", alignSelf: "center" }}>
+                      {(practiceAnswers[i] || "").trim().split(/\s+/).filter(Boolean).length} words
+                    </span>
+                  </div>
+
+                  {/* Feedback card */}
+                  {practiceFeedback[i] && (
+                    <div style={{ marginTop: 12, border: "1.5px solid var(--border2)", borderRadius: "var(--r2)", overflow: "hidden" }}>
+                      {/* Score header */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: practiceFeedback[i].score >= 7 ? "var(--green-dim)" : practiceFeedback[i].score >= 5 ? "var(--amber-dim)" : "var(--red-dim)", borderBottom: "1px solid var(--border)" }}>
+                        <div style={{ fontFamily: "var(--font-head)", fontWeight: 900, fontSize: "1.6rem", color: practiceFeedback[i].score >= 7 ? "var(--green)" : practiceFeedback[i].score >= 5 ? "var(--amber)" : "var(--red)", lineHeight: 1 }}>
+                          {practiceFeedback[i].score}<span style={{ fontSize: ".7rem", fontWeight: 600, color: "var(--ink3)" }}>/10</span>
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: ".85rem" }}>
+                            {practiceFeedback[i].score >= 8 ? "Strong answer 🎯" : practiceFeedback[i].score >= 6 ? "Good — room to sharpen" : "Needs more depth"}
+                          </div>
+                          <div style={{ fontSize: ".72rem", color: "var(--ink2)" }}>
+                            {questionType === "behavioral" ? "STAR method score" : "Technical accuracy score"}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+                        <div style={{ fontSize: ".8rem", lineHeight: 1.6 }}>
+                          <span style={{ color: "var(--green)", fontWeight: 700 }}>✓ What worked: </span>
+                          <span style={{ color: "var(--ink2)" }}>{practiceFeedback[i].good}</span>
+                        </div>
+                        <div style={{ fontSize: ".8rem", lineHeight: 1.6 }}>
+                          <span style={{ color: "var(--red)", fontWeight: 700 }}>✗ Missing: </span>
+                          <span style={{ color: "var(--ink2)" }}>{practiceFeedback[i].missing}</span>
+                        </div>
+                        <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "var(--r)", padding: "10px 12px", fontSize: ".8rem", lineHeight: 1.7 }}>
+                          <div style={{ fontSize: ".7rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: ".06em", marginBottom: 5 }}>✦ Stronger version</div>
+                          <span style={{ color: "var(--ink2)" }}>{practiceFeedback[i].better}</span>
+                        </div>
+                        <button className="btn btn-ghost btn-sm" style={{ alignSelf: "flex-start" }}
+                          onClick={() => { setPracticeAnswers(prev => ({ ...prev, [i]: "" })); setPracticeFeedback(prev => ({ ...prev, [i]: null })); }}>
+                          Try again
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -2822,6 +2926,32 @@ function InterviewPage({ isPro, setPage }) {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* Practice history */}
+          {practiceHistory.length > 0 && (
+            <div className="card">
+              <div className="card-head">
+                <div className="card-title">Practice history</div>
+                <span style={{ fontSize: ".7rem", color: "var(--ink3)" }}>{practiceHistory.length} sessions</span>
+              </div>
+              <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {practiceHistory.slice(0, 5).map((h, i) => (
+                  <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "6px 0", borderBottom: "1px solid var(--border)" }}>
+                    <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".9rem", color: h.score >= 7 ? "var(--green)" : h.score >= 5 ? "var(--amber)" : "var(--red)", flexShrink: 0, minWidth: 28 }}>{h.score}/10</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: ".74rem", fontWeight: 600, color: "var(--ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{h.question.slice(0, 42)}…</div>
+                      <div style={{ fontSize: ".67rem", color: "var(--ink3)", marginTop: 1 }}>{h.type} · {new Date(h.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
+                    </div>
+                  </div>
+                ))}
+                {practiceHistory.length > 0 && (
+                  <div style={{ fontSize: ".72rem", color: "var(--ink3)", textAlign: "center", paddingTop: 4 }}>
+                    Avg score: <strong style={{ color: "var(--ink)" }}>{(practiceHistory.reduce((a, h) => a + h.score, 0) / practiceHistory.length).toFixed(1)}/10</strong>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="card">
             <div className="card-head"><div className="card-title">Interview tips</div></div>
             <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
