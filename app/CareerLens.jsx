@@ -2359,9 +2359,10 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
 }
 
 /* JOBS */
-function JobsPage({ resumeData, isPro, setPage }) {
-  const [searchInput, setSearchInput] = useState(resumeData?.role || "Software Engineer");
-  const [searchQuery, setSearchQuery] = useState(resumeData?.role || "Software Engineer");
+function JobsPage({ resumeData, isPro, setPage, defaultJobRole }) {
+  const initRole = defaultJobRole || resumeData?.role || "Software Engineer";
+  const [searchInput, setSearchInput] = useState(initRole);
+  const [searchQuery, setSearchQuery] = useState(initRole);
   const [locationFilter, setLocationFilter] = useState("India");
   const [freshness, setFreshness] = useState("");
   const [jobType, setJobType] = useState("");
@@ -2454,8 +2455,38 @@ function JobsPage({ resumeData, isPro, setPage }) {
 
   const LOCS = ["India","Bangalore","Hyderabad","Pune","Mumbai","Chennai","Delhi NCR","Remote"];
 
+  const DOMAINS = [
+    { label:"⚙️ Engineering", q:"Software Engineer" },
+    { label:"🎨 Design / UX", q:"UI UX Designer" },
+    { label:"📊 Data & AI", q:"Data Scientist" },
+    { label:"📦 DevOps / Cloud", q:"DevOps Engineer" },
+    { label:"📱 Mobile", q:"Mobile Developer" },
+    { label:"🚀 Product", q:"Product Manager" },
+    { label:"📣 Marketing", q:"Digital Marketing Manager" },
+    { label:"💰 Finance", q:"Finance Analyst" },
+    { label:"🤝 Sales / BD", q:"Business Development" },
+    { label:"🧑‍💼 HR", q:"HR Manager" },
+    { label:"⚖️ Legal", q:"Legal Counsel" },
+    { label:"🏗️ Operations", q:"Operations Manager" },
+  ];
+
   return (
     <div className="page">
+      {/* Domain category pills */}
+      <div style={{ overflowX:"auto", marginBottom:12, paddingBottom:4 }}>
+        <div style={{ display:"flex", gap:7, width:"max-content" }}>
+          {DOMAINS.map(d => (
+            <button key={d.q} onClick={() => { setSearchInput(d.q); setSearchQuery(d.q); }}
+              style={{
+                padding:"6px 14px", borderRadius:99, fontSize:".75rem", fontWeight:600, cursor:"pointer", whiteSpace:"nowrap",
+                border: searchQuery === d.q ? "1.5px solid var(--accent)" : "1.5px solid var(--border2)",
+                background: searchQuery === d.q ? "var(--accent-dim)" : "#fff",
+                color: searchQuery === d.q ? "var(--accent)" : "var(--ink2)", transition:"all .12s",
+              }}>{d.label}</button>
+          ))}
+        </div>
+      </div>
+
       {/* Search bar */}
       <div style={{ background:"#fff", border:"1.5px solid var(--border2)", borderRadius:"var(--r2)", padding:"12px 16px", marginBottom:14, display:"flex", gap:10, alignItems:"center", boxShadow:"var(--shadow)" }}>
         <span style={{ fontSize:"1rem", flexShrink:0 }}>🔍</span>
@@ -2563,13 +2594,18 @@ function JobsPage({ resumeData, isPro, setPage }) {
                     ))}
                   </div>
                   {job.why && <div style={{ fontSize:".73rem", color:"var(--green)", fontWeight:500, marginBottom:9 }}>✓ {job.why}</div>}
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
                     <span style={{ fontSize:".72rem", color:postedTextColor(job.posted), fontWeight:600 }}>
                       {postedDot(job.posted)} {job.posted || "Recently"}
                     </span>
-                    <button className="btn btn-primary btn-sm" onClick={e => { e.stopPropagation(); window.open(job.apply_url || `https://www.naukri.com/jobs-in-india?k=${encodeURIComponent(job.title)}`, "_blank", "noopener,noreferrer"); }}>
+                    <a href={job.apply_url || `https://www.naukri.com/jobs-in-india?k=${encodeURIComponent(job.title)}`}
+                      target="_blank" rel="noopener noreferrer"
+                      style={{ display:"inline-flex", alignItems:"center", gap:5, background:"var(--accent)", color:"#fff", padding:"7px 16px", borderRadius:"var(--r)", fontSize:".78rem", fontWeight:700, textDecoration:"none", boxShadow:"0 2px 8px var(--accent-glow)", transition:"all .15s", whiteSpace:"nowrap" }}
+                      onMouseEnter={e => e.currentTarget.style.transform="translateY(-1px)"}
+                      onMouseLeave={e => e.currentTarget.style.transform="none"}
+                    >
                       Apply now →
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -3498,7 +3534,7 @@ function Footer({ setPage }) {
 }
 
 /* ── ROOT APP ────────────────────────────────────── */
-export default function App({ defaultTab = "home" } = {}) {
+export default function App({ defaultTab = "home", defaultJobRole = null } = {}) {
   const [page, setPage] = useState(defaultTab);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -3596,7 +3632,7 @@ export default function App({ defaultTab = "home" } = {}) {
         <main style={{ flex: 1 }}>
           {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} totalScans={totalScans} onScanComplete={fetchStats} />}
           {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} setPage={navigate} totalScans={totalScans} onScanComplete={fetchStats} />}
-          {page === "jobs" && <JobsPage resumeData={resumeData} isPro={isPro} setPage={navigate} />}
+          {page === "jobs" && <JobsPage resumeData={resumeData} isPro={isPro} setPage={navigate} defaultJobRole={defaultJobRole} />}
           {page === "interview" && <InterviewPage isPro={isPro} setPage={navigate} />}
           {page === "coding" && <CodingPage isPro={isPro} />}
           {page === "salary" && <SalaryPage resumeData={resumeData} isPro={isPro} showToast={showToast} />}
