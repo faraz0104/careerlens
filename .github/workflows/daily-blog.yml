@@ -1,9 +1,9 @@
-name: Daily Blog Post Generator
+name: Weekly Blog Post Generator
 
 on:
   schedule:
-    # 7:00 AM IST = 01:30 UTC
-    - cron: "30 1 * * *"
+    # Every Monday 7:00 AM IST = 01:30 UTC
+    - cron: "30 1 * * 1"
   workflow_dispatch: # Allow manual trigger from GitHub UI
 
 permissions:
@@ -44,5 +44,5 @@ jobs:
             exit 0
           fi
           DATE=$(date -u '+%Y-%m-%d')
-          git commit -m "blog: auto-publish daily post $DATE"
+          git commit -m "blog: auto-publish weekly post $DATE"
           git push origin master
