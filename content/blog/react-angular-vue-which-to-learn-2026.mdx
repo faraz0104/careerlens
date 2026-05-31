@@ -18,15 +18,15 @@ Three major frontend frameworks, limited learning time, and a job market that re
 
 ## The Job Market Reality: React Dominates, But Others Have Niches
 
-In India's current job market, React appears in approximately 60% of frontend job postings, Angular in 25%, and Vue in 10-15%. On a global scale (international remote or relocation), React's dominance is even higher — roughly 65-70% of frontend roles at US and European product companies use React or React-based frameworks (Next.js, Remix, Gatsby).
+In India's current job market, React appears in approximately **60% of frontend job postings**, Angular in **25%**, and Vue in **10-15%**. On a global scale (international remote or relocation), React's dominance is even higher — roughly **65-70% of frontend roles** at US and European product companies use React or React-based frameworks (Next.js, Remix, Gatsby).
 
-But raw numbers can be misleading. Angular has very strong demand in enterprise and large Indian IT companies — TCS, Infosys, Cognizant, and their enterprise clients often standardize on Angular for large-scale applications. Vue, while smaller in market share, powers several large Indian tech companies and is significantly popular in Southeast Asian and Chinese tech ecosystems, which matters for remote work.
+But raw numbers can be misleading. Angular has very strong demand in enterprise and large Indian IT companies — **TCS, Infosys, Cognizant**, and their enterprise clients often standardize on Angular for large-scale applications. Vue, while smaller in market share, powers several large Indian tech companies and is significantly popular in Southeast Asian and Chinese tech ecosystems, which matters for remote work.
 
 ## React: Best for Startups, Product Companies, and Flexibility
 
 React isn't really a framework — it's a UI library that you assemble into a framework using ecosystem choices (React Router, Redux/Zustand, React Query, styled-components/Tailwind). This flexibility is its strength and weakness. Teams have to make architectural decisions that Angular makes for you, but you're not locked into Angular's opinions.
 
-React with Next.js (the full-stack meta-framework) is the de facto standard for modern web applications in India's startup ecosystem. If you're targeting Razorpay, CRED, Swiggy, Meesho, Zepto, Groww, or any funded startup, React is what their frontend runs on. Learning React properly — hooks, state management, performance patterns, Next.js App Router, TypeScript — takes 3-4 months of dedicated effort but opens the widest set of doors.
+React with **Next.js** (the full-stack meta-framework) is the de facto standard for modern web applications in India's startup ecosystem. If you're targeting **Razorpay, CRED, Swiggy, Meesho, Zepto, Groww**, or any funded startup, React is what their frontend runs on. Learning React properly — hooks, state management, performance patterns, Next.js App Router, TypeScript — takes **3-4 months** of dedicated effort but opens the widest set of doors.
 
 ## Angular: Best for Enterprise and Large-Scale Applications
 
@@ -42,12 +42,84 @@ Vue is widely regarded as the easiest of the three to learn — its template syn
 
 Vue's market niche in India: used significantly at companies with strong Southeast Asian or Chinese tech ties, popular among freelancers and indie developers for its simplicity, and appears in some Laravel (PHP) ecosystems since they pair well. If you're building projects for freelancing clients, Vue can be easier to prototype with quickly than React. However, the Indian job market demand is significantly lower — a Vue-only developer has fewer options than a React developer with equivalent experience.
 
+## Salary Comparison: What Each Framework Actually Pays in India
+
+Numbers matter when you're choosing what to learn. Based on aggregated 2025 data from product companies and startups, here's roughly what each framework commands at different experience levels:
+
+**React developers** (0-2 years): **₹6-12 LPA** at startups, **₹4-7 LPA** at service companies. With Next.js and TypeScript on the resume, the upper band stretches to **₹14-16 LPA** at well-funded startups like CRED, Razorpay, and Groww. Mid-level React engineers (3-5 years) earn **₹18-32 LPA**, and senior React engineers with system design skills routinely cross **₹40-55 LPA** at companies like PhonePe, Swiggy, and Meesho.
+
+**Angular developers** (0-2 years): **₹4-8 LPA** at TCS, Infosys, Wipro, and Cognizant. The catch — enterprise Angular salaries scale more slowly. A 5-year Angular developer at a typical IT services firm earns **₹12-18 LPA**, while a 5-year React developer at a product company earns **₹25-35 LPA**. The exception: Angular developers at product MNCs like SAP Labs, Oracle, and Cisco India can earn **₹28-45 LPA** at the senior level.
+
+**Vue developers** (0-2 years): **₹5-9 LPA**, but the sample size is small. Senior Vue roles are rare in India, so most experienced Vue developers eventually pick up React. Before you commit to any framework, [benchmark salary](/salary) against your specific city and target companies — Bangalore React salaries run **30-40% higher** than the same role in Pune or Hyderabad.
+
+## What Actually Goes on Your Resume: Skills That Get Interviews
+
+Listing 'React' on your resume in 2026 means almost nothing — recruiters at product companies have seen thousands of resumes with the same line. What gets you shortlisted is the **specific depth** you can demonstrate.
+
+For React, recruiters scan for: **hooks (useEffect, useMemo, useCallback)**, **state management (Redux Toolkit, Zustand, or Jotai)**, **server-side rendering with Next.js App Router**, **React Query or SWR for data fetching**, **TypeScript with strict mode**, and **testing (Jest, React Testing Library, Playwright)**. Bonus signals: experience with **micro-frontends**, **Module Federation**, or **performance profiling using React DevTools**.
+
+For Angular, the depth markers are: **RxJS operators (switchMap, mergeMap, debounceTime)**, **NgRx with effects and selectors**, **Angular Universal for SSR**, **standalone components (Angular 17+)**, **Angular Signals**, and **lazy loading with route guards**. Senior Angular roles also test **change detection strategies** and **OnPush optimization**.
+
+A common mistake — listing every framework you've touched. A resume saying 'React, Angular, Vue, Svelte, Solid.js' tells recruiters you're shallow in all of them. Pick one, go deep, build 2-3 real projects, and write about specific problems you solved. If you're unsure how your resume reads to an ATS, [check ATS score](/resume) before sending it out — most candidates lose interviews to formatting issues, not skill gaps.
+
+## The Learning Roadmap: What to Study and in What Order
+
+Most self-taught developers waste 3-4 months learning the wrong things in the wrong order. Here's a tighter path.
+
+**Month 1 — JavaScript fundamentals (non-negotiable):** ES6+ syntax, closures, promises, async/await, fetch API, destructuring, the event loop, prototypes, and `this` binding. If you skip this and jump straight to React, you'll hit walls in every interview. Build 3-4 vanilla JS projects: a todo app with localStorage, a weather app using a public API, and a quiz app.
+
+**Month 2 — Framework basics:** For React, learn JSX, components, props, state, hooks (useState, useEffect, useRef), conditional rendering, lists, forms, and React Router. Build a movie search app and an expense tracker. For Angular, focus on components, modules, services, dependency injection, the router, and basic forms.
+
+**Month 3 — Intermediate depth:** Add TypeScript, a state management library (Redux Toolkit for React, NgRx for Angular), data fetching patterns, and basic testing. Rebuild one of your earlier projects in TypeScript.
+
+**Month 4 — Production-grade skills:** Next.js (for React), SSR/SSG concepts, authentication (JWT, NextAuth), database integration with Prisma, deployment on Vercel/Netlify, performance optimization, and accessibility. Build a full-stack project — a blog platform, a job board, or a SaaS dashboard.
+
+By the end of Month 4, you should have **2-3 deployed projects** with GitHub repos, README files, and live URLs. This is the portfolio that gets you interviews. After that, start applying — [browse jobs](/jobs) that match your stack, and [practice interviews](/interview) with a mock coding round before real interviews.
+
+## Common Mistakes Frontend Developers Make in Their First 2 Years
+
+**Mistake 1: Chasing every new framework.** SvelteKit, SolidJS, Qwik, Astro — new frameworks launch every quarter. Unless you already have a senior role, jumping between them dilutes your depth. Pick React or Angular, build 5+ production-grade projects, then explore others.
+
+**Mistake 2: Ignoring CSS and accessibility.** 'Frontend developer who can't center a div' is still a meme because it's still true. Strong CSS skills (Flexbox, Grid, responsive design, animations) and accessibility knowledge (ARIA, semantic HTML, keyboard navigation) separate seniors from juniors more than framework knowledge does.
+
+**Mistake 3: No system design preparation.** At **₹20+ LPA** roles, interviews stop being about React syntax and start being about — 'design Instagram's feed', 'how would you build infinite scroll for 10 million items', 'how do you handle real-time notifications'. Most developers prepare zero hours for this and lose offers.
+
+**Mistake 4: Weak DSA at product companies.** Even for frontend roles at Swiggy, Flipkart, PhonePe, and Razorpay, the first round is usually a DSA round — arrays, strings, hashmaps, two pointers, sliding window, basic trees. Spend at least **150 hours on LeetCode (Easy + Medium)** before applying.
+
+**Mistake 5: Not contributing to open source.** A single meaningful pull request merged into a popular library (React Query, Material UI, Ant Design) is worth more on your resume than a dozen tutorial projects. It signals you can read unfamiliar code and ship to production.
+
 ## The Honest Recommendation for 2026
 
-For freshers and career switchers targeting Indian product companies, startups, or international remote roles: Learn React. The job density, salary premium, and long-term career options are highest. Pair it with TypeScript and Next.js to maximize employability. Start with React → hooks → React Router → TypeScript → Next.js — this sequence takes 3-4 months of consistent practice.
+For freshers and career switchers targeting Indian product companies, startups, or international remote roles: **Learn React.** The job density, salary premium, and long-term career options are highest. Pair it with TypeScript and Next.js to maximize employability. Start with React → hooks → React Router → TypeScript → Next.js — this sequence takes 3-4 months of consistent practice.
 
-For those specifically targeting large enterprise IT or MNC careers with Angular already in their codebase: Angular is worth investing in. Angular + TypeScript + RxJS is a solid, in-demand combination at TCS Digital, Infosys Cobalt, and enterprise product companies.
+For those specifically targeting large enterprise IT or MNC careers with Angular already in their codebase: Angular is worth investing in. **Angular + TypeScript + RxJS** is a solid, in-demand combination at TCS Digital, Infosys Cobalt, and enterprise product companies.
 
 For anyone currently in a Vue job or with Vue already on their resume: keep it, but add React. The combination 'Vue + React' is stronger than 'Vue only' in the current market.
 
 Final note: the framework you choose matters far less than how deeply you understand it. A React developer who truly understands re-rendering, state management patterns, performance optimization, and the Next.js rendering modes is more employable than someone who has 'used' all three frameworks at a surface level.
+
+## Frequently Asked Questions
+
+**Q: Can I learn React without knowing JavaScript deeply first?**
+
+Technically yes, practically no. You'll get a basic todo app working, but you'll hit a wall the moment interviewers ask about closures, the event loop, or why a state update isn't reflecting. Every senior frontend interview includes JavaScript fundamentals — questions on `this` binding, promises, async/await, debouncing, and prototypal inheritance. Spend at least **3-4 weeks** on solid JavaScript before touching any framework. Resources like JavaScript.info, Eloquent JavaScript, and Kyle Simpson's 'You Don't Know JS' series are worth more than any React tutorial. Skipping fundamentals is the single biggest reason developers stay stuck at the **₹6-8 LPA** band.
+
+**Q: Should I learn Next.js as a beginner or stick with plain React first?**
+
+Learn plain React first — but only for **4-6 weeks**, not months. Get comfortable with components, hooks, props, state, and basic routing using React Router. Then immediately move to Next.js because **90% of production React jobs** in India now use Next.js or a similar meta-framework. Jumping to Next.js too early confuses server vs client components, but staying on plain React too long leaves you unprepared for real codebases. The sweet spot — build one small project in plain React (a calculator, a todo app), then move to Next.js for everything after.
+
+**Q: Is it worth learning Angular in 2026 if I'm starting fresh?**
+
+Only if you have a specific target — a job at TCS, Infosys, Wipro, Cognizant, or an enterprise product company like SAP Labs, Oracle, or Cisco India where Angular is the standard. For startups, product companies, and international remote roles, React has **2-3x more openings** at every experience level. That said, Angular roles tend to be more stable (less framework churn), pay competitively at MNCs, and have less competition since fewer freshers learn it. If you already have a campus offer requiring Angular, lean in. If you're choosing from scratch with no constraint, React is the safer bet.
+
+**Q: How many projects do I need on GitHub to get my first frontend job?**
+
+Quality beats quantity. **3 well-built projects** beat 15 tutorial clones. Each project should have a clear problem statement, a deployed live URL, a clean README with setup instructions, and at least one non-trivial feature (authentication, real-time updates, payment integration, complex state management). Recruiters spend **less than 90 seconds** on your GitHub — they look at pinned repos, the README of your top project, and your commit history. A blog platform with auth and comments, a job board with search filters, and a dashboard with charts and CRUD operations is enough to start applying. Skip the basic todo apps and calculators — every fresher has those.
+
+## Bottom Line
+
+- **React dominates India's job market** at roughly 60% of frontend openings — learn it first if you're targeting startups, product companies, or remote international roles
+- **Angular is still strong in enterprise** — go this route only if you're specifically targeting TCS, Infosys, Cognizant, or MNCs like SAP Labs and Oracle
+- **Vue has limited Indian job density** — keep it if it's already on your resume, but pair it with React for better options
+- **Depth beats breadth every time** — one framework mastered (hooks, state management, performance, testing, SSR) beats three frameworks touched superficially
+- **Build 3 production-grade projects, not 15 tutorials** — deployed apps with real features, clean READMEs, and TypeScript are what convert into interview calls

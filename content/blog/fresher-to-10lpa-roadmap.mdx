@@ -44,12 +44,87 @@ Get your AWS Cloud Practitioner certification — it's a 3-month commitment of 1
 
 By now you should have: 100+ LeetCode problems solved (mix of Easy and Medium), one full-stack deployed project, AWS certification, and 3-4 smaller projects in your GitHub. The final stretch is about presentation and interview readiness.
 
-Resume: use the CareerLens ATS scanner to check your match score against target job descriptions. Every project bullet must have a metric: 'Built authentication system handling 500+ users' beats 'Built authentication system'. Get a referral if you can — identify 3-5 companies you want to target, find someone from your college network on LinkedIn working there, and reach out professionally asking for a referral.
+Resume: use the CareerLens ATS scanner to [check ATS score](/resume) against target job descriptions. Every project bullet must have a metric: 'Built authentication system handling 500+ users' beats 'Built authentication system'. Get a referral if you can — identify 3-5 companies you want to target, find someone from your college network on LinkedIn working there, and reach out professionally asking for a referral.
 
-DSA interview prep: practice 3 problems per day in mock interview mode (45-minute time limit, explain your approach out loud). Pramp and Interviewing.io offer free mock interviews with peers. System design basics to know: how web requests travel (DNS → load balancer → server → database), difference between SQL and NoSQL, what caching is and when to use it, and how to design a URL shortener.
+DSA interview prep: practice 3 problems per day in mock interview mode (45-minute time limit, explain your approach out loud). Pramp and Interviewing.io offer free mock interviews with peers. You can also [practice interviews](/interview) with AI to get unlimited reps without scheduling. System design basics to know: how web requests travel (DNS → load balancer → server → database), difference between SQL and NoSQL, what caching is and when to use it, and how to design a URL shortener.
 
 ## Target Companies and Realistic Timelines
 
 With the preparation above, your realistic target companies for ₹10 LPA+ as a fresher: funded Indian startups (Series A/B/C) with 50-500 employees — these are often off-campus through LinkedIn applications or referrals. Product companies with campus drives (Atlassian, Adobe, Intuit, VMware, SAP Labs, ThoughtWorks all recruit from Tier-2 colleges for strong candidates). Mid-tier product companies (Gojek India, Meesho, Juspay, Razorpay, CRED have all hired freshers at ₹10-15 LPA when candidates stood out).
 
 Timeline reality check: If you start month 1 of this plan in your 3rd year (5th or 6th semester), you'll be placement-ready during your final year drive. If you're a graduate who missed campus placement, this 12-month plan applies identically — use LinkedIn and AngelList India to find off-campus openings at startups, which hire year-round regardless of graduation date.
+
+## The Real Salary Breakdown: What ₹10 LPA Actually Looks Like
+
+Before you chase the number, understand it. A ₹10 LPA offer in India is almost never ₹10 lakh in your bank account. The typical structure for product companies and funded startups looks like: **₹7-8 LPA fixed base**, **₹1-1.5 LPA performance bonus** (paid annually, conditional on rating), **₹50K-1 LPA joining bonus** (one-time, often with a 1-year clawback), and **stock options or RSUs worth ₹1-2 LPA vested over 4 years**. Your in-hand monthly take-home is roughly **₹55,000-65,000** after PF, professional tax, and income tax.
+
+Service companies like TCS Digital, Infosys Power Programmer, and Wipro Elite structure it differently — closer to **₹8 LPA fixed + ₹1.5 LPA variable + ₹50K joining bonus**, with no stock. Startups like Razorpay or Cred might offer **₹12-14 LPA** but with a higher equity component and more aggressive performance bars. Before accepting any offer, [benchmark salary](/salary) against the role, company stage, and city — a ₹10 LPA offer in Bangalore for a backend role is market, but the same number in Pune for a frontend role at a Series A startup might actually be above market and worth negotiating up.
+
+Also factor in **location**. ₹10 LPA in Bangalore with a 1BHK costing ₹25,000/month leaves you with ₹30,000 saving. The same ₹10 LPA in Hyderabad or Pune leaves you with ₹40,000+ saving because rent drops to ₹15,000. CTC is a vanity number — savings rate is the real metric.
+
+## The Profile That Actually Converts: Anatomy of a ₹10 LPA Fresher Resume
+
+I've reviewed hundreds of fresher resumes. The ones that convert into interviews at companies paying **₹10 LPA+** share specific patterns. Here's the dissection.
+
+**Education section**: Tier matters less than you think. A 7.5 CGPA from a Tier-2 NIT or Tier-3 private engineering college can absolutely land ₹10 LPA — but only if the rest of the resume compensates. Don't lie about CGPA, but don't lead with it either. One line, done.
+
+**Projects section (the most important)**: 2-3 projects max. Each project gets 3 bullets:
+- Bullet 1: What it does + tech stack (e.g., "Full-stack job tracker built with React, Node.js, PostgreSQL, deployed on AWS EC2")
+- Bullet 2: A hard technical decision you made (e.g., "Implemented Redis caching for job listings, reducing API response time from 800ms to 120ms")
+- Bullet 3: Measurable impact (e.g., "Used by 47 college peers actively tracking 200+ applications")
+
+**Skills section**: Be specific. "Python, Django, FastAPI, PostgreSQL, Redis, Docker, AWS (EC2, S3, RDS), Git, Linux" is far better than "Python, Web Development, Databases, Cloud Computing". Recruiters search by exact keyword match.
+
+**Experience section**: Internships count even unpaid ones. Open-source contributions count. A 2-month freelance gig building a website for a local business counts. If you have zero, fill this section with leadership in college clubs or hackathon wins. Empty experience sections are a kill signal for resume screeners.
+
+The fastest way to validate your resume before sending: paste it into the ATS scanner with a real job description and aim for **75%+ match score**. Below that, you're getting auto-rejected before a human ever sees it. Browse current openings to [browse jobs](/jobs) and use those JDs as your benchmarks.
+
+## The Hidden 5%: Soft Skills That Separate Offers
+
+Two candidates with identical skills walk into the final round. One gets **₹8 LPA**, the other gets **₹12 LPA**. The difference is almost always communication and clarity of thought — not technical depth.
+
+**Talk like an engineer, not a textbook**. When asked "why did you use PostgreSQL?", the ₹8 LPA answer is "because it's a relational database". The ₹12 LPA answer is "I had structured data with clear relationships between users, applications, and companies — PostgreSQL gave me ACID transactions and JSON column support if I needed flexibility later, without the complexity of MongoDB's eventual consistency". Same knowledge, completely different signal.
+
+**Ask questions back**. Interviewers paying premium salaries want collaborators, not order-takers. When given a system design problem, your first 2 minutes should be clarifying questions: "What's the expected scale? Read-heavy or write-heavy? Latency requirements?" This single behavior shifts you from "fresher" to "engineer" in the interviewer's mind.
+
+**Own your failures**. Every senior interviewer will ask "tell me about a project that didn't go well". The wrong answer is "everything worked fine". The right answer names a specific technical decision you regret, what you learned, and what you'd do differently. Vulnerability + insight = trust = higher offer.
+
+## Common Mistakes That Cap Freshers at ₹4-6 LPA
+
+The freshers stuck in the ₹4-6 LPA band aren't lazy — they're just optimizing for the wrong things. The most common traps:
+
+**Tutorial hell**: Watching 40-hour YouTube playlists on React without ever building something original. If you can't explain a concept without your notes, you don't know it. Build first, learn the gaps as you hit them.
+
+**Certification stacking**: Six Coursera certificates won't beat one deployed project. Certifications signal interest, not capability. The only certs that genuinely move the needle: **AWS Cloud Practitioner**, **AWS Solutions Architect Associate**, or a Google Cloud equivalent. Skip everything else.
+
+**Hackathon-only experience**: 24-hour hackathons teach you to glue APIs together — they don't teach you to design, deploy, and maintain. One serious 3-month project beats five hackathon projects on your resume.
+
+**Ignoring the JD**: Applying with the same generic resume to 200 jobs is worse than applying with 20 customized resumes. Each application should mirror keywords from that specific JD. ATS systems literally rank you on keyword density.
+
+**Negotiation timidity**: When the offer comes, freshers accept on the spot out of relief. Always say "thank you, can I get back to you in 48 hours?" Then use that window to negotiate or shop the offer. A 10-15% bump from negotiation is standard if you have any leverage.
+
+## FAQ
+
+### Can I land a ₹10 LPA offer from a Tier-3 college?
+
+Yes, and it happens more often than placement cells admit. The Tier-3 students landing ₹10 LPA offers almost never get there through campus placements — they get there through **off-campus applications, LinkedIn outreach, and referrals**. The college brand becomes irrelevant once you have a deployed project, a GitHub with 200+ commits, an AWS certification, and 150+ LeetCode problems solved. Companies like Zoho, Freshworks, Postman, and Razorpay regularly hire from Tier-3 colleges when the candidate's portfolio speaks for itself. The key is starting 12-18 months early and treating the off-campus route as your primary path, not your backup.
+
+### Is it too late if I'm in my final year and haven't started?
+
+It's tight but doable if you commit to **6-8 hours daily for 6 months straight**. Compress the 12-month plan: spend month 1 picking your language and grinding 30 LeetCode problems, months 2-3 building one polished full-stack project, month 4 on AWS certification, and months 5-6 on DSA + interviews + applications. You probably won't land ₹10 LPA from campus drives this late, but off-campus and referral routes stay open year-round. Many freshers land their target salary 3-6 months after graduation through this compressed timeline. Don't quit because you're "late" — late and started beats early and stuck.
+
+### Should I pick service companies like TCS/Infosys or wait for product companies?
+
+Depends on your risk tolerance and runway. Service company offers (TCS Digital at ₹7 LPA, Infosys Power Programmer at ₹8 LPA, Wipro Elite at ₹6.5 LPA) give you guaranteed income, structured learning, and time to upskill into product roles after 1-2 years. Product company offers pay more (₹10-18 LPA) but the interview bar is significantly higher and rejection rates are brutal. If you have financial pressure to start earning immediately, accept the service company offer and prep for a product company switch after 18 months. If you can afford to wait 3-6 months post-graduation, hold out and apply aggressively off-campus to product companies — the long-term salary curve is much steeper.
+
+### How much does location matter for fresher salaries?
+
+Location matters more for take-home value than for headline CTC. **Bangalore** pays the highest fresher CTCs (₹10-15 LPA common at product companies) but rent and lifestyle eat 50-60% of in-hand. **Hyderabad** pays 10-15% less than Bangalore but rent is 40% cheaper — net savings often higher. **Pune** sits in between. **Gurgaon/Noida** offer Bangalore-level CTCs at consulting firms but expensive lifestyle. **Chennai** pays the lowest among metros but has the lowest cost of living. Remote roles at international startups (Turing, Toptal, GitLab) pay in dollars and can hit ₹15-25 LPA equivalent for strong freshers — worth exploring once you have 1-2 deployed projects.
+
+## Bottom Line
+
+- **Start 12-18 months before placement** — compressed timelines work but with much higher risk and effort intensity
+- **One deployed project beats ten certifications** — companies pay for evidence of capability, not coursework completion
+- **₹10 LPA = ₹55,000-65,000 in-hand monthly** after taxes and deductions, not ₹83,000 like the headline suggests
+- **Off-campus + referrals is the real path** to ₹10 LPA for most Tier-2 and Tier-3 students — campus placements are the bonus, not the plan
+- **Soft skills decide the final 20% of the offer** — communicate like an engineer, ask clarifying questions, own your failures, and always negotiate 48 hours after the verbal offer

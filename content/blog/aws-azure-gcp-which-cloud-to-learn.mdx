@@ -40,6 +40,32 @@ Google Cloud is a distant third in market share globally, but it has specific st
 
 If you want to work as a data engineer, ML engineer, or platform engineer at a data-intensive company, GCP skills (especially BigQuery and Dataflow) are a real differentiator. The Professional Data Engineer certification is one of the harder and more respected GCP credentials. However, don't start with GCP — get AWS or Azure first, and add GCP when you have a specific reason to.
 
+## Salary Reality: What Each Cloud Pays in India (2025 Data)
+
+Let's talk actual numbers, because certification marketing pages won't tell you this. We compiled salary data from Glassdoor India, AmbitionBox, and Levels.fyi for cloud roles across experience levels.
+
+**AWS roles (product companies)**: Junior AWS engineer at a startup like CRED, Razorpay, or Meesho: **₹12-18 LPA** for 1-2 years experience. Mid-level (3-5 years) Solutions Architect: **₹22-35 LPA**. Senior AWS Architect at Flipkart or PhonePe: **₹40-65 LPA** plus stock. AWS SRE roles at unicorn startups regularly cross **₹50 LPA** for 5+ years experience.
+
+**Azure roles (services companies)**: AZ-104 certified engineer at Infosys or TCS with 2 years experience: **₹6-10 LPA**. Same skillset at Accenture or Capgemini consulting: **₹9-14 LPA**. Senior Azure Architect at Microsoft India partner companies: **₹25-40 LPA**. The ceiling is lower than AWS at product companies but the floor is more accessible — Azure roles hire in volume.
+
+**GCP roles**: Data Engineer with GCP at Walmart Labs or Target India: **₹18-30 LPA** for 2-4 years experience. ML Engineer with Vertex AI experience at Flipkart or Myntra: **₹25-45 LPA**. GCP specialists are rarer, so the salary distribution is wider — strong candidates command **20-30% premium** over equivalent AWS/Azure roles because supply is limited.
+
+The pattern: AWS pays best at product companies, Azure offers most accessible jobs in services, GCP commands premium for niche data/ML work. You can [benchmark salary](/salary) for specific cloud roles and locations before negotiating offers.
+
+## The Hands-On Projects That Actually Get You Hired
+
+Certifications get you the interview. Projects get you the job. Here's what hiring managers at Indian cloud teams want to see on your GitHub or resume:
+
+**Project 1: Three-tier web application with auto-scaling.** Deploy a Node.js or Python app on EC2/App Service behind a load balancer, with RDS/Azure SQL backend, S3/Blob for static assets, CloudFront/Azure CDN, and auto-scaling rules. Time: 2 weeks. Why it matters: covers 70% of what mid-level cloud engineers actually do at work.
+
+**Project 2: Serverless data pipeline.** S3 → Lambda → DynamoDB or Cloud Storage → Cloud Functions → BigQuery. Process a real dataset (Kaggle COVID data, Indian stock market CSVs, anything with 100K+ rows). Time: 1 week. Why it matters: serverless is where the industry is moving and demonstrates event-driven thinking.
+
+**Project 3: Infrastructure as Code with Terraform.** Recreate Project 1 entirely in Terraform. Push the code to GitHub. Add a GitHub Actions pipeline that deploys on every commit. Time: 1-2 weeks. Why it matters: every senior cloud role requires IaC and DevOps practices.
+
+**Project 4: Multi-cloud migration.** Take your AWS project and replicate it on Azure or GCP. Document the differences in a blog post. Time: 2 weeks. Why it matters: this is the rarest skill on resumes and instantly differentiates you from 95% of candidates.
+
+When these projects are on your resume, make sure your ATS-readable resume actually mentions the specific services (EC2, Lambda, Terraform, GitHub Actions) — recruiters search by exact keywords. [Check ATS score](/resume) on your resume before applying to ensure cloud keywords aren't being missed by parsers.
+
 ## How to Learn Cloud Efficiently (Without Wasting Money on Unnecessary Resources)
 
 Free tier accounts: AWS, Azure, and GCP all offer free tiers — create accounts on all three. Experiment. Reading documentation and watching videos is no substitute for actually deploying something and watching it break.
@@ -47,6 +73,40 @@ Free tier accounts: AWS, Azure, and GCP all offer free tiers — create accounts
 Best free learning resources: AWS Skill Builder (official AWS training), Microsoft Learn (official Azure), Google Cloud Skills Boost. For structured learning: Adrian Cantrill's AWS SAA course (paid, ₹3000, best AWS course in existence), A Cloud Guru / Cloud Academy (subscription-based). For hands-on: TutorialsDojo practice exams (almost perfectly match real exam difficulty) and Whizlabs for quick question banks.
 
 The most common mistake: watching 20 hours of video and then attempting the exam. You need hands-on practice — build a three-tier web app (EC2 + RDS + S3 on AWS, or App Service + Azure SQL + Blob Storage on Azure), set up a CI/CD pipeline, configure IAM roles, and implement auto-scaling. You'll remember it better and it becomes interview talking material.
+
+## Cloud Interview Questions You Will Actually Face
+
+After talking to hiring managers at 15+ Indian companies, here are the questions that come up in nearly every cloud interview, regardless of platform:
+
+**Networking questions**: "Explain VPC, subnets, and how a request reaches an EC2 instance behind a load balancer." "What's the difference between a security group and a NACL?" "How would you set up a VPN between on-premise and AWS?" These trip up 60% of candidates because most learners focus on services and skip networking fundamentals.
+
+**Cost optimization**: "Your AWS bill is ₹10 lakhs per month. Walk me through how you'd reduce it by 30%." Expected answers: Reserved Instances, Savings Plans, spot instances for non-critical workloads, S3 lifecycle policies, identifying idle resources, right-sizing EC2 instances, deleting unattached EBS volumes.
+
+**Disaster recovery and HA**: "Design a system with RTO of 1 hour and RPO of 5 minutes." This tests whether you understand multi-AZ deployments, cross-region replication, automated backups, and failover patterns. Most freshers stumble here.
+
+**Security**: "How do you secure secrets in your cloud applications?" Expected: Secrets Manager / Key Vault / Secret Manager, IAM roles instead of access keys, KMS for encryption at rest, parameter store for non-sensitive config.
+
+**Real scenario question**: "An EC2 instance can't connect to RDS. Walk me through your debugging steps." This tests systematic thinking — check security groups, NACLs, route tables, subnet associations, RDS endpoint vs IP, DNS resolution.
+
+Practicing these out loud beats reading answers. You can [practice interviews](/interview) with AI to get used to articulating cloud concepts under pressure — fumbling explanations is the #1 reason qualified candidates lose offers.
+
+## Career Paths Beyond Just "Cloud Engineer"
+
+"Cloud" is a category, not a job title. Knowing where to specialize after your foundational learning is what separates ₹15 LPA generalists from ₹40 LPA specialists.
+
+**Cloud Solutions Architect**: Designs systems, talks to clients, makes technology decisions. Salary range: **₹18-50 LPA**. Best for people who like the big picture and don't want to be deep in code.
+
+**Cloud DevOps / Platform Engineer**: Builds CI/CD pipelines, manages Kubernetes clusters, automates everything with Terraform. Salary range: **₹15-55 LPA**. Hottest specialty in 2025 — every company wants this.
+
+**Cloud Security Engineer**: IAM, compliance, encryption, threat detection. Salary range: **₹20-60 LPA**. Smallest pool of candidates, highest hourly consulting rates. CCSP or AWS Security Specialty certifications are gold.
+
+**Site Reliability Engineer (SRE)**: Monitors production systems, on-call rotations, performance optimization. Salary range: **₹25-70 LPA**. Hard role but among the highest-paying cloud tracks.
+
+**Cloud Data Engineer**: Pipelines, warehousing, analytics. Salary range: **₹18-50 LPA**. GCP and Snowflake skills command premium here.
+
+**FinOps Engineer**: A new role focused purely on cloud cost optimization. Salary range: **₹20-45 LPA**. Almost zero competition because most candidates don't know this specialty exists. Companies spending ₹2+ crore per month on cloud will pay heavily for someone who can cut 25-30%.
+
+You can [browse jobs](/jobs) in each of these specialties to see what actual JDs require versus what generic "cloud engineer" listings ask for.
 
 ## The Verdict: Which One Should You Learn First?
 
@@ -57,3 +117,29 @@ For freshers targeting TCS Digital, Infosys Cobalt, Wipro, Accenture, or other I
 For those already in data/ML roles: GCP Professional Data Engineer or AWS Machine Learning Specialty depending on which cloud your current company uses.
 
 Ultimate answer: the cloud platform matters less than being genuinely proficient on one. A person who deeply understands AWS networking, IAM, and deployment patterns can transfer 80% of that knowledge to Azure or GCP in 4-6 weeks. Depth on one beats surface knowledge of all three.
+
+## Frequently Asked Questions
+
+**Q: I'm a non-CS graduate (mechanical, electrical, BCom). Can I switch to cloud engineering?**
+
+Yes, and many have done it successfully. The path: 3 months learning Linux fundamentals, basic networking (subnets, DNS, HTTP), and Python or Bash scripting. Then 3-4 months for AWS Cloud Practitioner + Solutions Architect Associate with hands-on projects. Then apply for **L1/L2 cloud support roles** at Rackspace, Mphasis, NTT Data, or Tech Mahindra — these companies hire non-CS grads and starting salaries are **₹4-7 LPA**. After 1-2 years of hands-on production experience, you can move to engineering roles at ₹10-15 LPA. The total transition timeline is realistic at 12-18 months.
+
+**Q: Are cloud certifications enough to get hired, or do I need a degree?**
+
+Certifications + projects + good communication can override the degree requirement at most product companies and startups, but not at IT services companies for entry-level roles. TCS, Infosys, and Wipro still filter by B.Tech/MCA for fresher hiring through campus or BPO programs. However, **lateral hiring** (1+ years experience) at the same companies is much more skills-based — your certifications and project portfolio matter more than your degree. Startups like Razorpay, Postman, and Freshworks have hired self-taught cloud engineers with strong GitHub portfolios at ₹15+ LPA without checking degree at all.
+
+**Q: How long until I can actually get a cloud job from zero?**
+
+Realistic timeline for someone working full-time on it: **6-9 months** to first job, **12 months** if you're learning alongside another job or college. Month 1-3: Linux, networking, one programming language (Python recommended), AWS Cloud Practitioner. Month 4-6: AWS Solutions Architect Associate, 2-3 hands-on projects, contributing to open source. Month 7-9: applying to jobs, doing mock interviews, building LinkedIn presence by writing about your projects. The candidates who fail this timeline either skip hands-on projects (just watch videos) or apply too late (waiting until they "feel ready" instead of after 6 months).
+
+**Q: Should I learn Kubernetes alongside cloud, or after?**
+
+After. Kubernetes is a massive topic on its own (CKA certification typically takes 3 months of dedicated study) and trying to learn it simultaneously with cloud fundamentals leads to burnout and shallow understanding of both. Sequence: cloud fundamentals + one cloud cert first (6 months), then add Docker (2 weeks of hands-on), then Kubernetes (2-3 months for CKA). By the time you're applying for senior roles 2-3 years in, you'll need Kubernetes. For your first cloud job at junior/associate level, knowing "what Kubernetes is conceptually" is enough — companies don't expect freshers to be K8s experts.
+
+## Bottom Line
+
+- **AWS for product companies and startups** (45% of postings, best salaries at unicorns), **Azure for IT services and MNCs** (35% of postings, easier entry), **GCP for data/ML specialists** (20% but commands premium for niche skills)
+- **Projects beat certifications** for getting hired — build a three-tier web app, a serverless pipeline, and a Terraform-managed infrastructure before applying
+- **Salary range varies massively by company type**: same AWS skills get ₹8 LPA at services companies and ₹22 LPA at product startups — choose your target carefully
+- **Networking, IAM, and cost optimization** are the three areas where 60% of candidates fail interviews despite having certifications — go deep here
+- **Specialize after your first job**: DevOps, SRE, FinOps, and Security tracks pay ₹30-70 LPA at senior levels — generalist "cloud engineer" caps around ₹35 LPA

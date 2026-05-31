@@ -40,6 +40,36 @@ Meta's coding interviews are known for prioritizing speed and optimal solutions 
 
 Meta heavily tests graphs (social network problems), dynamic programming, and binary search. Their system design questions often reference their real products: design a news feed, design a messaging system, design a friend recommendation system. Knowing Facebook's actual architecture (React for frontend, GraphQL, Cassandra for messaging, etc.) provides useful context for discussing trade-offs.
 
+## FAANG Salaries in India: What You're Actually Negotiating For
+
+Let's talk numbers, because this is what most candidates don't research properly. **Google India** offers **L3 (entry-level SWE) packages of ₹35–45 LPA**, **L4 around ₹55–75 LPA**, and **L5 in the ₹85 LPA–1.4 Cr range**. **Amazon India SDE-1 is ₹28–42 LPA**, **SDE-2 ₹45–70 LPA**, and **SDE-3 ₹75 LPA–1.3 Cr** including stocks vesting over 4 years (Amazon's vesting schedule is famously back-loaded: 5%/15%/40%/40%).
+
+**Meta India** pays the highest among FAANG locally — **E4 packages start at ₹65 LPA and go up to ₹1.1 Cr** with RSU components that can double total comp during good stock years. **Apple India** runs **ICT2 at ₹40–55 LPA** and **ICT3 at ₹70 LPA–1.1 Cr**. **Netflix** doesn't follow a level system — they pay a single high cash salary, usually **₹1.2–2.5 Cr for senior engineers**, with no RSUs.
+
+The negotiation lever most Indian candidates miss: **competing offers**. A Google offer can lift an Amazon offer by 20–30%, and vice versa. Always [benchmark salary](/salary) ranges before your final HR conversation — recruiters explicitly ask 'what's your expectation?' and lowballing yourself by ₹10 LPA is a common, painful mistake. Sign-on bonuses (₹15–40 LPA at FAANG) are also negotiable, especially if you're leaving unvested stock at your current company.
+
+## The Indian FAANG Pipeline: How Candidates Actually Get In
+
+The myth: you apply on the careers page and wait. The reality: **less than 3% of FAANG hires in India come from cold applications**. The actual pipelines are:
+
+**Referrals (roughly 40% of hires)**: A current employee submits your resume through the internal portal. This bypasses the resume screen and gets you a recruiter call within 2 weeks. The catch: your resume still needs to pass the bar. Before asking for a referral, [check ATS score](/resume) and ensure it has the right keywords for the JD. Referrers also care about their reputation — they'll only refer you if your resume looks solid.
+
+**LinkedIn recruiter outreach (roughly 25% of hires)**: FAANG recruiters actively source candidates with 3+ years at strong product companies (Razorpay, Swiggy, Flipkart, PhonePe, Zerodha, CRED, Atlassian India, Microsoft IDC). If your LinkedIn headline mentions specific tech stacks (Go, Kubernetes, distributed systems, ML infrastructure) and your current company is recognizable, expect 2–4 InMails per quarter.
+
+**Coding contests (roughly 15% of hires)**: Google Code Jam, Meta Hacker Cup, and Amazon ML Challenge are direct hiring channels. Top 500 finishers globally get fast-tracked to interview loops. For new grads, this is often the highest-probability path.
+
+**Campus hiring (roughly 15%)**: Limited to IITs, BITS, IIITs, NITs, and a handful of others. Off-campus for new grads is brutally hard but possible through online assessments. The remaining ~5% comes from acquisitions, internal transfers, and university partnerships. Once you know your path, [browse jobs](/jobs) at FAANG-adjacent companies to build the kind of profile that gets sourced.
+
+## System Design: The Round That Decides Senior Offers
+
+For anyone interviewing at L5+ (Google), SDE-2/SDE-3 (Amazon), or E5+ (Meta), system design is where offers are won or lost. Coding rounds at senior levels are often 'pass/fail at expected level' — system design is where leveling decisions happen. An E4 candidate who nails system design gets an E5 offer (₹30+ LPA jump).
+
+The framework that works in 45 minutes: **5 minutes requirements gathering** (functional + non-functional, scale numbers — DAU, QPS, storage), **5 minutes API design and data model**, **10 minutes high-level architecture** (load balancer, app servers, databases, caches, queues), **15 minutes deep-dive on 2 components** the interviewer picks, **10 minutes scaling, bottlenecks, trade-offs**.
+
+The mistakes that fail senior candidates: jumping to architecture without clarifying scale, drawing boxes without explaining why each exists, refusing to commit to a database choice (saying 'it depends' without picking one is a red flag), and not knowing back-of-envelope math. You should be able to estimate that **1 billion users posting 10 messages a day at 1 KB each = 10 TB/day = 3.6 PB/year**, and immediately discuss sharding and cold storage tiers.
+
+Study these 10 designs cold: URL shortener, Twitter feed, WhatsApp messaging, Uber dispatch, YouTube video streaming, Dropbox file sync, Instagram, distributed cache (Redis), rate limiter, and a notification system. ByteByteGo, Grokking the System Design Interview, and Alex Xu's books are the standard prep material. Then [practice interviews](/interview) with someone who's actually worked at FAANG — feedback from non-FAANG interviewers misses the real bar.
+
 ## The 12-Week Preparation Plan
 
 Weeks 1–4: Foundation. Solve 4 LeetCode problems per day (Easy and Medium), covering arrays, strings, linked lists, trees, and graphs. Study 2 system design concepts per week from ByteByteGo. Write and memorize 3 STAR behavioral stories.
@@ -53,3 +83,29 @@ Weeks 9–12: Simulation. Full mock interview loops 3x per week. Time-box each s
 The acceptance rate at Google is under 0.5%. Most candidates who eventually get in were rejected once before — sometimes multiple times. FAANG rejections are not permanent: you can re-apply after 6–12 months (the exact cooldown period varies by company). A rejection from Google today tells you your current preparation level, not your ceiling.
 
 Post-rejection process: get any feedback the recruiter will give (most won't give much, but ask). Honestly assess which type of round you underperformed in. If it was coding: more focused LeetCode on your weak pattern. If it was behavioral: more structured STAR stories. If it was system design: deeper study of distributed systems. The re-attempt, fully prepared, is usually significantly more successful than the first attempt — because you now know exactly what the room feels like.
+
+## Frequently Asked Questions
+
+**How many LeetCode problems should I solve before applying to FAANG?**
+
+The honest answer: **quality over quantity, but the floor is around 250–300 problems** with strong pattern recognition. Candidates who get offers typically report solving **300–500 problems** total, with the last 100–150 being Mediums and Hards done under timed conditions. Solving 1,000 problems poorly is worse than solving 250 deliberately — covering all 15 major patterns (sliding window, two pointers, BFS, DFS, DP, binary search, heap, trie, union-find, etc.) and being able to recognize which pattern a new problem maps to within 2 minutes.
+
+**Do I need a CS degree to get into FAANG in India?**
+
+**No, but the bar is higher without one.** Around **15–20% of FAANG India hires come from non-CS backgrounds** — mechanical, electrical, civil engineers, and even arts graduates who self-taught. The catch: without a CS degree, your resume rarely passes the cold screen, so you'll need referrals or 2–3 years at a recognized product company first. Bootcamp grads from Scaler, Newton School, and Masai School have entered FAANG, but typically after first joining mid-tier startups. The interview itself doesn't care about your degree — but getting to the interview is harder.
+
+**What's the realistic timeline from starting prep to getting a FAANG offer?**
+
+For someone with **2–4 years of solid SDE experience at a product company**, expect **4–6 months of dedicated prep** (15–20 hours/week) plus **2–3 months of interviewing**. For new grads or service-company engineers, plan for **8–12 months**. The interview process itself takes 6–10 weeks: recruiter screen (week 1), online assessment (week 2), phone screen (week 3–4), virtual onsite/loop (week 5–7), team match and offer (week 8–10). Don't quit your job to prep full-time unless you have 12+ months of runway — burnout from unstructured prep is real.
+
+**Should I prepare for FAANG India or try for US relocation?**
+
+In 2024–2025, **direct US relocation from India for new hires has dropped dramatically** — most FAANG companies have hiring freezes or India-only mandates for L3/L4 roles. The realistic path is: **join FAANG India, perform well for 18–24 months, then transfer internally**. India compensation is also genuinely competitive now — a Meta E5 in Bangalore takes home ₹85 LPA–1.1 Cr, which after cost-of-living adjustment is comparable to a Bay Area E5 making $400K. For senior roles (L6+, E6+, SDE-3+), direct US hiring is still happening but extremely selective.
+
+## Bottom Line
+
+- **FAANG interviews are systematic, not magical** — 12 weeks of structured prep covering coding patterns, system design, and 6–8 STAR stories will put you above 90% of applicants
+- **Salaries in India are genuinely high**: ₹35 LPA entry, ₹70 LPA mid-level, ₹1 Cr+ senior — and competing offers can move these by 20–30%
+- **Referrals beat cold applications by 10x** — invest in building relationships at FAANG-adjacent product companies before you need them
+- **System design decides senior leveling** — a strong design round can mean a ₹30 LPA jump from E4 to E5, so don't treat it as secondary to coding
+- **First rejection is normal, second attempt is usually successful** — treat your first FAANG loop as paid market research and come back in 6–12 months with surgical prep

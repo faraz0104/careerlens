@@ -51,3 +51,75 @@ Good first contributions: fix a bug from the issues list labelled 'good first is
 Every project should have a live URL. No exceptions — 'runs locally' is not a portfolio; it's homework. Free deployment options for every tech stack: Vercel/Netlify for Next.js/React frontends (free tier is more than sufficient for portfolio projects), Railway or Render for Node.js/Python backends with a database, Supabase for PostgreSQL with no server management, Cloudflare Pages for static sites, and Fly.io for containerized applications.
 
 A live demo accomplishes two things: it proves the project actually works (candidates have submitted broken projects), and it lets the interviewer interact with it before the call — they arrive having already used your app, which makes for a completely different (and better) conversation than 'let me share my screen and show you.'
+
+## How Indian Recruiters Actually Use GitHub in 2025
+
+Here's what most candidates don't realise: at companies like **Razorpay**, **Swiggy**, **CRED**, **Zomato**, and **Flipkart**, the engineering hiring manager personally reviews GitHub profiles before approving an interview slot. Recruiters at these companies have told us they spend an average of **90 seconds to 3 minutes** on a GitHub profile. That's it. If your pinned projects don't have READMEs or live demos, you're filtered out before anyone speaks to you.
+
+For startups in the **₹15-40 LPA range** (Series B-C companies), GitHub matters even more than your resume because they're hiring builders, not credentials. A friend who got an offer at **Zerodha** (₹28 LPA, 2024) told us the hiring manager mentioned three specific commit messages from his open-source contributions during the offer call. That level of scrutiny is real.
+
+For service companies like **TCS**, **Infosys**, **Wipro**, and **Cognizant**, GitHub matters less for entry-level roles but starts mattering at the **₹12 LPA+ lateral level** when you're applying for senior engineer or tech lead positions. For product MNCs like **Google**, **Microsoft**, **Atlassian**, and **Adobe** India offices, GitHub is checked alongside your resume — especially if you're applying without a referral. Before you submit applications, [check your ATS score](/resume) to make sure your resume even gets to the human who'll look at your GitHub.
+
+## The Profile Audit: 10-Minute Checklist Before You Apply
+
+Run this audit on your GitHub before sending out a single application. Open your profile in an incognito window (so you see what recruiters see, not your logged-in view):
+
+- **Profile photo**: Real, professional, recognisable. Not the default Octocat, not an anime avatar, not a meme.
+- **Bio**: One line stating role + stack + location. Example: "Backend engineer | Go, Postgres, AWS | Bengaluru, open to remote."
+- **Pinned repositories**: Exactly 6 pinned repos, all with READMEs, all with live demos where applicable. No tutorial clones.
+- **README on profile**: 2-3 sentence intro, 3 featured projects with one-line context, contact info (email or LinkedIn).
+- **Top languages bar**: Should reflect your target role. If you're applying for backend Python roles but your top language is HTML from old college projects, archive those repos.
+- **Activity graph**: At least some green squares in the last 90 days. Doesn't need to be daily — needs to show you're actively building.
+- **Followers/following**: Not important, but follow 20-30 engineers in your domain. Signals you're plugged into the ecosystem.
+- **Stars given**: Star 30-50 projects you actually use. Shows taste and context.
+
+This entire audit takes 10 minutes. Most candidates skip it and wonder why their applications go nowhere. Fix this before you [browse jobs](/jobs) and start applying.
+
+## Project Ideas by Target Salary Band
+
+Different roles need different proof. Here's what to build based on the salary band you're targeting:
+
+**₹6-12 LPA (entry-level, 0-2 years)**: One full-stack CRUD app with auth (not a todo list — something domain-specific like an expense tracker with bank integration, or a tutor-booking system). One project that demonstrates you can integrate a third-party API meaningfully (Razorpay, Twilio, OpenAI). One small but polished mobile-responsive frontend project. Total: 3 strong projects beats 15 weak ones.
+
+**₹12-25 LPA (mid-level, 2-5 years)**: Add system design considerations. A project with **Redis caching**, **rate limiting**, **background jobs** (Celery/BullMQ), and **proper observability** (logging, metrics). Document the architecture in the README with a diagram. One project should show you've thought about **scale** — even if traffic is theoretical, mention the bottlenecks and how your design handles them.
+
+**₹25-50 LPA (senior, 5+ years)**: Pure code quality matters less here — your contributions to substantial projects matter more. Two strong open-source contributions to popular libraries in your stack. One project that shows **architectural decisions** (microservices vs monolith trade-offs, event-driven design, CQRS). A technical blog explaining one hard problem you solved is worth more than another side project. Before negotiating offers in this band, [benchmark your salary](/salary) to know what's market.
+
+**₹50 LPA+ (staff/principal, 8+ years)**: You shouldn't need a portfolio — your work history speaks. But maintaining a public technical blog and 1-2 well-maintained open-source projects in your domain signals continued engineering taste. Recruiters at this level look for thought leadership signals more than code samples.
+
+## Common Mistakes That Kill Your Profile Instantly
+
+These are the patterns that make recruiters close your tab in 10 seconds. Avoid all of them:
+
+- **Forked repos pinned as your work**: If your top pinned repo is a fork of someone else's project with zero meaningful commits from you, it actively damages credibility. Either contribute substantially or unpin.
+- **Inconsistent naming**: `my-project-final`, `MyProject2`, `project_v3_actually_final`. Use consistent kebab-case naming and descriptive names like `expense-tracker-api` or `chennai-bus-routes-app`.
+- **No commits in 2+ years**: Even if you're employed and can't share work code, contribute to one small open-source project monthly. A dead GitHub looks like a dead developer to recruiters.
+- **Credentials in commit history**: AWS keys, API tokens, `.env` files committed in early commits and "removed" later. Recruiters check this. Use `git filter-branch` or BFG Repo-Cleaner to actually purge them.
+- **AI-generated projects with no understanding**: If your project is clearly ChatGPT output with no customisation, you'll get caught the moment you're asked to explain a design choice in the interview. [Practice interviews](/interview) where you explain your own code out loud — if you can't, it's not really yours.
+- **Overclaiming in READMEs**: "Production-ready, scalable to millions of users" on a project with 12 commits and no users. Recruiters laugh at this. Honest framing — "weekend project exploring X" — earns more respect than inflated claims.
+
+## Bottom Line
+
+- A strong GitHub profile takes **3-4 weekends** to build properly and pays back across your entire career
+- **Quality over quantity** at every level — 3 pinned projects with great READMEs beats 30 abandoned repos
+- Every project needs a **live demo URL** — running locally is not a portfolio
+- **Open source contributions** to popular projects are the highest-leverage thing you can do, especially for remote and product company roles
+- Audit your profile in an **incognito window** before every application round — what you see logged out is what recruiters see
+
+## Frequently Asked Questions
+
+**Do I need a paid GitHub Pro account to look professional?**
+
+No. The free GitHub account gives you everything you need for a portfolio that competes at any salary band — unlimited public repos, profile README, pinned repositories, GitHub Actions for CI/CD on public repos, and GitHub Pages for free static hosting. GitHub Pro (₹350/month) only adds private repo features that don't matter for recruiters viewing your profile. Spend that money on a custom domain for your portfolio site instead. The only candidates who benefit from GitHub Pro are those running private client work or needing advanced code review features at work.
+
+**How important is GitHub if I'm a frontend developer or designer?**
+
+It's still important, but the bar is different. For frontend roles, recruiters care more about **live demo polish** than backend architecture — your projects should look genuinely good on mobile, load fast, and have smooth interactions. Pair GitHub with a strong portfolio site (Vercel + Next.js is free). For design-heavy roles, link your Figma community files and Dribbble alongside GitHub. Frontend developers at companies like **Razorpay** and **CRED** told us animations, accessibility (proper ARIA labels), and Lighthouse scores above 90 are what stand out — not GitHub stars.
+
+**Should I commit every day to maintain my green squares streak?**
+
+No, and forcing this often hurts you. Recruiters at product companies have explicitly said they look for **meaningful commits**, not daily activity. A 200-day streak of commits saying "update README" or "fix typo" reads as performative, not productive. Better strategy: aim for 2-4 substantial commits per week across real projects. If you're employed and most work is private, contribute to one open-source project monthly, write a technical blog post bi-weekly, and maintain one personal project actively. Quality signals beat quantity signals every time.
+
+**Can I get hired with no GitHub presence at all in 2025?**
+
+Yes, but you're playing on hard mode. Without GitHub, you need **strong alternative signals**: a polished LinkedIn with detailed project descriptions, a technical blog with 5+ substantial posts, referrals from people who've worked with you, or a portfolio site with case studies. For service companies (TCS, Infosys, Wipro) at entry level, GitHub isn't required — your degree and aptitude scores matter more. For product companies, startups, and any role above ₹15 LPA, the absence of GitHub becomes a real handicap. A weak GitHub is better than no GitHub, and a strong GitHub can substitute for a degree at most product companies.

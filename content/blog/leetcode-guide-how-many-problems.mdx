@@ -44,6 +44,46 @@ Right approach: spend 15–20 minutes genuinely attempting the problem. If stuck
 
 Spaced repetition (the re-solving part) is the step most candidates skip. It's also the step that actually burns the pattern into memory. This approach takes longer per problem but results in real retention versus the illusion of learning.
 
+## The India-Specific Reality: What Indian Companies Actually Test
+
+Here's what nobody tells you — Indian product companies have a different LeetCode profile than US companies. **Flipkart, Swiggy, Zomato, Razorpay, CRED, and PhonePe** lean heavily on **arrays, strings, and dynamic programming** with a strong bias for Medium-level problems. Their interviewers come from IIT backgrounds and love DP and graph problems disproportionately.
+
+**Service companies** like TCS, Infosys, Wipro, and Cognizant barely touch real DSA — their tests are aptitude-heavy with basic coding (loops, arrays, simple recursion). If you're targeting these, **30 Easy problems** on arrays and strings is sufficient. Don't waste 3 months grinding DP for a TCS Digital role.
+
+**GCC (Global Capability Centers)** in Bengaluru and Hyderabad — Walmart Labs, Goldman Sachs, JP Morgan, Visa, Mastercard, Adobe, ServiceNow — are the trickiest. They follow US-style interviews but with Indian-flavored questions. Expect **150–200 problems** with a focus on system design from L4/SDE-2 level. Walmart Labs in Bengaluru is notorious for asking 2 Medium-Hard LeetCode problems in 45 minutes.
+
+**Unicorn startups** like Razorpay, Groww, Meesho, Zepto, and ShareChat will ask 1 Medium + 1 Hard in their second round. Compensation for cracking these: **₹35–55 LPA at SDE-2** with 2–4 years of experience. You can [benchmark salary](/salary) ranges for your YOE before deciding which tier to target.
+
+## Sample 8-Week Study Plan That Actually Works
+
+Stop reading random Reddit threads about "how I cracked Google in 3 months." Here's a concrete plan that has worked for hundreds of engineers I've coached:
+
+**Weeks 1–2: Foundation patterns.** Two Pointers (10 problems), Sliding Window (8 problems), Binary Search (8 problems). All Easy and Easy-Medium. Goal: 26 problems, full understanding. Daily commit: 2 hours, 2 problems.
+
+**Weeks 3–4: Trees and Graphs.** BFS, DFS, level-order traversal, basic graph problems with adjacency lists. 20 problems mixed Easy/Medium. This is where most candidates plateau — push through.
+
+**Weeks 5–6: Dynamic Programming.** Start with 1D DP (Fibonacci, climbing stairs, house robber), move to 2D DP (longest common subsequence, edit distance, knapsack). 15 problems. This is the hardest section — expect to feel stupid. That's normal.
+
+**Weeks 7–8: Mixed practice + mock interviews.** No new patterns. Solve random Mediums from your weak areas. Do **3 mock interviews per week**. Revise old problems via spaced repetition.
+
+Total: **~75 problems over 8 weeks** at 1.5 hours/day. That beats grinding 300 random problems with no structure. Track your progress and [practice interviews](/interview) with AI tools that simulate real interviewer pressure before your actual loop.
+
+## Common Mistakes That Waste Months of Prep
+
+I've reviewed hundreds of LeetCode profiles for candidates who failed interviews despite 400+ solved problems. Same mistakes appear every time.
+
+**Mistake 1: Doing all Easy problems for confidence.** Easy problems above 50 give diminishing returns. After 30 Easy, you should be 80% Medium, 20% Hard.
+
+**Mistake 2: Skipping the explanation step.** If you can't explain your solution out loud in 60 seconds, you don't understand it. You're pattern-matching the code, not the algorithm.
+
+**Mistake 3: No spaced repetition.** Problems solved 6 weeks ago that you never revisited are functionally forgotten. Maintain a spreadsheet with problem name, pattern, date solved, and re-solve dates.
+
+**Mistake 4: Coding straight away in interviews.** Top candidates spend **5–7 minutes clarifying inputs, edge cases, and approach** before writing a single line. Junior candidates start coding in 30 seconds and end up rewriting halfway through.
+
+**Mistake 5: Ignoring system design.** From SDE-2 onwards (3+ years experience), system design is 40% of your hiring decision. Pure LeetCode mastery with weak system design will get you rejected at the final round at companies like Atlassian, Stripe, and Razorpay.
+
+**Mistake 6: Weak resume gets you no interviews to use this prep on.** Before grinding 200 problems, make sure your resume actually clears the recruiter screen. [Check ATS score](/resume) and fix keyword gaps first — otherwise you'll have peak LeetCode skills with zero interviews to apply them to.
+
 ## Mock Interviews Are Non-Negotiable
 
 Solving problems silently on your laptop does not prepare you for the verbal pressure of a real interview. You must practice talking while coding — explaining your approach before starting, narrating your thought process as you code, and discussing time/space complexity at the end. This is an entirely different skill from just solving the problem.
@@ -57,3 +97,29 @@ Free: NeetCode.io (best organized by pattern, has video explanations for every p
 Paid (worth it): NeetCode Pro ($99/year) for roadmaps and additional problems. AlgoMonster for structured pattern courses. Grokking Algorithms book (O'Reilly) for visual learners who want to understand the underlying concepts.
 
 Don't pay for: LeetCode Premium (the company-specific question sets are less useful than doing the public problems by pattern). Expensive bootcamp prep courses that charge $2,000+ for content freely available on NeetCode and YouTube. The information is free — what you're paying for with premium resources is structure and accountability, which you can replicate with discipline and a study group.
+
+## Frequently Asked Questions
+
+**How many months of LeetCode prep do I actually need before applying to FAANG?**
+
+For most working professionals with 2–5 years of experience, **3–4 months of structured prep** at 1.5–2 hours per day is sufficient to crack FAANG-level interviews, assuming you already have basic CS fundamentals. The breakdown: 6 weeks on patterns, 4 weeks on advanced topics (DP, graphs, hard problems), 4 weeks on mock interviews and system design. Candidates who try to compress this into 4–6 weeks usually fail their first 2–3 loops and end up taking longer overall. Don't rush — apply only when you can consistently solve a random Medium in 25 minutes.
+
+**Can I crack a ₹40+ LPA job at an Indian unicorn without doing LeetCode Hard problems?**
+
+Yes, absolutely. Most Indian unicorns — Razorpay, Groww, Meesho, CRED, Zepto — primarily ask **Medium-level problems** with occasional Hards in final rounds. If you can crack 80% of Mediums in arrays, strings, trees, DP, and graphs, you'll clear 90% of their technical rounds. The differentiator at this comp level is actually **system design and behavioral rounds**, not LeetCode Hards. Spend the time you'd otherwise spend on segment trees learning to design Twitter, design Uber, and design Razorpay's payment flow. You can [browse jobs](/jobs) at unicorn comp ranges to see which roles match your current prep level.
+
+**Should I use ChatGPT or Claude to help with LeetCode practice?**
+
+Yes, but only after you've genuinely attempted the problem yourself for 20+ minutes. AI tools are excellent for **explaining why a solution works**, debugging your code, or generating variations of a pattern you just learned. They are terrible for actual learning if you ask them to solve problems for you — you'll feel like you're progressing while actually learning nothing. Best use case: solve the problem yourself, then ask AI "what's a more optimal approach?" or "explain the time complexity of my solution vs the editorial." Worst use case: pasting the problem and asking for a solution.
+
+**Is competitive programming experience (Codeforces, CodeChef) helpful for interviews?**
+
+Partially. CP gives you **strong algorithmic intuition and speed** — Codeforces Specialists (1400+) usually crack FAANG interviews easily. But CP and interview prep are not the same thing. Interview problems are easier algorithmically but require **clean code, clear communication, and proper edge case handling** — skills that CP doesn't teach. CP solutions are often hacky one-liners that wouldn't pass code review. If you have CP background, you'll need 30–50 LeetCode problems to adjust to the interview format. If you don't have CP background, don't start now — it's a 1-year detour from interview prep.
+
+## Bottom Line
+
+- **Quality crushes quantity**: 75 problems with deep pattern understanding beats 500 random problems every time
+- **Match prep to target tier**: 50 problems for service companies, 150 for product companies, 250+ for FAANG — don't over-prep or under-prep
+- **Spaced repetition is the secret weapon**: re-solve every problem 3–5 days later from scratch, then again 2 weeks later
+- **Mock interviews matter more than problem count**: do 3 mocks per week in the final 4 weeks of prep
+- **System design and communication win at SDE-2+**: pure LeetCode mastery without these skills caps you at junior offers
