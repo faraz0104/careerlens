@@ -31,7 +31,7 @@ function todayIST() {
 }
 
 const TOPIC_POOL = [
-  // High-traffic career topics for India
+  // Career growth & switching
   "How to get a job at Google India 2026",
   "MAANG vs service companies India – which to choose",
   "How to switch from TCS/Infosys to a product company",
@@ -61,12 +61,69 @@ const TOPIC_POOL = [
   "Background verification in India – what IT companies actually check",
   "How to resign professionally in India without burning bridges",
   "Tech layoffs India 2026 – which companies are still hiring",
-  "How to build a portfolio that gets you hired India",
   "GATE exam vs direct job – which is better for CS students India",
   "How to crack Flipkart SDE interview 2026",
-  "Visa options for Indian software engineers to work abroad",
   "Second year slump – why engineers stop growing at 2-3 years",
-  "How to use AI tools to double your productivity as a developer India",
+  "Should I join TCS for my first job in 2026 – honest answer",
+  "Wipro vs Infosys vs TCS – which IT company is better for freshers",
+  "How to crack Amazon SDE interview in India 2026",
+  "How to become a product manager in India with no PM experience",
+
+  // Salary & compensation
+  "Software engineer salary in Pune 2026 – complete guide",
+  "Data scientist salary in Hyderabad 2026 – what to expect",
+  "Product manager salary in India 2026 – complete breakdown",
+  "How to read your CTC offer letter India – what to negotiate",
+  "Variable pay in India IT companies – how it actually works",
+  "ESOPs in Indian startups – how to value and negotiate them",
+  "Salary hike percentage India 2026 – what is normal",
+  "How much should a fresher expect as first salary in India",
+  "Counter offer after resignation India – should you accept",
+
+  // Interview prep – specific
+  "TCS NQT preparation guide 2026 – pattern, syllabus, tips",
+  "Infosys interview process 2026 – all rounds explained",
+  "Wipro NLTH interview 2026 – what to expect",
+  "How to crack system design interview for mid-level engineers India",
+  "DSA preparation in 3 months for product company interviews India",
+  "HR round questions India – what they actually want to hear",
+  "How to prepare for LLD machine coding round India 2026",
+  "Capgemini interview 2026 – rounds, questions, salary",
+  "Accenture interview process for freshers India 2026",
+
+  // Learning & skills
+  "Best free resources to learn system design in India 2026",
+  "React developer roadmap 2026 – what to learn and in what order",
+  "Python for data science roadmap India 2026 – beginner to job ready",
+  "Cloud computing certifications worth it India – AWS vs Azure vs GCP",
+  "How long does it take to learn full stack development India",
+  "Best DSA resources for beginners India 2026 – free and paid",
+  "Kubernetes learning roadmap for DevOps engineers India",
+  "SQL for software engineers India – what you actually need to know",
+  "How to build side projects that impress interviewers India",
+  "Open source contribution guide for Indian developers 2026",
+
+  // Job search strategy
+  "How to use LinkedIn job search effectively in India 2026",
+  "Naukri vs LinkedIn vs Instahyre – which job board is best India",
+  "How to write a cold email to a recruiter in India that gets replies",
+  "Resume format for freshers in India 2026 – what actually works",
+  "How to get off-campus placements after college India",
+  "Job portals for remote work India 2026 – complete list",
+  "How to negotiate joining bonus in India",
+  "When to switch jobs in India – signs you should move on",
+  "Contract vs full-time job in India – pros and cons",
+
+  // Tech career trends
+  "AI ML jobs for freshers India 2026 – how to get in",
+  "Is coding still the best career in India in 2026",
+  "Prompt engineering as a career in India – is it real",
+  "Cybersecurity jobs in India 2026 – scope and salary",
+  "Web3 and blockchain jobs India 2026 – is it worth learning",
+  "No-code tools for developers India – jobs and opportunities",
+  "Data engineering vs data science India – which to choose",
+  "SRE vs DevOps in India – difference and which pays more",
+  "QA automation engineer career India 2026 – is it worth it",
 ];
 
 async function pickTopicAndWrite(existingSlugs) {
@@ -95,7 +152,7 @@ ${TOPIC_POOL.map((t, i) => `${i + 1}. ${t}`).join("\n")}
 Pick the ONE topic from the list above that:
 1. Has the highest Google search volume potential for Indian IT job seekers
 2. Is NOT already covered by existing slugs
-3. Is highly relevant for May 2026 (appraisal season, fresher hiring, etc.)
+3. Is most relevant right now (June 2026 — fresher hiring season, mid-year appraisals, job switch season)
 
 Then write a COMPLETE blog post in MDX format. Output ONLY the raw MDX content, nothing else — no explanation, no code block wrapper.
 
@@ -114,35 +171,42 @@ coverEmoji: "[single relevant emoji]"
 coverColor: "[dark hex color like #1a1916]"
 intro: "[2-3 sentence hook that makes the reader feel this was written for them. Conversational, India-specific, start with a relatable situation]"
 tags: ["tag1", "tag2", "tag3", "tag4", "tag5"]
-relatedSlugs: ["software-engineer-salary-india-2025", "how-to-negotiate-tech-salary"]
+relatedSlugs: ["slug-of-related-post-1", "slug-of-related-post-2"]
 ---
 
 [Full blog post content here]
 
 CONTENT REQUIREMENTS:
-- Minimum 1800 words of actual content (not counting frontmatter)
-- 6-8 H2 sections with descriptive headings
-- At least 2 H3 subsections
-- Include specific numbers: salary figures in LPA/INR, years of experience, percentages
-- Include at least one comparison table or structured list
-- End with an "## FAQ" section with 3-4 questions and answers (these rank as featured snippets)
-- Last section should be "## Bottom Line" with 3-5 bullet point takeaways
-- Naturally mention CareerLens once or twice where it genuinely helps (e.g., "you can check your salary benchmark on CareerLens" or "run your resume through CareerLens to see your ATS score")
-- NO keyword stuffing — write naturally, mention the topic keyword 3-5 times
-- CRITICAL: Never write "<" followed immediately by a number (e.g. write "less than 2%" NOT "<2%", write "under 10%" NOT "<10%"). This breaks the MDX parser and will cause a build failure.`;
+- Minimum 2500 words of actual content (not counting frontmatter). This is non-negotiable.
+- 7-9 H2 sections with descriptive, keyword-rich headings
+- At least 3 H3 subsections
+- Include specific numbers: salary figures in LPA/INR, years of experience, percentages, timelines
+- Include at least 2 comparison tables or structured lists
+- REQUIRED: Include 3-5 internal markdown links to CareerLens pages naturally within the content body, using these exact formats:
+  * When discussing resumes or ATS: [check your ATS score on CareerLens](/resume)
+  * When discussing interview prep: [practice with AI mock interviews](/interview)
+  * When discussing salary: [benchmark your salary on CareerLens](/salary)
+  * When discussing jobs: [browse matched jobs on CareerLens](/jobs)
+  * When discussing interview questions for a tech: [React interview questions](/interview-questions/react) or [system design questions](/interview-questions/system-design) etc.
+  Use these links naturally in sentences, not as a list at the end.
+- REQUIRED: End with an "## FAQ" section with 4-5 questions and detailed answers (minimum 80 words each — these rank as featured snippets)
+- REQUIRED: Include a "## Bottom Line" section with 4-6 specific, actionable bullet point takeaways
+- Naturally mention CareerLens 2-3 times where it genuinely helps
+- NO keyword stuffing — write naturally, mention the topic keyword 4-6 times total
+- CRITICAL: Never write "<" followed immediately by a number (e.g. write "less than 2%" NOT "<2%", write "under 10%" NOT "<10%"). This breaks the MDX parser.
+- CRITICAL: In MDX, never use raw HTML tags like <br>, <div>, <span> in the content body. Use markdown only.`;
 
   console.log("Calling Claude API to generate blog post...");
 
   const message = await client.messages.create({
     model: "claude-opus-4-7",
-    max_tokens: 8192,
+    max_tokens: 10000,
     messages: [{ role: "user", content: userPrompt }],
     system: systemPrompt,
   });
 
   const content = message.content[0].text.trim();
 
-  // Extract slug from the title in frontmatter
   const titleMatch = content.match(/^title:\s*"(.+?)"/m);
   if (!titleMatch) throw new Error("Could not extract title from generated post");
 
@@ -167,7 +231,6 @@ async function main() {
   console.log(`✓ Blog post written: content/blog/${slug}.mdx`);
   console.log(`  Slug: ${slug}`);
 
-  // Print first 3 lines so CI log shows what was generated
   const preview = content.split("\n").slice(0, 5).join("\n");
   console.log(`\nPreview:\n${preview}`);
 }

@@ -134,6 +134,46 @@ export default async function BlogPostPage({ params }: Props) {
     mainEntity: faqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
   } : null;
 
+  // Extract FAQ from MDX content itself (## FAQ sections)
+  const mdxFaqs = (() => {
+    const lines = post.content.split("\n");
+    const items: { q: string; a: string }[] = [];
+    let inFaq = false, currentQ = "", currentA: string[] = [];
+    for (const line of lines) {
+      if (/^## FAQ/i.test(line)) { inFaq = true; continue; }
+      if (inFaq && /^## /.test(line)) break;
+      if (inFaq && /^### /.test(line)) {
+        if (currentQ && currentA.length) items.push({ q: currentQ, a: currentA.join(" ").trim() });
+        currentQ = line.replace(/^### /, "").replace(/\*\*/g, "").trim();
+        currentA = [];
+      } else if (inFaq && currentQ && line.trim()) {
+        currentA.push(line.replace(/\*\*/g, "").trim());
+      }
+    }
+    if (currentQ && currentA.length) items.push({ q: currentQ, a: currentA.join(" ").trim() });
+    return items;
+  })();
+
+  const mdxFaqJsonLd = mdxFaqs.length > 0 && faqs.length === 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: mdxFaqs.map((faq) => ({ "@type": "Question", name: faq.q, acceptedAnswer: { "@type": "Answer", text: faq.a } })),
+  } : null;
+
+  const isHowTo = post.title.toLowerCase().startsWith("how to");
+  const howToJsonLd = isHowTo ? {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: post.title,
+    description: post.metaDesc,
+    step: headings.slice(0, 6).map((h, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: h.replace(/^\d+\.\s/, ""),
+      url: `https://www.carrerlens.com/blog/${post.slug}`,
+    })),
+  } : null;
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -149,6 +189,8 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       {faqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />}
+      {mdxFaqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(mdxFaqJsonLd) }} />}
+      {howToJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }} />}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
       <div style={{ minHeight: "100vh", background: "#f7f6f2", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
