@@ -476,6 +476,7 @@ function trackEvent(name, params = {}) {
 }
 
 function saveScoreHistory(data) {
+  if (typeof window === "undefined") return;
   try {
     const prev = JSON.parse(localStorage.getItem("cl_score_history") || "[]");
     prev.unshift({ name: data.name, score: data.score, role: data.role, date: new Date().toISOString() });
@@ -484,6 +485,7 @@ function saveScoreHistory(data) {
 }
 
 function getScoreHistory() {
+  if (typeof window === "undefined") return [];
   try { return JSON.parse(localStorage.getItem("cl_score_history") || "[]"); } catch { return []; }
 }
 
@@ -951,8 +953,8 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
   const [fileName, setFileName] = useState("");
   const [uploadError, setUploadError] = useState("");
   const fileRef = useRef();
-  const scoreHistory = getScoreHistory();
-  const lastScan = scoreHistory[0] || null;
+  const [lastScan, setLastScan] = useState(null);
+  useEffect(() => { const h = getScoreHistory(); if (h.length) setLastScan(h[0]); }, []);
 
   const handleFile = async (file) => {
     if (!file) return;
@@ -1049,10 +1051,6 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
             </div>
             <div style={{ fontSize:".8rem", color:"var(--ink2)" }}>
               Welcome back! <strong style={{ color:"var(--ink)" }}>{lastScan.name?.split(" ")[0]}</strong> — your last score was <strong>{lastScan.score}/100</strong>
-              {scoreHistory.length > 1 && (() => {
-                const diff = lastScan.score - scoreHistory[1].score;
-                return diff !== 0 ? <span style={{ color: diff > 0 ? "var(--green)" : "var(--red)", marginLeft:4, fontWeight:700 }}>{diff > 0 ? `↑ +${diff}` : `↓ ${diff}`} since last time</span> : null;
-              })()}
             </div>
           </div>
           <button className="btn btn-primary btn-sm" onClick={() => setPage("resume")}>
@@ -1503,7 +1501,7 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage, tota
   const [generating, setGenerating] = useState(false);
   const fileRef = useRef();
   const [leadEmail, setLeadEmail] = useState("");
-  const [leadSubmitted, setLeadSubmitted] = useState(() => !!localStorage.getItem("cl_lead_captured"));
+  const [leadSubmitted, setLeadSubmitted] = useState(() => typeof window !== "undefined" && !!localStorage.getItem("cl_lead_captured"));
   const [leadLoading, setLeadLoading] = useState(false);
 
   const captureLead = async () => {
@@ -2879,6 +2877,7 @@ function InterviewPage({ isPro, setPage }) {
   const [practiceFeedback, setPracticeFeedback] = useState({});
   const [practiceLoading, setPracticeLoading] = useState(null);
   const [practiceHistory, setPracticeHistory] = useState(() => {
+    if (typeof window === "undefined") return [];
     try { return JSON.parse(localStorage.getItem("cl_practice_history") || "[]"); } catch { return []; }
   });
 
