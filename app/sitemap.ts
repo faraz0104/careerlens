@@ -53,6 +53,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  // City salary pages: 8 roles × 7 cities = 56 pages
+  const salaryRoles = ["software-engineer","frontend-developer","backend-developer","data-scientist","devops-engineer","product-manager","full-stack-developer","mobile-developer"];
+  const salaryCities = ["bangalore","hyderabad","pune","mumbai","delhi-ncr","chennai","remote"];
+  const salaryPages: MetadataRoute.Sitemap = salaryRoles.flatMap(role =>
+    salaryCities.map(city => ({
+      url: `${base}/salary/${role}-in-${city}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.88,
+    }))
+  );
+
+  // Company interview pages: 12 companies
+  const interviewCompanies = ["google","amazon","microsoft","flipkart","zomato","swiggy","razorpay","tcs","infosys","wipro","meta","zepto"];
+  const companyInterviewPages: MetadataRoute.Sitemap = interviewCompanies.map(company => ({
+    url: `${base}/interview/${company}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.9,
+  }));
+
   const posts = getAllPosts();
   const categories = getAllCategories();
 
@@ -74,5 +95,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...appPages, ...jobCategoryPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
+  return [...appPages, ...salaryPages, ...companyInterviewPages, ...jobCategoryPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
 }
