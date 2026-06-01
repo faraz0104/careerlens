@@ -466,6 +466,27 @@ const SALARY_DATA = {
 };
 
 /* ── HELPERS ────────────────────────────────────── */
+
+function trackEvent(name, params = {}) {
+  try {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", name, { ...params });
+    }
+  } catch {}
+}
+
+function saveScoreHistory(data) {
+  try {
+    const prev = JSON.parse(localStorage.getItem("cl_score_history") || "[]");
+    prev.unshift({ name: data.name, score: data.score, role: data.role, date: new Date().toISOString() });
+    localStorage.setItem("cl_score_history", JSON.stringify(prev.slice(0, 10)));
+  } catch {}
+}
+
+function getScoreHistory() {
+  try { return JSON.parse(localStorage.getItem("cl_score_history") || "[]"); } catch { return []; }
+}
+
 function Toast({ msg, onDone }) {
   useEffect(() => { const t = setTimeout(onDone, 3500); return () => clearTimeout(t); }, []);
   return <div className="toast">✓ {msg}</div>;
@@ -930,6 +951,8 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
   const [fileName, setFileName] = useState("");
   const [uploadError, setUploadError] = useState("");
   const fileRef = useRef();
+  const scoreHistory = getScoreHistory();
+  const lastScan = scoreHistory[0] || null;
 
   const handleFile = async (file) => {
     if (!file) return;
@@ -1016,6 +1039,27 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
     <div>
       <AdSlot type="leaderboard" label="Advertisement — Top Banner" />
       <MarketTicker />
+
+      {/* Returning user banner */}
+      {lastScan && (
+        <div style={{ background:"linear-gradient(90deg,#fff7f3,#fff)", borderBottom:"1px solid rgba(232,90,42,.15)", padding:"10px 2rem", display:"flex", alignItems:"center", justifyContent:"center", gap:16, flexWrap:"wrap" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ width:32, height:32, borderRadius:"50%", background: lastScan.score >= 75 ? "var(--green-dim)" : lastScan.score >= 55 ? "var(--amber-dim)" : "var(--red-dim)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"var(--font-head)", fontWeight:800, fontSize:".82rem", color: lastScan.score >= 75 ? "var(--green)" : lastScan.score >= 55 ? "var(--amber)" : "var(--red)", border:`1px solid ${lastScan.score>=75?"rgba(45,138,78,.2)":lastScan.score>=55?"rgba(194,121,10,.2)":"rgba(197,48,48,.2)"}` }}>
+              {lastScan.score}
+            </div>
+            <div style={{ fontSize:".8rem", color:"var(--ink2)" }}>
+              Welcome back! <strong style={{ color:"var(--ink)" }}>{lastScan.name?.split(" ")[0]}</strong> — your last score was <strong>{lastScan.score}/100</strong>
+              {scoreHistory.length > 1 && (() => {
+                const diff = lastScan.score - scoreHistory[1].score;
+                return diff !== 0 ? <span style={{ color: diff > 0 ? "var(--green)" : "var(--red)", marginLeft:4, fontWeight:700 }}>{diff > 0 ? `↑ +${diff}` : `↓ ${diff}`} since last time</span> : null;
+              })()}
+            </div>
+          </div>
+          <button className="btn btn-primary btn-sm" onClick={() => setPage("resume")}>
+            Scan again to improve →
+          </button>
+        </div>
+      )}
 
       <style>{`
         .home-hero { display:grid; grid-template-columns:500px 1fr; gap:52px; align-items:center; max-width:1200px; margin:0 auto; padding:52px 2rem 44px; }
@@ -1458,6 +1502,26 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage, tota
   const [generatedResume, setGeneratedResume] = useState(null);
   const [generating, setGenerating] = useState(false);
   const fileRef = useRef();
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadSubmitted, setLeadSubmitted] = useState(() => !!localStorage.getItem("cl_lead_captured"));
+  const [leadLoading, setLeadLoading] = useState(false);
+
+  const captureLead = async () => {
+    if (!leadEmail.trim() || !leadEmail.includes("@")) return;
+    setLeadLoading(true);
+    try {
+      await fetch("/api/capture-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: leadEmail.trim(), score: resumeData?.score, role: resumeData?.role }),
+      });
+      localStorage.setItem("cl_lead_captured", "1");
+      setLeadSubmitted(true);
+      trackEvent("lead_captured", { source: "resume_scan", score: resumeData?.score });
+      showToast("✓ Saved! Check your inbox for tips.");
+    } catch { showToast("Something went wrong"); }
+    finally { setLeadLoading(false); }
+  };
 
   const [showResumeUpgrade, setShowResumeUpgrade] = useState(false);
   const [jobsExpanded, setJobsExpanded] = useState(false);
@@ -1677,6 +1741,8 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
 
       if (!isPro) incrementScan();
       onScanComplete?.();
+      saveScoreHistory(data);
+      trackEvent("resume_scan", { score: data.score, role: data.role, experience: data.experience });
       showToast("Resume analysed successfully!");
     } catch (error) {
       showToast("Error analyzing resume: " + error.message);
@@ -1879,6 +1945,41 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
             </div>
           </div>
 
+          {/* Score history */}
+          {(() => {
+            const history = getScoreHistory();
+            if (history.length < 2) return null;
+            return (
+              <div className="card mb-4">
+                <div className="card-head">
+                  <div className="card-title">Your score history</div>
+                  <span style={{ fontSize:".72rem", color:"var(--ink3)" }}>{history.length} scans</span>
+                </div>
+                <div className="card-body" style={{ display:"flex", gap:6, alignItems:"flex-end" }}>
+                  {history.slice(0,6).reverse().map((h, i) => {
+                    const color = h.score >= 75 ? "var(--green)" : h.score >= 55 ? "var(--amber)" : "var(--red)";
+                    return (
+                      <div key={i} style={{ flex:1, textAlign:"center" }}>
+                        <div style={{ fontSize:".65rem", color:"var(--ink3)", marginBottom:4 }}>{new Date(h.date).toLocaleDateString("en-IN",{day:"numeric",month:"short"})}</div>
+                        <div style={{ height:Math.max(20, h.score * 0.8), background:color, borderRadius:"4px 4px 0 0", opacity:.85, minHeight:20, position:"relative" }}>
+                          <span style={{ position:"absolute", top:-18, left:"50%", transform:"translateX(-50%)", fontSize:".65rem", fontWeight:700, color, whiteSpace:"nowrap" }}>{h.score}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {history.length >= 2 && (() => {
+                    const diff = history[0].score - history[1].score;
+                    return (
+                      <div style={{ fontSize:".75rem", fontWeight:700, color: diff > 0 ? "var(--green)" : diff < 0 ? "var(--red)" : "var(--ink3)", paddingBottom:4, paddingLeft:8, whiteSpace:"nowrap" }}>
+                        {diff > 0 ? `↑ +${diff} since last scan` : diff < 0 ? `↓ ${diff} since last scan` : "Same as last scan"}
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            );
+          })()}
+
           <div className="card mb-4">
             <div className="card-head"><div className="card-title">🔥 What needs fixing — be brutal</div></div>
             <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1905,6 +2006,35 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               </div>
             </div>
           </div>
+
+          {/* EMAIL CAPTURE */}
+          {!leadSubmitted ? (
+            <div style={{ background: "linear-gradient(135deg,#1a1916,#2a1f10)", borderRadius:"var(--r2)", padding:"20px 22px", marginBottom:16, display:"flex", gap:16, alignItems:"center", flexWrap:"wrap" }}>
+              <div style={{ flex:1, minWidth:200 }}>
+                <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:".95rem", color:"#f7f6f2", marginBottom:4 }}>
+                  Get your full improvement plan by email
+                </div>
+                <div style={{ fontSize:".78rem", color:"rgba(247,246,242,.6)", lineHeight:1.5 }}>
+                  3 specific fixes for your {resumeData.role} resume + weekly job market tips. Free.
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:8, flexShrink:0, flexWrap:"wrap" }}>
+                <input
+                  type="email" placeholder="your@email.com" value={leadEmail}
+                  onChange={e => setLeadEmail(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && captureLead()}
+                  style={{ padding:"8px 13px", borderRadius:"var(--r)", border:"1.5px solid rgba(247,246,242,.2)", background:"rgba(247,246,242,.08)", color:"#f7f6f2", fontSize:".83rem", fontFamily:"var(--font-body)", width:200, outline:"none" }}
+                />
+                <button className="btn btn-primary btn-sm" onClick={captureLead} disabled={leadLoading || !leadEmail.includes("@")}>
+                  {leadLoading ? "..." : "Send me the plan →"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div style={{ background:"var(--green-dim)", border:"1px solid rgba(45,138,78,.2)", borderRadius:"var(--r2)", padding:"12px 18px", marginBottom:16, fontSize:".83rem", color:"var(--green)", fontWeight:600 }}>
+              ✓ Check your inbox — your improvement plan is on its way.
+            </div>
+          )}
 
           {/* GENERATED RESUME MODAL */}
           {generatedResume && (
@@ -2399,6 +2529,7 @@ function JobsPage({ resumeData, isPro, setPage, defaultJobRole }) {
       else setJobs(list);
       setPageNum(pg);
       setHasMore(list.length >= 8);
+      if (pg === 1) trackEvent("job_search", { role: searchQuery, location: locationFilter, results: list.length });
     } catch { /* keep existing */ }
     setLoading(false);
     setLoadingMore(false);
@@ -2755,6 +2886,7 @@ function InterviewPage({ isPro, setPage }) {
     const answer = practiceAnswers[idx];
     if (!answer?.trim()) return;
     setPracticeLoading(idx);
+    trackEvent("interview_practice", { question_type: questionType, company: selectedCompany?.name || "general" });
     const prompt = questionType === "behavioral"
       ? `Interview question: "${q.q}"\n\nCandidate answer: "${answer}"\n\nScore using STAR method. Return ONLY valid JSON:\n{"score":7,"good":"one sentence on what they did well","missing":"one sentence on what was missing","better":"rewrite the weak part better in 2-3 sentences"}`
       : `Technical question: "${q.q}"\n\nCandidate answer: "${answer}"\n\nEvaluate the answer. Return ONLY valid JSON:\n{"score":7,"good":"what concepts they got right","missing":"key concepts that were missing","better":"the complete correct explanation in 2-3 sentences"}`;
@@ -3500,7 +3632,7 @@ function PricingPage({ isPro, setIsPro, showToast }) {
             ) : (
               <button
                 className={`btn w-full ${p.featured ? "btn-primary" : p.plan === "free" ? "btn-ghost" : "btn-dark"}`}
-                onClick={() => handleBuy(p.plan, null)}
+                onClick={() => { trackEvent("upgrade_click", { plan: p.plan }); handleBuy(p.plan, null); }}
                 disabled={loading === p.plan || (p.plan !== "free" && isPro)}
               >
                 {loading === p.plan ? <><span className="spin" />Processing...</> :

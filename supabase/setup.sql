@@ -28,3 +28,13 @@ CREATE TABLE IF NOT EXISTS pro_codes (
 
 -- Example: insert a code manually in Supabase SQL Editor like:
 -- INSERT INTO pro_codes (code, note) VALUES ('NIKI2026', 'Niki Avraam - LinkedIn feedback');
+
+-- Email leads captured from resume scan
+CREATE TABLE IF NOT EXISTS email_leads (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email      TEXT NOT NULL UNIQUE,
+  score      INTEGER,
+  role       TEXT,
+  source     TEXT DEFAULT 'resume_scan',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
