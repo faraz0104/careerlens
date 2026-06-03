@@ -6,6 +6,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://www.carrerlens.com";
   const now = new Date();
 
+  const toolPages: MetadataRoute.Sitemap = [
+    "ats-resume-checker","resume-score-checker","resume-keywords-scanner",
+    "free-resume-review","resume-optimization-tool",
+    "software-engineer-resume-checker","resume-ats-score",
+  ].map(slug => ({ url: `${base}/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.92 }));
+
   const appPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/resume`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
@@ -95,5 +101,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...appPages, ...salaryPages, ...companyInterviewPages, ...jobCategoryPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
+  return [...toolPages, ...appPages, ...salaryPages, ...companyInterviewPages, ...jobCategoryPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
 }
