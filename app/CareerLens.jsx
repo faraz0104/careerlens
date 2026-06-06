@@ -3865,7 +3865,431 @@ function TemplateMiniPreview({ template }) {
   );
 }
 
-function TemplatesPage({ setPage }) {
+/* ── RESUME BUILDER ──────────────────────────────── */
+function RenderedResume({ data, template }) {
+  const r = data;
+  const color = template?.color || "#5046e4";
+  const cat   = template?.category || "Modern";
+
+  const sectionHead = (label) => {
+    if (cat === "Traditional") return <div style={{ fontWeight:800, fontSize:".72rem", letterSpacing:".1em", textTransform:"uppercase", borderBottom:"1.5px solid #222", paddingBottom:3, marginBottom:8, marginTop:16 }}>{label}</div>;
+    if (cat === "Simple")      return <div style={{ fontWeight:700, fontSize:".78rem", color:"#444", marginBottom:6, marginTop:14 }}>{label}</div>;
+    return <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:8, marginTop:14 }}>
+      <div style={{ width:4, height:14, background:color, borderRadius:2, flexShrink:0 }} />
+      <div style={{ fontWeight:800, fontSize:".72rem", letterSpacing:".08em", textTransform:"uppercase", color }}>{label}</div>
+    </div>;
+  };
+
+  const bullets = (list) => list?.filter(Boolean).map((b,i) => (
+    <li key={i} style={{ fontSize:".82rem", marginBottom:3, lineHeight:1.65, color:"#333" }}>{b}</li>
+  ));
+
+  const expSection = (
+    r.experience?.map((exp, i) => (
+      <div key={i} style={{ marginBottom:14 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:1 }}>
+          <div style={{ fontWeight:700, fontSize:".88rem" }}>{exp.title}</div>
+          <div style={{ fontSize:".75rem", color:"#888", flexShrink:0, paddingLeft:8 }}>{exp.duration}</div>
+        </div>
+        <div style={{ fontStyle:"italic", fontSize:".8rem", color:"#666", marginBottom:5 }}>{exp.company}</div>
+        <ul style={{ margin:0, paddingLeft:17 }}>{bullets(exp.bullets)}</ul>
+      </div>
+    ))
+  );
+
+  if (cat === "Creative") return (
+    <div style={{ fontFamily:"'Inter',sans-serif", display:"flex", minHeight:900, background:"#fff" }}>
+      {/* Sidebar */}
+      <div style={{ width:220, background:color, padding:"28px 16px", color:"#fff", flexShrink:0 }}>
+        <div style={{ width:60, height:60, borderRadius:"50%", background:"rgba(255,255,255,.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.5rem", margin:"0 auto 12px" }}>👤</div>
+        <div style={{ fontWeight:800, fontSize:".95rem", textAlign:"center", marginBottom:2 }}>{r.name}</div>
+        <div style={{ fontSize:".75rem", textAlign:"center", opacity:.75, marginBottom:18 }}>{r.role}</div>
+        <div style={{ borderTop:"1px solid rgba(255,255,255,.25)", paddingTop:14, marginBottom:14 }}>
+          <div style={{ fontSize:".62rem", fontWeight:800, letterSpacing:".1em", opacity:.6, textTransform:"uppercase", marginBottom:7 }}>Contact</div>
+          {[["📧",r.email],["📱",r.phone],["📍",r.location],["🔗",r.linkedin]].filter(([,v])=>v).map(([icon,val],i)=>(
+            <div key={i} style={{ display:"flex", gap:5, marginBottom:4, alignItems:"flex-start" }}>
+              <span style={{ fontSize:".7rem", flexShrink:0, marginTop:1 }}>{icon}</span>
+              <span style={{ fontSize:".7rem", opacity:.85, wordBreak:"break-all", lineHeight:1.4 }}>{val}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ borderTop:"1px solid rgba(255,255,255,.25)", paddingTop:14, marginBottom:14 }}>
+          <div style={{ fontSize:".62rem", fontWeight:800, letterSpacing:".1em", opacity:.6, textTransform:"uppercase", marginBottom:7 }}>Skills</div>
+          {r.skills?.technical?.map((s,i)=>(
+            <div key={i} style={{ marginBottom:5 }}>
+              <div style={{ fontSize:".72rem", opacity:.85, marginBottom:3 }}>{s}</div>
+              <div style={{ height:3, background:"rgba(255,255,255,.2)", borderRadius:99 }}>
+                <div style={{ height:"100%", width:`${70+Math.random()*28}%`, background:"rgba(255,255,255,.7)", borderRadius:99 }} />
+              </div>
+            </div>
+          ))}
+        </div>
+        {r.certifications?.length > 0 && (
+          <div style={{ borderTop:"1px solid rgba(255,255,255,.25)", paddingTop:14 }}>
+            <div style={{ fontSize:".62rem", fontWeight:800, letterSpacing:".1em", opacity:.6, textTransform:"uppercase", marginBottom:7 }}>Certifications</div>
+            {r.certifications.map((c,i)=><div key={i} style={{ fontSize:".7rem", opacity:.8, marginBottom:4, lineHeight:1.4 }}>✓ {c}</div>)}
+          </div>
+        )}
+      </div>
+      {/* Main */}
+      <div style={{ flex:1, padding:"28px 24px" }}>
+        {r.summary && <><div style={{ fontSize:".82rem", color:"#444", lineHeight:1.75, marginBottom:4 }}>{r.summary}</div><div style={{ height:1, background:"#eee", margin:"14px 0" }} /></>}
+        {sectionHead("Experience")}{expSection}
+        {r.education && <>{sectionHead("Education")}<div style={{ fontWeight:700, fontSize:".85rem" }}>{r.education.degree}</div><div style={{ fontSize:".8rem", color:"#666" }}>{r.education.institution} · {r.education.year}</div></>}
+        {r.skills?.soft?.length > 0 && <>{sectionHead("Soft Skills")}<div style={{ fontSize:".82rem", color:"#444" }}>{r.skills.soft.join(" · ")}</div></>}
+      </div>
+    </div>
+  );
+
+  if (cat === "Traditional") return (
+    <div style={{ fontFamily:"Georgia,serif", color:"#1a1916", padding:"36px 44px", background:"#fff" }}>
+      <div style={{ textAlign:"center", borderBottom:"2px solid #1a1916", paddingBottom:14, marginBottom:4 }}>
+        <div style={{ fontSize:"1.7rem", fontWeight:700, letterSpacing:".01em", marginBottom:3 }}>{r.name}</div>
+        <div style={{ fontSize:".9rem", color:"#555", marginBottom:6 }}>{r.role}</div>
+        <div style={{ fontSize:".75rem", color:"#666", display:"flex", justifyContent:"center", flexWrap:"wrap", gap:"6px 18px" }}>
+          {[r.email,r.phone,r.location,r.linkedin].filter(Boolean).map((v,i)=><span key={i}>{v}</span>)}
+        </div>
+      </div>
+      {r.summary && <>{sectionHead("Objective")}<p style={{ fontSize:".83rem", lineHeight:1.75, marginBottom:0, color:"#333" }}>{r.summary}</p></>}
+      {sectionHead("Experience")}{expSection}
+      {r.education && <>{sectionHead("Education")}<div style={{ fontWeight:700, fontSize:".85rem" }}>{r.education.degree}</div><div style={{ fontSize:".8rem", color:"#666", marginTop:2 }}>{r.education.institution} · {r.education.year}</div></>}
+      {(r.skills?.technical?.length||r.skills?.soft?.length) && <>{sectionHead("Skills")}<div style={{ fontSize:".82rem", color:"#333", lineHeight:1.8 }}>{[...(r.skills.technical||[]),...(r.skills.soft||[])].join(" · ")}</div></>}
+      {r.certifications?.length > 0 && <>{sectionHead("Certifications")}<ul style={{ margin:0, paddingLeft:18 }}>{r.certifications.map((c,i)=><li key={i} style={{ fontSize:".82rem", marginBottom:3 }}>{c}</li>)}</ul></>}
+    </div>
+  );
+
+  if (cat === "Simple") return (
+    <div style={{ fontFamily:"'Inter',sans-serif", color:"#1a1916", padding:"36px 44px", background:"#fff" }}>
+      <div style={{ marginBottom:18 }}>
+        <div style={{ fontSize:"1.8rem", fontWeight:800, letterSpacing:"-.03em", marginBottom:2 }}>{r.name}</div>
+        <div style={{ fontSize:".9rem", color:"#555", marginBottom:6 }}>{r.role}</div>
+        <div style={{ fontSize:".75rem", color:"#888", display:"flex", flexWrap:"wrap", gap:"4px 16px" }}>
+          {[r.email,r.phone,r.location,r.linkedin].filter(Boolean).map((v,i)=><span key={i}>{v}</span>)}
+        </div>
+        <div style={{ height:1, background:"#ddd", marginTop:12 }} />
+      </div>
+      {r.summary && <>{sectionHead("Summary")}<p style={{ fontSize:".83rem", lineHeight:1.75, color:"#444", marginBottom:0 }}>{r.summary}</p></>}
+      {sectionHead("Experience")}{expSection}
+      {r.education && <>{sectionHead("Education")}<div style={{ fontWeight:700, fontSize:".85rem" }}>{r.education.degree}</div><div style={{ fontSize:".8rem", color:"#666", marginTop:1 }}>{r.education.institution} · {r.education.year}</div></>}
+      {(r.skills?.technical?.length) && <>{sectionHead("Skills")}<div style={{ fontSize:".82rem", color:"#444" }}>{r.skills.technical.join(" · ")}</div></>}
+      {r.certifications?.length > 0 && <>{sectionHead("Certifications")}<ul style={{ margin:0, paddingLeft:16 }}>{r.certifications.map((c,i)=><li key={i} style={{ fontSize:".82rem", marginBottom:2 }}>{c}</li>)}</ul></>}
+    </div>
+  );
+
+  // Modern (default)
+  return (
+    <div style={{ fontFamily:"'Inter',sans-serif", color:"#1a1916", background:"#fff" }}>
+      <div style={{ background:color, padding:"22px 32px" }}>
+        <div style={{ fontSize:"1.7rem", fontWeight:800, color:"#fff", letterSpacing:"-.03em", marginBottom:2 }}>{r.name}</div>
+        <div style={{ fontSize:".88rem", color:"rgba(255,255,255,.8)", marginBottom:10 }}>{r.role}</div>
+        <div style={{ display:"flex", flexWrap:"wrap", gap:"4px 18px" }}>
+          {[["📧",r.email],["📱",r.phone],["📍",r.location],["🔗",r.linkedin]].filter(([,v])=>v).map(([icon,val],i)=>(
+            <span key={i} style={{ fontSize:".72rem", color:"rgba(255,255,255,.75)", display:"flex", alignItems:"center", gap:4 }}><span>{icon}</span>{val}</span>
+          ))}
+        </div>
+      </div>
+      <div style={{ padding:"20px 32px" }}>
+        {r.summary && <>{sectionHead("Summary")}<p style={{ fontSize:".83rem", lineHeight:1.75, color:"#444", marginBottom:0 }}>{r.summary}</p></>}
+        {sectionHead("Experience")}{expSection}
+        {r.education && <>{sectionHead("Education")}<div style={{ fontWeight:700, fontSize:".85rem" }}>{r.education.degree}</div><div style={{ fontSize:".8rem", color:"#666", marginTop:2 }}>{r.education.institution} · {r.education.year}</div></>}
+        {(r.skills?.technical?.length||r.skills?.soft?.length) && (
+          <>{sectionHead("Skills")}
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"4px 24px" }}>
+            {r.skills.technical?.length > 0 && <div><div style={{ fontSize:".68rem", fontWeight:700, color:"#888", marginBottom:3, textTransform:"uppercase", letterSpacing:".04em" }}>Technical</div><div style={{ fontSize:".8rem" }}>{r.skills.technical.join(" · ")}</div></div>}
+            {r.skills.soft?.length > 0 && <div><div style={{ fontSize:".68rem", fontWeight:700, color:"#888", marginBottom:3, textTransform:"uppercase", letterSpacing:".04em" }}>Soft Skills</div><div style={{ fontSize:".8rem" }}>{r.skills.soft.join(" · ")}</div></div>}
+          </div></>
+        )}
+        {r.certifications?.length > 0 && <>{sectionHead("Certifications")}<ul style={{ margin:0, paddingLeft:16 }}>{r.certifications.map((c,i)=><li key={i} style={{ fontSize:".82rem", marginBottom:2 }}>{c}</li>)}</ul></>}
+      </div>
+    </div>
+  );
+}
+
+function BuilderPage({ template, setPage, resumeData, showToast }) {
+  const EMPTY_EXP = { title:"", company:"", duration:"", bullets:["","",""] };
+  const [form, setForm] = useState({
+    name:"", role:"", email:"", phone:"", location:"", linkedin:"",
+    experience:[{ ...EMPTY_EXP }, { ...EMPTY_EXP }],
+    technicalSkills:"", softSkills:"",
+    educationDegree:"", educationInstitution:"", educationYear:"",
+    certifications:"",
+  });
+  const [generating, setGenerating] = useState(false);
+  const [generated, setGenerated] = useState(null);
+  const [importDone, setImportDone] = useState(false);
+
+  const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
+  const setExp = (idx, key, val) => setForm(f => {
+    const exp = f.experience.map((e,i) => i === idx ? { ...e, [key]: val } : e);
+    return { ...f, experience: exp };
+  });
+  const setExpBullet = (idx, bi, val) => setForm(f => {
+    const exp = f.experience.map((e,i) => {
+      if (i !== idx) return e;
+      const bullets = e.bullets.map((b,j) => j === bi ? val : b);
+      return { ...e, bullets };
+    });
+    return { ...f, experience: exp };
+  });
+
+  const importFromScan = () => {
+    if (!resumeData) return;
+    setForm(f => ({
+      ...f,
+      name: resumeData.name || f.name,
+      role: resumeData.role || f.role,
+    }));
+    setImportDone(true);
+    showToast?.("Imported name and role from your scanned resume");
+  };
+
+  const generate = async () => {
+    if (!form.name || !form.role) { showToast?.("Please fill in at least your name and role"); return; }
+    setGenerating(true);
+    try {
+      const raw = await callClaude(
+        `You are a professional resume writer. Given a user's raw resume info, return ONLY valid JSON (no markdown) with this exact structure:
+{
+  "name": "string",
+  "role": "string",
+  "email": "string",
+  "phone": "string",
+  "location": "string",
+  "linkedin": "string",
+  "summary": "2-3 sentence professional summary with specific strengths",
+  "experience": [
+    {
+      "title": "string",
+      "company": "string",
+      "duration": "string",
+      "bullets": ["polished bullet with metric/impact", "another strong bullet", "third bullet"]
+    }
+  ],
+  "skills": {
+    "technical": ["skill1", "skill2"],
+    "soft": ["skill1", "skill2"]
+  },
+  "education": { "degree": "string", "institution": "string", "year": "string" },
+  "certifications": ["cert1"]
+}
+Rules: Polish bullets to start with strong action verbs and include metrics where possible. Write a compelling summary. Keep all original facts — only improve the language.`,
+        `Resume info: ${JSON.stringify({
+          name: form.name, role: form.role, email: form.email, phone: form.phone,
+          location: form.location, linkedin: form.linkedin,
+          experience: form.experience.filter(e => e.company || e.title),
+          technicalSkills: form.technicalSkills, softSkills: form.softSkills,
+          education: { degree: form.educationDegree, institution: form.educationInstitution, year: form.educationYear },
+          certifications: form.certifications ? form.certifications.split(",").map(s=>s.trim()) : [],
+        })}`,
+        1400
+      );
+      const match = raw.match(/\{[\s\S]*\}/);
+      const data = JSON.parse(match ? match[0] : raw);
+      setGenerated(data);
+    } catch (e) {
+      showToast?.("Generation failed — check your inputs and try again");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const downloadPDF = () => {
+    const color = template?.color || "#5046e4";
+    const cat   = template?.category || "Modern";
+    const r = generated;
+    const expHtml = r.experience?.map(e => `
+      <div style="margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between"><strong>${e.title}</strong><span style="color:#888;font-size:11px">${e.duration}</span></div>
+        <div style="font-style:italic;color:#666;font-size:12px;margin-bottom:4px">${e.company}</div>
+        <ul style="margin:0;padding-left:16px">${e.bullets?.filter(Boolean).map(b=>`<li style="font-size:12px;margin-bottom:3px">${b}</li>`).join("")}</ul>
+      </div>`).join("") || "";
+    const skillsHtml = `<div style="font-size:12px">${[...(r.skills?.technical||[]),...(r.skills?.soft||[])].join(" · ")}</div>`;
+    const headerHtml = cat === "Traditional"
+      ? `<div style="text-align:center;border-bottom:2px solid #222;padding-bottom:12px;margin-bottom:4px"><h1 style="margin:0 0 4px;font-size:22px">${r.name}</h1><div style="color:#555;font-size:13px;margin-bottom:5px">${r.role}</div><div style="font-size:11px;color:#888">${[r.email,r.phone,r.location,r.linkedin].filter(Boolean).join("  ·  ")}</div></div>`
+      : cat === "Simple"
+      ? `<div style="margin-bottom:16px"><h1 style="margin:0 0 3px;font-size:22px;font-weight:800">${r.name}</h1><div style="color:#555;font-size:13px;margin-bottom:5px">${r.role}</div><div style="font-size:11px;color:#888">${[r.email,r.phone,r.location,r.linkedin].filter(Boolean).join("  ·  ")}</div><div style="border-top:1px solid #ddd;margin-top:10px"></div></div>`
+      : `<div style="background:${color};padding:18px 28px;margin:-36px -40px 16px"><h1 style="margin:0 0 3px;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em">${r.name}</h1><div style="color:rgba(255,255,255,.8);font-size:13px;margin-bottom:7px">${r.role}</div><div style="font-size:11px;color:rgba(255,255,255,.7)">${[r.email,r.phone,r.location,r.linkedin].filter(Boolean).join("  ·  ")}</div></div>`;
+    const sHead = (label) => cat === "Traditional"
+      ? `<div style="font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-bottom:1.5px solid #222;padding-bottom:3px;margin:16px 0 8px">${label}</div>`
+      : cat === "Simple"
+      ? `<div style="font-size:11px;font-weight:700;color:#444;margin:14px 0 6px">${label}</div>`
+      : `<div style="display:flex;align-items:center;gap:5px;margin:14px 0 8px"><div style="width:4px;height:14px;background:${color};border-radius:2px"></div><div style="font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:${color}">${label}</div></div>`;
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>${r.name} — ${r.role}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:${cat==="Traditional"?"Georgia,serif":"'Helvetica Neue',Arial,sans-serif"};color:#1a1916;padding:36px 40px;line-height:1.6;max-width:760px;margin:0 auto}@media print{body{padding:24px 32px}}</style></head><body>
+      ${headerHtml}
+      ${r.summary?`${sHead("Summary")}<p style="font-size:12px;line-height:1.75;color:#444">${r.summary}</p>`:""}
+      ${sHead("Experience")}${expHtml}
+      ${r.education?.degree?`${sHead("Education")}<strong style="font-size:13px">${r.education.degree}</strong><div style="font-size:12px;color:#666">${r.education.institution} · ${r.education.year}</div>`:""}
+      ${sHead("Skills")}${skillsHtml}
+      ${r.certifications?.length?`${sHead("Certifications")}<ul style="margin:0;padding-left:16px">${r.certifications.map(c=>`<li style="font-size:12px;margin-bottom:2px">${c}</li>`).join("")}</ul>`:""}
+    </body></html>`;
+    const win = window.open("","_blank");
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 400);
+  };
+
+  const inputCls = { padding:"9px 11px", border:"1.5px solid var(--border)", borderRadius:"var(--r)", fontSize:".83rem", fontFamily:"var(--font-body)", outline:"none", background:"var(--bg)", color:"var(--ink)", width:"100%", transition:"border-color .15s" };
+  const onFocus = e => e.target.style.borderColor = "var(--accent)";
+  const onBlur  = e => e.target.style.borderColor = "var(--border)";
+
+  return (
+    <div className="page">
+      <style>{`
+        .builder-grid { display:grid; grid-template-columns:1fr 400px; gap:28px; padding:0 2rem 2rem; align-items:start; }
+        .builder-preview { position:sticky; top:80px; border:1.5px solid var(--border); border-radius:var(--r2); overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,.07); }
+        .exp-bullet { width:100%; padding:7px 10px; border:1px solid var(--border); border-radius:6px; font-size:.8rem; font-family:var(--font-body); outline:none; background:var(--bg); color:var(--ink); resize:none; }
+        .exp-bullet:focus { border-color:var(--accent); }
+        @media(max-width:900px){ .builder-grid { grid-template-columns:1fr; } .builder-preview { position:static; } }
+      `}</style>
+
+      <div className="page-header">
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <button className="btn btn-ghost btn-sm" onClick={() => setPage("templates")}>← Templates</button>
+          <div>
+            <div className="page-title">AI Resume Builder</div>
+            <div className="page-sub">
+              {template ? <><span style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"2px 9px", borderRadius:99, background:"var(--accent-dim)", fontSize:".72rem", fontWeight:700, color:"var(--accent)" }}>{template.category} · {template.name}</span></> : "Fill in your details — AI polishes everything"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="builder-grid">
+        {/* LEFT — Form */}
+        <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+
+          {/* Import banner */}
+          {resumeData && !importDone && (
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, padding:"11px 16px", background:"var(--accent-dim)", border:"1px solid rgba(80,70,228,.2)", borderRadius:"var(--r)" }}>
+              <div style={{ fontSize:".82rem", color:"var(--ink)" }}>You have a scanned resume — import your data?</div>
+              <button className="btn btn-primary btn-sm" onClick={importFromScan}>Import →</button>
+            </div>
+          )}
+
+          {/* Basic info */}
+          <div className="card">
+            <div className="card-head"><div className="card-title">Personal Details</div></div>
+            <div className="card-body" style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                {[["name","Full Name","Priya Sharma"],["role","Job Title","Software Engineer"],["email","Email","priya@gmail.com"],["phone","Phone","+91 98765 43210"],["location","Location","Bangalore, India"],["linkedin","LinkedIn","linkedin.com/in/priya"]].map(([key,label,ph]) => (
+                  <div key={key}>
+                    <label style={{ fontSize:".72rem", fontWeight:600, color:"var(--ink2)", display:"block", marginBottom:4 }}>{label}</label>
+                    <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={ph} style={inputCls} onFocus={onFocus} onBlur={onBlur} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Experience */}
+          {form.experience.map((exp, idx) => (
+            <div className="card" key={idx}>
+              <div className="card-head">
+                <div className="card-title">Experience {idx + 1}</div>
+                {idx > 0 && <button className="btn btn-ghost btn-sm" style={{ color:"var(--red)", fontSize:".72rem" }} onClick={() => setForm(f => ({ ...f, experience: f.experience.filter((_,i)=>i!==idx) }))}>Remove</button>}
+              </div>
+              <div className="card-body" style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                  {[["title","Job Title","Senior Engineer"],["company","Company","Google"],["duration","Duration","2022 – Present"]].map(([key,label,ph]) => (
+                    <div key={key} style={{ gridColumn: key === "duration" ? "2" : "auto" }}>
+                      <label style={{ fontSize:".72rem", fontWeight:600, color:"var(--ink2)", display:"block", marginBottom:4 }}>{label}</label>
+                      <input value={exp[key]} onChange={e => setExp(idx, key, e.target.value)} placeholder={ph} style={inputCls} onFocus={onFocus} onBlur={onBlur} />
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <label style={{ fontSize:".72rem", fontWeight:600, color:"var(--ink2)", display:"block", marginBottom:5 }}>Responsibilities / Achievements <span style={{ color:"var(--ink3)", fontWeight:400 }}>(AI will polish these)</span></label>
+                  {exp.bullets.map((b, bi) => (
+                    <textarea key={bi} className="exp-bullet" rows={2} value={b}
+                      onChange={e => setExpBullet(idx, bi, e.target.value)}
+                      placeholder={bi === 0 ? "e.g. Led backend migration to microservices, improved response time" : bi === 1 ? "e.g. Worked with team on dashboard — reduced manual reports" : "e.g. Built API for payments module"}
+                      style={{ marginBottom:6, display:"block" }} />
+                  ))}
+                  <button className="btn btn-ghost btn-sm" style={{ fontSize:".72rem" }}
+                    onClick={() => setForm(f => { const exp = [...f.experience]; exp[idx] = { ...exp[idx], bullets:[...exp[idx].bullets,""] }; return { ...f, experience:exp }; })}>
+                    + Add bullet
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          <button className="btn btn-ghost btn-sm" style={{ alignSelf:"flex-start" }}
+            onClick={() => setForm(f => ({ ...f, experience:[...f.experience, { ...EMPTY_EXP }] }))}>
+            + Add another role
+          </button>
+
+          {/* Skills */}
+          <div className="card">
+            <div className="card-head"><div className="card-title">Skills</div></div>
+            <div className="card-body" style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              {[["technicalSkills","Technical Skills","React, Node.js, Python, AWS, Docker"],["softSkills","Soft Skills","Leadership, Communication, Problem Solving"]].map(([key,label,ph]) => (
+                <div key={key}>
+                  <label style={{ fontSize:".72rem", fontWeight:600, color:"var(--ink2)", display:"block", marginBottom:4 }}>{label} <span style={{ fontWeight:400, color:"var(--ink3)" }}>(comma-separated)</span></label>
+                  <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={ph} style={inputCls} onFocus={onFocus} onBlur={onBlur} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Education & Certs */}
+          <div className="card">
+            <div className="card-head"><div className="card-title">Education & Certifications</div></div>
+            <div className="card-body" style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                {[["educationDegree","Degree","B.Tech Computer Science"],["educationInstitution","Institution","IIT Bombay"],["educationYear","Year","2022"]].map(([key,label,ph]) => (
+                  <div key={key}>
+                    <label style={{ fontSize:".72rem", fontWeight:600, color:"var(--ink2)", display:"block", marginBottom:4 }}>{label}</label>
+                    <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={ph} style={inputCls} onFocus={onFocus} onBlur={onBlur} />
+                  </div>
+                ))}
+              </div>
+              <div>
+                <label style={{ fontSize:".72rem", fontWeight:600, color:"var(--ink2)", display:"block", marginBottom:4 }}>Certifications <span style={{ fontWeight:400, color:"var(--ink3)" }}>(comma-separated)</span></label>
+                <input value={form.certifications} onChange={e => set("certifications", e.target.value)} placeholder="AWS Certified, PMP, Google Analytics" style={inputCls} onFocus={onFocus} onBlur={onBlur} />
+              </div>
+            </div>
+          </div>
+
+          {/* Generate CTA */}
+          <button className="btn btn-primary" style={{ justifyContent:"center", padding:"14px", fontSize:".95rem", fontWeight:800 }}
+            onClick={generate} disabled={generating}>
+            {generating ? <><span className="spin" />AI is polishing your resume…</> : "✨ Generate My Resume →"}
+          </button>
+          {generated && (
+            <button className="btn btn-ghost" style={{ justifyContent:"center", padding:"12px" }} onClick={downloadPDF}>
+              ⬇ Download as PDF
+            </button>
+          )}
+        </div>
+
+        {/* RIGHT — Live preview */}
+        <div className="builder-preview">
+          <div style={{ padding:"10px 14px", borderBottom:"1px solid var(--border)", background:"var(--bg2)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+            <div style={{ fontSize:".78rem", fontWeight:700, color:"var(--ink2)" }}>
+              {template ? `${template.name} Preview` : "Resume Preview"}
+            </div>
+            {generated && <button className="btn btn-primary btn-sm" onClick={downloadPDF}>⬇ PDF</button>}
+          </div>
+          <div style={{ overflow:"auto", maxHeight:"calc(100vh - 180px)" }}>
+            {generated
+              ? <RenderedResume data={generated} template={template} />
+              : (
+                <div style={{ padding:"40px 24px", textAlign:"center", color:"var(--ink3)" }}>
+                  <div style={{ fontSize:"2.5rem", marginBottom:12 }}>📄</div>
+                  <div style={{ fontWeight:700, fontSize:".9rem", color:"var(--ink2)", marginBottom:6 }}>Your resume preview will appear here</div>
+                  <div style={{ fontSize:".78rem", lineHeight:1.6 }}>Fill in the form on the left and click <strong>Generate</strong> — AI will polish your language, add strong action verbs, and render it in the {template?.name || "selected"} style.</div>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TemplatesPage({ setPage, onSelectTemplate }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const filtered = activeCategory === "All" ? TEMPLATES : TEMPLATES.filter(t => t.category === activeCategory);
 
@@ -3905,7 +4329,7 @@ function TemplatesPage({ setPage }) {
       {/* Template grid */}
       <div className="tpl-grid">
         {filtered.map(tpl => (
-          <div key={tpl.id} className="tpl-card" onClick={() => setPage("resume")}>
+          <div key={tpl.id} className="tpl-card" onClick={() => { onSelectTemplate(tpl); setPage("builder"); }}>
             <div className="tpl-thumb">
               <TemplateMiniPreview template={tpl} />
             </div>
@@ -3917,7 +4341,7 @@ function TemplatesPage({ setPage }) {
               <div style={{ fontSize:".74rem", color:"var(--ink2)", lineHeight:1.5, marginBottom:10 }}>{tpl.desc}</div>
               <div style={{ display:"flex", gap:6 }}>
                 <button className="btn btn-primary btn-sm" style={{ flex:1, justifyContent:"center", fontSize:".72rem" }}
-                  onClick={e => { e.stopPropagation(); setPage("resume"); }}>
+                  onClick={e => { e.stopPropagation(); onSelectTemplate(tpl); setPage("builder"); }}>
                   Use Template →
                 </button>
               </div>
@@ -4263,6 +4687,7 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
   const [isPro, setIsPro] = useState(false);
   const [toast, setToast] = useState(null);
   const [totalScans, setTotalScans] = useState(null);
+  const [builderTemplate, setBuilderTemplate] = useState(null);
 
   const showToast = (msg) => setToast(msg);
 
@@ -4346,7 +4771,8 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
         <main style={{ flex: 1 }}>
           {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} totalScans={totalScans} onScanComplete={fetchStats} />}
           {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} setPage={navigate} totalScans={totalScans} onScanComplete={fetchStats} />}
-          {page === "templates" && <TemplatesPage setPage={navigate} />}
+          {page === "templates" && <TemplatesPage setPage={navigate} onSelectTemplate={setBuilderTemplate} />}
+          {page === "builder"   && <BuilderPage template={builderTemplate} setPage={navigate} resumeData={resumeData} showToast={showToast} />}
           {page === "examples" && <ExamplesPage setPage={navigate} />}
           {page === "interview" && <InterviewPage isPro={isPro} setPage={navigate} />}
           {page === "coding" && <CodingPage isPro={isPro} />}
