@@ -12,6 +12,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "software-engineer-resume-checker","resume-ats-score",
     "fresher-resume-checker","data-scientist-resume-checker",
     "product-manager-resume-checker","marketing-resume-checker","mba-resume-checker",
+    // new role checkers
+    "frontend-developer-resume-checker","backend-developer-resume-checker",
+    "devops-resume-checker","full-stack-developer-resume-checker",
+    // high-volume informational pages
+    "resume-format-for-freshers","free-resume-maker",
+    "how-to-write-a-resume","resume-tips",
   ].map(slug => ({ url: `${base}/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.92 }));
 
   const appPages: MetadataRoute.Sitemap = [
