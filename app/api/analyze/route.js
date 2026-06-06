@@ -2,43 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { supabase } from "@/lib/supabase";
 import { rateLimit } from "@/lib/rateLimit";
 
-export async function POST(req) {
-  const { allowed, minutesLeft } = rateLimit(req, "analyze", 3, 60);
-  if (!allowed) {
-    return Response.json(
-      { error: `Too many requests. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
-      { status: 429 }
-    );
-  }
-
-  try {
-    const formData = await req.formData();
-    const file = formData.get("resume");
-
-    if (!file) {
-      return Response.json({ error: "No file uploaded" }, { status: 400 });
-    }
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64 = buffer.toString("base64");
-
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-    const response = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 3600,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "document",
-              source: { type: "base64", media_type: "application/pdf", data: base64 },
-            },
-            {
-              type: "text",
-              text: `First check if this document is a resume/CV. If NOT a resume, return ONLY:
+const ANALYSIS_PROMPT = `First check if this document is a resume/CV. If NOT a resume, return ONLY:
 {"is_resume": false, "error": "This doesn't look like a resume. Please upload your CV or resume in PDF format."}
 
 If it IS a resume, analyze it deeply and return ONLY valid JSON (no markdown, no backticks):
@@ -115,14 +79,13 @@ MAIN SCORE RUBRIC (be strict — most real resumes score 40–65):
 86–95: Exceptional — every bullet has measurable impact, perfectly ATS-optimised, strong brand
 
 ATS SCORE rubric:
-- 80–100: Uses role-specific technical keywords throughout, no text in images/tables, clean section headers, no headers/footers with critical info
+- 80–100: Uses role-specific technical keywords throughout, no text in images/tables, clean section headers
 - 60–79: Has most keywords, minor ATS issues
 - 40–59: Missing major keywords for the role, or has ATS-unfriendly formatting
 - 0–39: Major ATS issues — tables, columns, missing keywords, images with text
 
 SKILLS SCORE rubric:
-- Count keywords found vs what's expected for this role/seniority
-- 80+: Has 80%+ of expected skills
+- 80+: Has 80%+ of expected skills for this role/seniority
 - 60–79: Has 60–79% of expected skills
 - Below 60: Has fewer than 60% of expected skills
 
@@ -143,20 +106,67 @@ Common clichés: "team player", "hard worker", "go-getter", "detail-oriented", "
 VAGUE LANGUAGE to detect (find exact weak phrases in this resume):
 Look for: "managed X" (without numbers), "improved performance", "increased sales", "reduced costs", "led a team" (no size), "worked closely with", "contributed to", "supported", "handled", "dealt with", "various tasks", "multiple projects"
 
-Return 2-5 clichés and 2-5 vague phrases actually found in the resume. If fewer exist, return only what's found. Return empty arrays if none found.`,
-            },
-          ],
-        },
-      ],
+Return 2-5 clichés and 2-5 vague phrases actually found in the resume. If fewer exist, return only what's found. Return empty arrays if none found.`;
+
+export async function POST(req) {
+  const { allowed, minutesLeft } = rateLimit(req, "analyze", 3, 60);
+  if (!allowed) {
+    return Response.json(
+      { error: `Too many requests. Try again in ${minutesLeft} minute${minutesLeft !== 1 ? "s" : ""}.` },
+      { status: 429 }
+    );
+  }
+
+  try {
+    const formData = await req.formData();
+    const file = formData.get("resume");
+
+    if (!file) {
+      return Response.json({ error: "No file uploaded" }, { status: 400 });
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const fileName = (file.name || "").toLowerCase();
+    const isDocx = fileName.endsWith(".docx") || fileName.endsWith(".doc");
+
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    let messageContent;
+
+    if (isDocx) {
+      const mammoth = (await import("mammoth")).default;
+      const { value: resumeText } = await mammoth.extractRawText({ buffer });
+      if (!resumeText || resumeText.trim().length < 50) {
+        return Response.json(
+          { error: "Could not read the DOCX file. Try saving it as PDF and uploading again." },
+          { status: 422 }
+        );
+      }
+      messageContent = [
+        { type: "text", text: `RESUME TEXT:\n${resumeText}\n\n---\n\n${ANALYSIS_PROMPT}` },
+      ];
+    } else {
+      const base64 = buffer.toString("base64");
+      messageContent = [
+        { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } },
+        { type: "text", text: ANALYSIS_PROMPT },
+      ];
+    }
+
+    const response = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 3600,
+      messages: [{ role: "user", content: messageContent }],
     });
 
-    const text = response.content[0].text.trim();
+    const rawText = response.content[0].text.trim();
 
     let data;
     try {
-      data = JSON.parse(text);
+      data = JSON.parse(rawText);
     } catch {
-      const match = text.match(/\{[\s\S]*\}/);
+      const match = rawText.match(/\{[\s\S]*\}/);
       if (match) data = JSON.parse(match[0]);
       else throw new Error("Could not parse AI response");
     }
@@ -168,7 +178,7 @@ Return 2-5 clichés and 2-5 vague phrases actually found in the resume. If fewer
       );
     }
 
-    // Increment global scan counter (awaited — serverless kills fire-and-forget)
+    // Increment global scan counter
     try {
       const { data: stat } = await supabase
         .from("resume_stats")
@@ -187,7 +197,7 @@ Return 2-5 clichés and 2-5 vague phrases actually found in the resume. If fewer
     try {
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
-      const result = await resend.emails.send({
+      await resend.emails.send({
         from: "CareerLens <onboarding@resend.dev>",
         to: "khan97faraz@gmail.com",
         subject: `📄 Resume scan — ${data.name || "Someone"} scored ${data.score}/100`,
@@ -204,7 +214,6 @@ Return 2-5 clichés and 2-5 vague phrases actually found in the resume. If fewer
           </p>
         `,
       });
-      console.log("Notify email sent:", result);
     } catch (err) {
       console.error("Notify email failed:", err?.message || err);
     }
