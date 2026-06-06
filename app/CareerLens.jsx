@@ -1347,6 +1347,10 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage, tota
 
   const [showResumeUpgrade, setShowResumeUpgrade] = useState(false);
   const [jobsExpanded, setJobsExpanded] = useState(false);
+  const [roastText, setRoastText] = useState("");
+  const [roasting, setRoasting] = useState(false);
+  const [roastCopied, setRoastCopied] = useState(false);
+  const [scoreCopied, setScoreCopied] = useState(false);
 
   const downloadReport = () => {
     if (!resumeData) return;
@@ -1438,6 +1442,31 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage, tota
     } finally {
       setGenerating(false);
     }
+  };
+
+  const roastResume = async () => {
+    setRoasting(true);
+    setRoastText("");
+    const clicheList = (resumeData.cliches || []).map(c => `"${c.phrase}"`).join(", ");
+    const vaguePhrases = (resumeData.vague_language || []).map(v => `"${v.phrase}"`).join(", ");
+    const result = await callClaude(
+      "You are a brutally honest, darkly funny career coach who roasts resumes like a stand-up comedian. You are savage but constructive — every burn has a lesson. You write in short punchy lines, use relevant India-specific job market references (TCS, Infosys, Naukri, IIT, CGPA), and you are painfully accurate. Never be mean about personal traits — only about resume writing mistakes.",
+      `Roast this resume BRUTALLY. Be funny, specific, and ruthless about the resume writing sins. Keep it to 5-7 punchy lines. End with 1 line of genuine advice.
+
+Name: ${resumeData.name}
+Role: ${resumeData.role}
+Score: ${resumeData.score}/100
+Experience: ${resumeData.experience}
+Skills: ${resumeData.skills.slice(0, 8).join(", ")}
+Clichés found: ${clicheList || "none"}
+Vague phrases: ${vaguePhrases || "none"}
+Top issues: ${resumeData.improvements.slice(0, 3).join(" | ")}
+
+Be savage about the clichés, the vague language, the missing metrics. Reference specific phrases if given. Make it quotable and shareable. No emojis in every line — use them sparingly for impact.`,
+      600
+    );
+    setRoastText(result);
+    setRoasting(false);
   };
 
   const tailorResume = async () => {
@@ -1795,6 +1824,77 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
             );
           })()}
 
+          {/* LINKEDIN SHARE CARD */}
+          {(() => {
+            const ats = resumeData.breakdown?.ats?.score ?? 78;
+            const skills = resumeData.breakdown?.skills?.score ?? 62;
+            const content = resumeData.breakdown?.content?.score ?? 71;
+            const format = resumeData.breakdown?.format?.score ?? 85;
+            const clicheCount = resumeData.cliches?.length ?? 0;
+            const vagueCount = resumeData.vague_language?.length ?? 0;
+            const topFix = resumeData.improvements?.[0] ?? "";
+            const topFix2 = resumeData.improvements?.[1] ?? "";
+            const shareText = `Just got my resume destroyed by AI 😅
+
+📊 Resume Score: ${resumeData.score}/100 (ouch)
+
+Breakdown:
+${ats >= 75 ? "✅" : "⚠️"} ATS Compatibility: ${ats}/100
+${skills >= 75 ? "✅" : "⚠️"} Skills & Keywords: ${skills}/100
+${content >= 75 ? "✅" : "⚠️"} Content Quality: ${content}/100
+${format >= 75 ? "✅" : "⚠️"} Formatting: ${format}/100
+
+${clicheCount > 0 ? `AI found ${clicheCount} cliché${clicheCount > 1 ? "s" : ""} I didn't even notice 😬` : ""}
+${vagueCount > 0 ? `+ ${vagueCount} vague phrase${vagueCount > 1 ? "s" : ""} that waste recruiter time` : ""}
+
+Things to fix immediately:
+1. ${topFix}
+${topFix2 ? `2. ${topFix2}` : ""}
+
+Free AI resume scanner 👇
+carrerlens.com
+
+#ResumeTips #JobSearch #HiringIndia #CareerAdvice`;
+            return (
+              <div className="card mb-4" style={{ border: "1.5px solid rgba(80,70,228,.25)", background: "linear-gradient(135deg,rgba(80,70,228,.04),rgba(124,116,240,.02))" }}>
+                <div className="card-head">
+                  <div className="card-title">🔗 Share on LinkedIn</div>
+                  <button
+                    className="btn btn-sm btn-primary"
+                    onClick={() => { navigator.clipboard.writeText(shareText); setScoreCopied(true); setTimeout(() => setScoreCopied(false), 2500); }}
+                  >
+                    {scoreCopied ? "✓ Copied!" : "Copy post"}
+                  </button>
+                </div>
+                <div className="card-body">
+                  <div style={{ fontSize: ".78rem", color: "var(--ink2)", lineHeight: 1.6, marginBottom: 10 }}>
+                    Share your score — your network will want to check theirs too. Drives 3–5x more profile views.
+                  </div>
+                  <pre style={{ fontFamily: "var(--font-body)", fontSize: ".76rem", lineHeight: 1.7, color: "var(--ink)", background: "var(--bg2)", borderRadius: "var(--r)", padding: "12px 14px", whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, border: "1px solid var(--border)" }}>
+                    {shareText}
+                  </pre>
+                  <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <button
+                      className="btn btn-sm btn-ghost"
+                      onClick={() => { navigator.clipboard.writeText(shareText); setScoreCopied(true); setTimeout(() => setScoreCopied(false), 2500); }}
+                    >
+                      {scoreCopied ? "✓ Copied to clipboard!" : "📋 Copy"}
+                    </button>
+                    <a
+                      href={`https://www.linkedin.com/feed/?shareActive=true`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-ghost"
+                      style={{ textDecoration: "none", color: "#0077b5", borderColor: "#0077b5" }}
+                    >
+                      in Open LinkedIn
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
           <div className="card mb-4">
             <div className="card-head"><div className="card-title">🔥 What needs fixing — be brutal</div></div>
             <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1910,6 +2010,73 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               </div>
             </div>
           )}
+
+          {/* ROAST MY RESUME */}
+          <div className="card mb-4" style={{ border: "1.5px solid rgba(220,38,38,.2)", background: "linear-gradient(135deg,rgba(220,38,38,.04),rgba(220,38,38,.01))" }}>
+            <div className="card-head">
+              <div className="card-title">💀 Roast My Resume</div>
+              {roastText && (
+                <button
+                  className="btn btn-sm btn-ghost"
+                  style={{ borderColor: "rgba(220,38,38,.3)", color: "var(--red)" }}
+                  onClick={() => {
+                    const shareText = `AI just roasted my resume 💀\n\n${roastText}\n\n(Score was ${resumeData.score}/100 😬)\n\nGet yours roasted free → carrerlens.com\n\n#ResumeRoast #JobSearch #CareerAdvice`;
+                    navigator.clipboard.writeText(shareText);
+                    setRoastCopied(true);
+                    setTimeout(() => setRoastCopied(false), 2500);
+                  }}
+                >
+                  {roastCopied ? "✓ Copied!" : "📤 Share roast"}
+                </button>
+              )}
+            </div>
+            <div className="card-body">
+              {!roastText && !roasting && (
+                <>
+                  <div style={{ fontSize: ".8rem", color: "var(--ink2)", marginBottom: 12, lineHeight: 1.6 }}>
+                    Get a brutally honest, funny AI roast of your resume. People share these. Your recruiter will never see it — but your LinkedIn followers will.
+                  </div>
+                  <button
+                    className="btn btn-primary w-full"
+                    style={{ background: "linear-gradient(135deg,#dc2626,#991b1b)", justifyContent: "center" }}
+                    onClick={roastResume}
+                  >
+                    💀 Roast my resume — I can handle it
+                  </button>
+                </>
+              )}
+              {roasting && (
+                <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 0", justifyContent: "center", color: "var(--red)", fontWeight: 600 }}>
+                  <span className="spin" />
+                  AI is preparing your humiliation...
+                </div>
+              )}
+              {roastText && (
+                <>
+                  <div style={{ background: "#1a0a0a", borderRadius: "var(--r)", padding: "16px 18px", marginBottom: 12, border: "1px solid rgba(220,38,38,.2)" }}>
+                    <div style={{ fontFamily: "var(--font-mono)", fontSize: ".82rem", color: "#fca5a5", lineHeight: 1.9, whiteSpace: "pre-wrap" }}>
+                      {roastText}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <button
+                      className="btn btn-sm"
+                      style={{ background: "rgba(220,38,38,.1)", color: "var(--red)", border: "1px solid rgba(220,38,38,.2)" }}
+                      onClick={() => {
+                        const shareText = `AI just roasted my resume 💀\n\n${roastText}\n\n(Score: ${resumeData.score}/100 😬)\n\nGet yours roasted free → carrerlens.com\n\n#ResumeRoast #JobSearch #CareerAdvice`;
+                        navigator.clipboard.writeText(shareText);
+                        setRoastCopied(true);
+                        setTimeout(() => setRoastCopied(false), 2500);
+                      }}
+                    >
+                      {roastCopied ? "✓ Copied!" : "📋 Copy for LinkedIn/Twitter"}
+                    </button>
+                    <button className="btn btn-sm btn-ghost" onClick={roastResume}>🔄 Roast again</button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
 
           {/* EMAIL CAPTURE */}
           {!leadSubmitted ? (
