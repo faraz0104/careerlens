@@ -1733,17 +1733,29 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               })()}
 
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {[["ATS Compatibility","78%","var(--blue)"],["Skills Match","62%","var(--amber)"],["Content Quality","71%","var(--green)"],["Formatting","85%","var(--green)"]].map(([l,v,c]) => (
-                  <div key={l}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".77rem", marginBottom: 3 }}>
-                      <span style={{ color: "var(--ink2)" }}>{l}</span>
-                      <span style={{ fontWeight: 700 }}>{v}</span>
+                {(resumeData.breakdown ? [
+                  ["ATS Compatibility", resumeData.breakdown.ats?.score ?? 78, resumeData.breakdown.ats?.reason],
+                  ["Skills & Keywords",  resumeData.breakdown.skills?.score ?? 62, resumeData.breakdown.skills?.reason],
+                  ["Content Quality",    resumeData.breakdown.content?.score ?? 71, resumeData.breakdown.content?.reason],
+                  ["Formatting",         resumeData.breakdown.format?.score ?? 85, resumeData.breakdown.format?.reason],
+                ] : [
+                  ["ATS Compatibility",78,null],["Skills & Keywords",62,null],["Content Quality",71,null],["Formatting",85,null]
+                ]).map(([l, v, reason]) => {
+                  const pct = typeof v === "number" ? v : parseInt(v);
+                  const color = pct >= 75 ? "var(--green)" : pct >= 55 ? "var(--amber)" : "var(--red)";
+                  return (
+                    <div key={l} title={reason || ""}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: ".77rem", marginBottom: 3 }}>
+                        <span style={{ color: "var(--ink2)" }}>{l}</span>
+                        <span style={{ fontWeight: 700, color }}>{pct}/100</span>
+                      </div>
+                      <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${pct}%`, background: color }} />
+                      </div>
+                      {reason && <div style={{ fontSize: ".68rem", color: "var(--ink3)", marginTop: 2, lineHeight: 1.4 }}>{reason}</div>}
                     </div>
-                    <div className="progress-bar">
-                      <div className="progress-fill" style={{ width: v, background: c }} />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1809,6 +1821,95 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               </div>
             </div>
           </div>
+
+          {/* SECTION COMPLETENESS */}
+          {resumeData.sections && (
+            <div className="card mb-4">
+              <div className="card-head">
+                <div className="card-title">📋 Resume Sections Check</div>
+                <span className="tag" style={{ background: (() => { const s = resumeData.sections; const total = Object.keys(s).length; const present = Object.values(s).filter(Boolean).length; return present === total ? "var(--green-dim)" : "var(--amber-dim)"; })(), color: (() => { const s = resumeData.sections; const total = Object.keys(s).length; const present = Object.values(s).filter(Boolean).length; return present === total ? "var(--green)" : "var(--amber)"; })() }}>
+                  {Object.values(resumeData.sections).filter(Boolean).length}/{Object.keys(resumeData.sections).length} complete
+                </span>
+              </div>
+              <div className="card-body">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px" }}>
+                  {[
+                    ["contact_info",  "Contact Info"],
+                    ["linkedin",      "LinkedIn URL"],
+                    ["summary",       "Profile Summary"],
+                    ["experience",    "Work Experience"],
+                    ["education",     "Education"],
+                    ["skills",        "Skills Section"],
+                    ["projects",      "Projects"],
+                    ["certifications","Certifications"],
+                  ].map(([key, label]) => {
+                    const present = resumeData.sections[key];
+                    return (
+                      <div key={key} style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 8px", borderRadius: "var(--r)", background: present ? "var(--green-dim)" : "var(--red-dim)", border: `1px solid ${present ? "rgba(45,138,78,.15)" : "rgba(197,48,48,.15)"}` }}>
+                        <span style={{ fontSize: ".75rem", color: present ? "var(--green)" : "var(--red)", fontWeight: 800 }}>{present ? "✓" : "✗"}</span>
+                        <span style={{ fontSize: ".74rem", fontWeight: 600, color: present ? "var(--green)" : "var(--red)" }}>{label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                {Object.entries(resumeData.sections).some(([,v]) => !v) && (
+                  <div style={{ marginTop: 10, padding: "8px 11px", background: "var(--amber-dim)", borderRadius: "var(--r)", fontSize: ".74rem", color: "var(--amber)", fontWeight: 600 }}>
+                    💡 Missing sections reduce ATS score — add them to pass recruiter screening.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* CLICHÉS & REDUNDANCIES */}
+          {resumeData.cliches?.length > 0 && (
+            <div className="card mb-4">
+              <div className="card-head">
+                <div className="card-title">🚫 Clichés Detected</div>
+                <span className="tag tag-red">{resumeData.cliches.length} found</span>
+              </div>
+              <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ fontSize: ".76rem", color: "var(--ink2)", marginBottom: 4 }}>These overused phrases make your resume blend in. Replace them with specific achievements.</div>
+                {resumeData.cliches.map((item, i) => (
+                  <div key={i} style={{ borderRadius: "var(--r)", border: "1px solid var(--border)", overflow: "hidden" }}>
+                    <div style={{ padding: "7px 11px", background: "var(--red-dim)", display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: ".7rem", fontWeight: 800, color: "var(--red)", textTransform: "uppercase", letterSpacing: ".04em" }}>Cliché</span>
+                      <span style={{ fontSize: ".8rem", fontWeight: 700, color: "var(--ink)", fontStyle: "italic" }}>"{item.phrase}"</span>
+                    </div>
+                    <div style={{ padding: "7px 11px", background: "var(--bg)", display: "flex", gap: 7, alignItems: "flex-start" }}>
+                      <span style={{ color: "var(--green)", fontWeight: 800, fontSize: ".8rem", flexShrink: 0 }}>→</span>
+                      <span style={{ fontSize: ".78rem", color: "var(--ink2)", lineHeight: 1.5 }}>{item.suggestion}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* VAGUE LANGUAGE */}
+          {resumeData.vague_language?.length > 0 && (
+            <div className="card mb-4">
+              <div className="card-head">
+                <div className="card-title">⚠️ Vague Language</div>
+                <span className="tag tag-amber">{resumeData.vague_language.length} phrases</span>
+              </div>
+              <div className="card-body" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ fontSize: ".76rem", color: "var(--ink2)", marginBottom: 4 }}>Recruiters skim. Vague phrases get skipped. Add numbers, outcomes, and ownership.</div>
+                {resumeData.vague_language.map((item, i) => (
+                  <div key={i} style={{ borderRadius: "var(--r)", border: "1px solid var(--border)", overflow: "hidden" }}>
+                    <div style={{ padding: "7px 11px", background: "var(--amber-dim)", display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: ".7rem", fontWeight: 800, color: "var(--amber)", textTransform: "uppercase", letterSpacing: ".04em" }}>Vague</span>
+                      <span style={{ fontSize: ".8rem", fontWeight: 700, color: "var(--ink)", fontStyle: "italic" }}>"{item.phrase}"</span>
+                    </div>
+                    <div style={{ padding: "7px 11px", background: "var(--bg)", display: "flex", gap: 7, alignItems: "flex-start" }}>
+                      <span style={{ color: "var(--accent)", fontWeight: 800, fontSize: ".8rem", flexShrink: 0 }}>→</span>
+                      <span style={{ fontSize: ".78rem", color: "var(--ink2)", lineHeight: 1.5 }}>{item.suggestion}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* EMAIL CAPTURE */}
           {!leadSubmitted ? (

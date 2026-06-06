@@ -27,7 +27,7 @@ export async function POST(req) {
 
     const response = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 2800,
+      max_tokens: 3600,
       messages: [
         {
           role: "user",
@@ -85,6 +85,24 @@ If it IS a resume, analyze it deeply and return ONLY valid JSON (no markdown, no
     "specific, actionable improvement 3 with example",
     "specific, actionable improvement 4 with example",
     "specific, actionable improvement 5 with example"
+  ],
+  "sections": {
+    "contact_info": <true if email AND phone are present>,
+    "linkedin": <true if LinkedIn URL is present>,
+    "summary": <true if a profile summary/objective section exists>,
+    "experience": <true if work experience section exists>,
+    "education": <true if education section exists>,
+    "skills": <true if skills section exists>,
+    "projects": <true if projects section exists>,
+    "certifications": <true if certifications section exists>
+  },
+  "cliches": [
+    {"phrase": "exact clichéd phrase from the resume", "suggestion": "stronger replacement with concrete example"},
+    {"phrase": "another overused phrase", "suggestion": "specific alternative"}
+  ],
+  "vague_language": [
+    {"phrase": "exact vague phrase from resume", "suggestion": "rewrite with measurable action, e.g. 'Reduced X by Y% by doing Z'"},
+    {"phrase": "another vague phrase", "suggestion": "specific quantified replacement"}
   ]
 }
 
@@ -117,7 +135,15 @@ CONTENT SCORE rubric:
 FORMAT SCORE rubric:
 - 80+: One page (or clean 2-page for 8+ years exp), consistent fonts, clear sections, ATS-readable
 - 60–79: Minor inconsistencies, slightly long, but readable
-- Below 60: Multiple columns, tables, graphics, excessive length, or hard to parse`,
+- Below 60: Multiple columns, tables, graphics, excessive length, or hard to parse
+
+CLICHÉS to detect (find exact occurrences in this resume):
+Common clichés: "team player", "hard worker", "go-getter", "detail-oriented", "self-motivated", "passionate about", "results-driven", "dynamic professional", "proven track record", "think outside the box", "synergy", "leverage", "responsible for", "worked on", "assisted with", "helped with", "participated in", "involved in", "familiar with"
+
+VAGUE LANGUAGE to detect (find exact weak phrases in this resume):
+Look for: "managed X" (without numbers), "improved performance", "increased sales", "reduced costs", "led a team" (no size), "worked closely with", "contributed to", "supported", "handled", "dealt with", "various tasks", "multiple projects"
+
+Return 2-5 clichés and 2-5 vague phrases actually found in the resume. If fewer exist, return only what's found. Return empty arrays if none found.`,
             },
           ],
         },
