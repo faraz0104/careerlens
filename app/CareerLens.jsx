@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 /* ── FONTS & GLOBAL STYLES ─────────────────────────────────── */
 const STYLES = `
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 @media print {
@@ -12,33 +12,33 @@ const STYLES = `
   .no-print { display: none !important; }
 }
 :root {
-  --bg: #f7f6f2;
-  --bg2: #eeecea;
-  --bg3: #e5e2de;
-  --bg4: #d8d4cf;
-  --ink: #1a1916;
-  --ink2: #5a5650;
-  --ink3: #9a958f;
-  --accent: #e85a2a;
-  --accent2: #f07040;
-  --accent-dim: rgba(232,90,42,0.1);
-  --accent-glow: rgba(232,90,42,0.25);
-  --green: #2d8a4e;
-  --green-dim: rgba(45,138,78,0.1);
+  --bg: #f8f9ff;
+  --bg2: #f0f2fc;
+  --bg3: #e4e7f8;
+  --bg4: #cdd2f0;
+  --ink: #0f172a;
+  --ink2: #4b5568;
+  --ink3: #94a3b8;
+  --accent: #5046e4;
+  --accent2: #7c74f0;
+  --accent-dim: rgba(80,70,228,0.07);
+  --accent-glow: rgba(80,70,228,0.25);
+  --green: #059669;
+  --green-dim: rgba(5,150,105,0.08);
   --blue: #2563eb;
   --blue-dim: rgba(37,99,235,0.08);
-  --amber: #c2790a;
-  --amber-dim: rgba(194,121,10,0.1);
-  --red: #c53030;
-  --red-dim: rgba(197,48,48,0.1);
-  --border: rgba(26,25,22,0.08);
-  --border2: rgba(26,25,22,0.14);
-  --shadow: 0 1px 3px rgba(26,25,22,0.08), 0 4px 16px rgba(26,25,22,0.06);
-  --shadow2: 0 2px 8px rgba(26,25,22,0.1), 0 8px 32px rgba(26,25,22,0.08);
+  --amber: #d97706;
+  --amber-dim: rgba(217,119,6,0.08);
+  --red: #dc2626;
+  --red-dim: rgba(220,38,38,0.08);
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.12);
+  --shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow2: 0 4px 20px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.06);
   --r: 10px; --r2: 14px; --r3: 20px;
-  --font-head: 'Bricolage Grotesque', sans-serif;
-  --font-body: 'Instrument Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --font-head: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 html, body { font-family: var(--font-body); background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; min-height: 100vh; }
 button { font-family: var(--font-body); cursor: pointer; border: none; outline: none; }
@@ -49,29 +49,30 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 
 /* ── NAV ─────────────────────────────────────────── */
 .nav {
-  height: 58px; display: flex; align-items: center; padding: 0 2rem; gap: 8px;
-  background: rgba(247,246,242,0.92); backdrop-filter: blur(16px);
+  height: 62px; display: flex; align-items: center; padding: 0 2rem; gap: 8px;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
 }
-.nav-logo { display: flex; align-items: center; gap: 8px; font-family: var(--font-head); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.03em; margin-right: 12px; text-decoration: none; color: var(--ink); }
-.nav-logo-icon { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .85rem; font-weight: 900; color: #fff; }
+.nav-logo { display: flex; align-items: center; gap: 9px; font-family: var(--font-head); font-weight: 800; font-size: 1.05rem; letter-spacing: -0.03em; margin-right: 12px; text-decoration: none; color: var(--ink); }
+.nav-logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: .85rem; font-weight: 900; color: #fff; box-shadow: 0 4px 12px rgba(80,70,228,.3); }
 .nav-links { display: flex; gap: 2px; flex: 1; }
-.nav-link { padding: 6px 12px; border-radius: 7px; font-size: .8rem; font-weight: 600; color: var(--ink2); background: transparent; transition: all .15s; text-decoration: none; }
+.nav-link { padding: 6px 12px; border-radius: 7px; font-size: .8rem; font-weight: 500; color: var(--ink2); background: transparent; transition: all .15s; text-decoration: none; }
 .nav-link:hover { color: var(--ink); background: var(--bg2); }
-.nav-link.active { color: var(--accent); background: var(--accent-dim); }
+.nav-link.active { color: var(--accent); background: var(--accent-dim); font-weight: 600; }
 .nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.pro-badge { font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: linear-gradient(135deg,#e8a020,#e8602a); color: #fff; letter-spacing: .04em; }
+.pro-badge { font-size: .68rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; letter-spacing: .04em; }
 
 /* ── BUTTONS ─────────────────────────────────────── */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 18px; border-radius: var(--r); font-size: .83rem; font-weight: 600; transition: all .15s; white-space: nowrap; font-family: var(--font-body); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 18px; border-radius: var(--r); font-size: .83rem; font-weight: 600; transition: all .15s; white-space: nowrap; font-family: var(--font-body); letter-spacing: -.01em; }
 .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 8px var(--accent-glow); }
-.btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 16px var(--accent-glow); }
+.btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-glow); }
 .btn-ghost { background: transparent; color: var(--ink2); border: 1.5px solid var(--border2); }
 .btn-ghost:hover { color: var(--ink); background: var(--bg2); border-color: var(--bg4); }
-.btn-dark { background: var(--ink); color: var(--bg); }
-.btn-dark:hover { background: #2d2c28; transform: translateY(-1px); }
-.btn-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(45,138,78,.2); }
-.btn-green:hover { background: rgba(45,138,78,.18); }
+.btn-dark { background: var(--ink); color: #fff; }
+.btn-dark:hover { background: #1e2a3a; transform: translateY(-1px); }
+.btn-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(5,150,105,.2); }
+.btn-green:hover { background: rgba(5,150,105,.14); }
 .btn-sm { padding: 5px 12px; font-size: .76rem; }
 .btn-lg { padding: 12px 28px; font-size: .92rem; }
 .btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
@@ -79,13 +80,13 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 /* ── CARDS ───────────────────────────────────────── */
 .card { background: #fff; border: 1px solid var(--border); border-radius: var(--r2); box-shadow: var(--shadow); }
 .card-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.card-title { font-family: var(--font-head); font-size: .92rem; font-weight: 700; letter-spacing: -.02em; }
+.card-title { font-family: var(--font-head); font-size: .9rem; font-weight: 700; letter-spacing: -.02em; }
 .card-body { padding: 18px; }
 
 /* ── HERO ────────────────────────────────────────── */
 .hero { padding: 80px 2rem 60px; text-align: center; position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,90,42,.06) 0%, transparent 70%); pointer-events: none; }
-.hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(232,90,42,.2); padding: 4px 12px; border-radius: 99px; margin-bottom: 20px; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(80,70,228,.06) 0%, transparent 70%); pointer-events: none; }
+.hero-label { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(80,70,228,.2); padding: 4px 12px; border-radius: 99px; margin-bottom: 20px; }
 .hero-title { font-family: var(--font-head); font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -.04em; line-height: 1.1; margin-bottom: 16px; max-width: 820px; margin-left: auto; margin-right: auto; }
 .hero-title em { color: var(--accent); font-style: normal; }
 .hero-sub { font-size: 1rem; color: var(--ink2); max-width: 560px; margin: 0 auto 32px; line-height: 1.65; }
@@ -139,24 +140,24 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 .difficulty-hard { background: var(--red-dim); color: var(--red); }
 
 /* ── FORMS ───────────────────────────────────────── */
-.input { width: 100%; background: var(--bg); border: 1.5px solid var(--border2); border-radius: var(--r); padding: 9px 13px; color: var(--ink); font-size: .85rem; transition: border-color .2s; }
-.input:focus { border-color: var(--accent); background: #fff; }
+.input { width: 100%; background: var(--bg); border: 1.5px solid var(--border2); border-radius: var(--r); padding: 9px 13px; color: var(--ink); font-size: .85rem; transition: border-color .2s, background .2s; }
+.input:focus { border-color: var(--accent); background: #fff; box-shadow: 0 0 0 3px var(--accent-dim); }
 .input::placeholder { color: var(--ink3); }
-.select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a958f' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
 .input-group { margin-bottom: 14px; }
 .input-label { font-size: .78rem; font-weight: 600; margin-bottom: 5px; display: block; color: var(--ink2); }
 
 /* ── INFO BOXES ──────────────────────────────────── */
 .info-box { border-radius: var(--r); padding: 11px 14px; display: flex; gap: 9px; font-size: .79rem; line-height: 1.55; }
-.info-success { background: var(--green-dim); border: 1px solid rgba(45,138,78,.2); }
-.info-warn { background: var(--amber-dim); border: 1px solid rgba(194,121,10,.2); }
-.info-accent { background: var(--accent-dim); border: 1px solid rgba(232,90,42,.2); }
+.info-success { background: var(--green-dim); border: 1px solid rgba(5,150,105,.2); }
+.info-warn { background: var(--amber-dim); border: 1px solid rgba(217,119,6,.2); }
+.info-accent { background: var(--accent-dim); border: 1px solid rgba(80,70,228,.2); }
 .info-blue { background: var(--blue-dim); border: 1px solid rgba(37,99,235,.15); }
 
 /* ── TABS ────────────────────────────────────────── */
 .tabs { display: flex; gap: 4px; background: var(--bg2); border-radius: var(--r); padding: 4px; margin-bottom: 20px; }
 .tab { flex: 1; padding: 7px 12px; border-radius: 7px; font-size: .8rem; font-weight: 600; color: var(--ink2); background: transparent; transition: all .15s; text-align: center; }
-.tab.active { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+.tab.active { background: #fff; color: var(--accent); box-shadow: var(--shadow); }
 
 /* ── COMPANY CARDS ───────────────────────────────── */
 .company-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
@@ -187,7 +188,7 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 /* ── PRICING ─────────────────────────────────────── */
 .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 860px; margin: 0 auto; }
 .price-card { background: #fff; border: 1.5px solid var(--border); border-radius: var(--r3); padding: 28px 24px; position: relative; }
-.price-card.featured { border-color: var(--accent); background: linear-gradient(135deg, rgba(232,90,42,.02), #fff); }
+.price-card.featured { border-color: var(--accent); background: linear-gradient(135deg, var(--accent-dim), #fff); }
 .price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-size: .68rem; font-weight: 800; padding: 3px 12px; border-radius: 99px; white-space: nowrap; letter-spacing: .04em; }
 .price-name { font-family: var(--font-head); font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
 .price-who { font-size: .75rem; color: var(--ink3); margin-bottom: 16px; }
@@ -201,24 +202,24 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 .price-feature.no { color: var(--ink3); }
 
 /* ── SALARY DISPLAY ──────────────────────────────── */
-.salary-range { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--green-dim); border: 1px solid rgba(45,138,78,.2); border-radius: var(--r2); margin-bottom: 14px; }
+.salary-range { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--green-dim); border: 1px solid rgba(5,150,105,.2); border-radius: var(--r2); margin-bottom: 14px; }
 .salary-num { font-family: var(--font-head); font-size: 1.8rem; font-weight: 900; color: var(--green); letter-spacing: -.04em; }
 .salary-label { font-size: .75rem; color: var(--green); font-weight: 600; }
 
 /* ── SKILL GAPS ──────────────────────────────────── */
 .skill-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 99px; font-size: .77rem; font-weight: 600; margin: 3px; }
-.skill-have { background: var(--green-dim); color: var(--green); border: 1px solid rgba(45,138,78,.2); }
-.skill-missing { background: var(--red-dim); color: var(--red); border: 1px solid rgba(197,48,48,.2); }
-.skill-learn { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(194,121,10,.2); }
+.skill-have { background: var(--green-dim); color: var(--green); border: 1px solid rgba(5,150,105,.2); }
+.skill-missing { background: var(--red-dim); color: var(--red); border: 1px solid rgba(220,38,38,.2); }
+.skill-learn { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
 
 /* ── CODE EDITOR ─────────────────────────────────── */
-.code-editor { background: #1a1916; border-radius: var(--r2); overflow: hidden; }
-.code-editor-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #2a2926; border-bottom: 1px solid rgba(255,255,255,.08); }
+.code-editor { background: #0d1117; border-radius: var(--r2); overflow: hidden; }
+.code-editor-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: #161b22; border-bottom: 1px solid rgba(255,255,255,.08); }
 .code-dot { width: 10px; height: 10px; border-radius: 50%; }
-.code-textarea { width: 100%; min-height: 200px; background: #1a1916; color: #e8e4de; font-family: var(--font-mono); font-size: .82rem; line-height: 1.7; padding: 16px; border: none; resize: vertical; }
+.code-textarea { width: 100%; min-height: 200px; background: #0d1117; color: #e6edf3; font-family: var(--font-mono); font-size: .82rem; line-height: 1.7; padding: 16px; border: none; resize: vertical; }
 
 /* ── TOAST ───────────────────────────────────────── */
-.toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: var(--bg); border-radius: var(--r2); padding: 12px 18px; font-size: .82rem; font-weight: 600; z-index: 999; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow2); animation: toastIn .3s ease; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: #fff; border-radius: var(--r2); padding: 12px 18px; font-size: .82rem; font-weight: 600; z-index: 999; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow2); animation: toastIn .3s ease; }
 @keyframes toastIn { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
 /* ── SPINNER ─────────────────────────────────────── */
@@ -230,7 +231,7 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 .progress-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
 
 /* ── MODAL ───────────────────────────────────────── */
-.overlay { position: fixed; inset: 0; background: rgba(26,25,22,.6); backdrop-filter: blur(6px); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(8px); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .modal { background: #fff; border-radius: var(--r3); padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow2); }
 .modal-title { font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; letter-spacing: -.03em; margin-bottom: 6px; }
 .modal-sub { font-size: .83rem; color: var(--ink2); margin-bottom: 20px; line-height: 1.5; }
@@ -248,14 +249,14 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 .section-sub { font-size: .88rem; color: var(--ink2); line-height: 1.6; }
 
 /* ── FOOTER ──────────────────────────────────────── */
-.footer { background: var(--ink); color: rgba(247,246,242,.7); padding: 48px 2rem 24px; margin-top: 60px; }
+.footer { background: var(--ink); color: rgba(255,255,255,.65); padding: 48px 2rem 24px; margin-top: 60px; }
 .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 32px; max-width: 1100px; margin: 0 auto 32px; }
-.footer-brand { font-family: var(--font-head); font-size: 1.1rem; font-weight: 800; color: var(--bg); margin-bottom: 8px; }
+.footer-brand { font-family: var(--font-head); font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
 .footer-tagline { font-size: .78rem; line-height: 1.6; }
-.footer-heading { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(247,246,242,.4); margin-bottom: 10px; }
-.footer-link { display: block; font-size: .8rem; color: rgba(247,246,242,.6); margin-bottom: 6px; cursor: pointer; transition: color .15s; text-decoration: none; }
-.footer-link:hover { color: var(--bg); }
-.footer-bottom { border-top: 1px solid rgba(247,246,242,.08); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; font-size: .75rem; }
+.footer-heading { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.35); margin-bottom: 10px; }
+.footer-link { display: block; font-size: .8rem; color: rgba(255,255,255,.6); margin-bottom: 6px; cursor: pointer; transition: color .15s; text-decoration: none; }
+.footer-link:hover { color: #fff; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; font-size: .75rem; }
 
 /* ── ROADMAP ─────────────────────────────────────── */
 .roadmap-item { display: flex; gap: 14px; padding: 14px 0; position: relative; }
@@ -280,7 +281,7 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 /* ── MOBILE NAV ──────────────────────────────────── */
 .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; border-radius: 8px; background: transparent; border: none; margin-left: auto; }
 .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .2s; }
-.mobile-menu { display: none; position: fixed; inset: 0; top: 58px; background: rgba(247,246,242,0.97); backdrop-filter: blur(16px); z-index: 99; padding: 16px; flex-direction: column; gap: 4px; overflow-y: auto; }
+.mobile-menu { display: none; position: fixed; inset: 0; top: 62px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); z-index: 99; padding: 16px; flex-direction: column; gap: 4px; overflow-y: auto; }
 .mobile-menu.open { display: flex; }
 .mobile-menu-link { padding: 12px 16px; border-radius: var(--r); font-size: .95rem; font-weight: 600; color: var(--ink2); background: transparent; text-align: left; border: none; cursor: pointer; transition: all .15s; }
 .mobile-menu-link:hover, .mobile-menu-link.active { color: var(--accent); background: var(--accent-dim); }
@@ -288,96 +289,67 @@ input, textarea, select { font-family: var(--font-body); outline: none; }
 
 /* ── RESPONSIVE ──────────────────────────────────── */
 @media (max-width: 768px) {
-  /* Nav */
   .nav { padding: 0 1rem; }
   .nav-links { display: none; }
   .nav-right .btn { display: none; }
   .nav-hamburger { display: flex; }
 
-  /* Hero */
   .hero { padding: 48px 1rem 36px; }
   .hero-title { font-size: clamp(1.7rem, 7vw, 2.4rem); }
   .hero-sub { font-size: .88rem; }
   .hero-stats { gap: 20px; }
   .hero-stat-n { font-size: 1.4rem; }
 
-  /* Page */
   .page { padding: 20px 14px; }
   .page-title { font-size: 1.3rem; }
 
-  /* Layouts */
   .two-col { grid-template-columns: 1fr; }
   .three-col { grid-template-columns: 1fr 1fr; }
 
-  /* Pricing */
   .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
 
-  /* Footer */
   .footer { padding: 36px 1rem 20px; margin-top: 40px; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
   .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
 
-  /* Job cards */
   .job-card { flex-wrap: wrap; gap: 10px; padding: 14px; }
   .job-match { margin-left: 0; }
 
-  /* Company grid */
   .company-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
   .company-card { padding: 10px; }
   .company-logo { font-size: 1.3rem; }
 
-  /* Salary */
   .salary-range { flex-direction: column; align-items: flex-start; gap: 4px; }
   .salary-num { font-size: 1.4rem; }
 
-  /* Cards */
   .card-head { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
   .card-body { padding: 14px; }
 
-  /* Score ring */
   .score-ring { width: 90px; height: 90px; }
 
-  /* Tabs */
   .tabs { overflow-x: auto; }
   .tab { white-space: nowrap; flex: none; padding: 7px 14px; }
 
-  /* Upload */
   .upload-zone { padding: 32px 16px; }
 
-  /* Sections */
   .features-section { padding: 40px 1rem; }
   .features-grid { grid-template-columns: 1fr; }
 
-  /* Toast */
   .toast { bottom: 16px; right: 12px; left: 12px; font-size: .8rem; }
 
-  /* Ad slots */
   .ad-leaderboard { height: 60px; }
   .ad-rectangle { height: 180px; }
 }
 
 @media (max-width: 480px) {
-  /* Nav logo — shorter */
   .nav-logo span { display: none; }
-
-  /* Three col → single */
   .three-col { grid-template-columns: 1fr; }
-
-  /* Footer → single col */
   .footer-grid { grid-template-columns: 1fr; }
-
-  /* Hero */
   .hero-actions { flex-direction: column; align-items: center; }
   .hero-actions .btn { width: 100%; max-width: 280px; }
-
-  /* Pricing */
   .price-card { padding: 22px 18px; }
   .price-amount { font-size: 2rem; }
-
-  /* Page title */
   .page-title { font-size: 1.2rem; }
-
-  /* Job card compact */
   .job-logo { width: 40px; height: 40px; font-size: 1.1rem; }
   .job-title { font-size: .88rem; }
 }
@@ -517,7 +489,7 @@ function ScoreRing({ score, size = 120 }) {
         <div className="score-num" style={{ color, fontSize: size * .15 }}>{score}</div>
       </div>
       <div className="score-label" style={{ color }}>
-        {score >= 75 ? "Strong" : score >= 50 ? "Average" : "Needs work"}
+        {score >= 75 ? "Excellent" : score >= 50 ? "Good" : "Needs work"}
       </div>
     </div>
   );
@@ -671,14 +643,14 @@ function QuickCareerScan() {
 
   const scoreColor = result
     ? scoreAnim >= 70 ? "#4ade80" : scoreAnim >= 55 ? "#fbbf24" : "#f87171"
-    : "#e85a2a";
+    : "#5046e4";
 
   return (
     <div style={{ background:"rgba(255,255,255,.05)", border:"1px solid rgba(247,246,242,.1)", borderRadius:"var(--r2)", padding:"22px" }}>
       <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:14 }}>
         <span style={{ fontSize:".9rem" }}>⚡</span>
         <div style={{ fontWeight:800, fontSize:".88rem", color:"#f7f6f2", letterSpacing:"-.02em" }}>Quick Career Scan</div>
-        <span style={{ fontSize:".62rem", fontWeight:700, background:"rgba(232,90,42,.2)", color:"#e85a2a", padding:"2px 8px", borderRadius:99, marginLeft:"auto", border:"1px solid rgba(232,90,42,.3)" }}>No upload needed</span>
+        <span style={{ fontSize:".62rem", fontWeight:700, background:"rgba(80,70,228,.2)", color:"#5046e4", padding:"2px 8px", borderRadius:99, marginLeft:"auto", border:"1px solid rgba(80,70,228,.3)" }}>No upload needed</span>
       </div>
 
       <div style={{ marginBottom:10 }}>
@@ -692,7 +664,7 @@ function QuickCareerScan() {
         <div style={{ fontSize:".66rem", fontWeight:600, color:"rgba(247,246,242,.4)", marginBottom:6, textTransform:"uppercase", letterSpacing:".05em" }}>Experience level</div>
         <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
           {CAREER_SCAN_DATA.exps.map(e => (
-            <button key={e} onClick={() => { setExp(e); setResult(null); }} style={{ padding:"5px 12px", borderRadius:99, fontSize:".74rem", fontWeight:600, border:"1.5px solid", borderColor: exp === e ? "#e85a2a" : "rgba(247,246,242,.15)", background: exp === e ? "rgba(232,90,42,.2)" : "transparent", color: exp === e ? "#e85a2a" : "rgba(247,246,242,.6)", cursor:"pointer", transition:"all .15s" }}>
+            <button key={e} onClick={() => { setExp(e); setResult(null); }} style={{ padding:"5px 12px", borderRadius:99, fontSize:".74rem", fontWeight:600, border:"1.5px solid", borderColor: exp === e ? "#5046e4" : "rgba(247,246,242,.15)", background: exp === e ? "rgba(80,70,228,.2)" : "transparent", color: exp === e ? "#5046e4" : "rgba(247,246,242,.6)", cursor:"pointer", transition:"all .15s" }}>
               {e}
             </button>
           ))}
@@ -700,7 +672,7 @@ function QuickCareerScan() {
       </div>
 
       {!result && !scanning && (
-        <button onClick={scan} style={{ width:"100%", padding:"10px", borderRadius:"var(--r)", background:"#e85a2a", color:"#fff", fontWeight:700, fontSize:".84rem", border:"none", cursor:"pointer", transition:"all .15s", fontFamily:"var(--font-body)" }}>
+        <button onClick={scan} style={{ width:"100%", padding:"10px", borderRadius:"var(--r)", background:"#5046e4", color:"#fff", fontWeight:700, fontSize:".84rem", border:"none", cursor:"pointer", transition:"all .15s", fontFamily:"var(--font-body)" }}>
           Preview My Career Analysis →
         </button>
       )}
@@ -709,7 +681,7 @@ function QuickCareerScan() {
         <div style={{ textAlign:"center", padding:"12px 0" }}>
           <div style={{ fontSize:".78rem", color:"rgba(247,246,242,.5)", marginBottom:8 }}>{scanMsg}</div>
           <div style={{ height:3, background:"rgba(247,246,242,.1)", borderRadius:99, overflow:"hidden" }}>
-            <div style={{ height:"100%", background:"#e85a2a", borderRadius:99, animation:"scanProgress 1.8s ease-out forwards" }} />
+            <div style={{ height:"100%", background:"#5046e4", borderRadius:99, animation:"scanProgress 1.8s ease-out forwards" }} />
           </div>
         </div>
       )}
@@ -776,7 +748,7 @@ function QuickCareerScan() {
               <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:".88rem", color:"#60a5fa" }}>{result.jobs}+</div>
             </div>
           </div>
-          <div style={{ background:"rgba(232,90,42,.12)", border:"1px solid rgba(232,90,42,.25)", borderRadius:"var(--r)", padding:"7px 11px", fontSize:".7rem", color:"#e85a2a", fontWeight:600, textAlign:"center", marginBottom:6 }}>
+          <div style={{ background:"rgba(80,70,228,.12)", border:"1px solid rgba(80,70,228,.25)", borderRadius:"var(--r)", padding:"7px 11px", fontSize:".7rem", color:"#5046e4", fontWeight:600, textAlign:"center", marginBottom:6 }}>
             These are market averages — upload your resume for your exact score
           </div>
           <button onClick={() => setResult(null)} style={{ width:"100%", padding:"5px", fontSize:".68rem", fontWeight:600, background:"transparent", border:"none", color:"rgba(247,246,242,.3)", cursor:"pointer" }}>
@@ -843,7 +815,7 @@ function ResumeDemoAnimation() {
   }, [phase]);
 
   const r = 26, c = 2 * Math.PI * r;
-  const scoreColor = scoreVal >= 70 ? "#4ade80" : scoreVal >= 50 ? "#fbbf24" : "#e85a2a";
+  const scoreColor = scoreVal >= 70 ? "#4ade80" : scoreVal >= 50 ? "#fbbf24" : "#5046e4";
 
   return (
     <div style={{ background:"rgba(0,0,0,.25)", borderRadius:10, padding:"11px 13px", marginBottom:12, minHeight:80 }}>
@@ -857,7 +829,7 @@ function ResumeDemoAnimation() {
           <div style={{ flex:1 }}>
             <div style={{ fontSize:".7rem", fontWeight:600, color:"rgba(247,246,242,.5)", marginBottom:5 }}>Reading resume sections...</div>
             <div style={{ height:2.5, background:"rgba(247,246,242,.07)", borderRadius:99, overflow:"hidden" }}>
-              <div style={{ height:"100%", background:"#e85a2a", borderRadius:99, animation:"scanProgress 1.4s ease-out forwards" }} />
+              <div style={{ height:"100%", background:"#5046e4", borderRadius:99, animation:"scanProgress 1.4s ease-out forwards" }} />
             </div>
           </div>
         </div>
@@ -1023,7 +995,6 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
 
   const features = [
     { icon:"📊", name:"Resume Score & Roast", desc:"Get an honest score out of 100 with specific fixes that will get you more interviews", color:"#fff3ed", tag:"Free", tagClass:"tag-orange" },
-    { icon:"🎯", name:"AI Job Matching", desc:"See your match % for real jobs. Know exactly why you're not getting called back", color:"#f0fdf4", tag:"Free", tagClass:"tag-green" },
     { icon:"🏢", name:"Company Interview Prep", desc:"Actual questions asked at Google, Amazon, TCS, Flipkart — updated weekly", color:"#eff6ff", tag:"Popular", tagClass:"tag-blue" },
     { icon:"💻", name:"Coding Practice", desc:"Company-specific DSA questions with AI code review and time complexity analysis", color:"#fefce8", tag:"Pro", tagClass:"tag-amber" },
     { icon:"💰", name:"Salary Intelligence", desc:"Know your market value. Get the exact script to negotiate 20-30% more", color:"#f0fdf4", tag:"Pro", tagClass:"tag-green" },
@@ -1032,19 +1003,16 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
 
   const checks = [
     ["📊","ATS Score + Fixes","Most resumes score 40-65. See exactly what's costing you callbacks.","resume"],
-    ["🎯","Jobs Matched to You","See your % match for real jobs — know why you're not getting calls.","jobs"],
     ["🏢","Company Interview Prep","Questions asked at Google, Amazon, TCS & 50+ companies.","interview"],
     ["💰","Salary Negotiation","Know your market rate + the exact script to ask for 20% more.","salary"],
   ];
 
   return (
     <div>
-      <AdSlot type="leaderboard" label="Advertisement — Top Banner" />
-      <MarketTicker />
 
       {/* Returning user banner */}
       {lastScan && (
-        <div style={{ background:"linear-gradient(90deg,#fff7f3,#fff)", borderBottom:"1px solid rgba(232,90,42,.15)", padding:"10px 2rem", display:"flex", alignItems:"center", justifyContent:"center", gap:16, flexWrap:"wrap" }}>
+        <div style={{ background:"linear-gradient(90deg,#fff7f3,#fff)", borderBottom:"1px solid rgba(80,70,228,.15)", padding:"10px 2rem", display:"flex", alignItems:"center", justifyContent:"center", gap:16, flexWrap:"wrap" }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <div style={{ width:32, height:32, borderRadius:"50%", background: lastScan.score >= 75 ? "var(--green-dim)" : lastScan.score >= 55 ? "var(--amber-dim)" : "var(--red-dim)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"var(--font-head)", fontWeight:800, fontSize:".82rem", color: lastScan.score >= 75 ? "var(--green)" : lastScan.score >= 55 ? "var(--amber)" : "var(--red)", border:`1px solid ${lastScan.score>=75?"rgba(45,138,78,.2)":lastScan.score>=55?"rgba(194,121,10,.2)":"rgba(197,48,48,.2)"}` }}>
               {lastScan.score}
@@ -1063,7 +1031,7 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
         .home-hero { display:grid; grid-template-columns:500px 1fr; gap:52px; align-items:center; max-width:1200px; margin:0 auto; padding:52px 2rem 44px; }
         .home-upload-card { background:linear-gradient(145deg,#1c1b18,#252320); border:1px solid rgba(247,246,242,.09); border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,.28),0 4px 12px rgba(0,0,0,.15); padding:26px; }
         .upload-zone-dark { border:1.5px dashed rgba(247,246,242,.14); border-radius:12px; padding:32px 20px; text-align:center; background:rgba(255,255,255,.025); transition:all .2s; cursor:pointer; }
-        .upload-zone-dark:hover { border-color:rgba(232,90,42,.5); background:rgba(232,90,42,.04); }
+        .upload-zone-dark:hover { border-color:rgba(80,70,228,.5); background:rgba(80,70,228,.04); }
         .upload-pill-dark { padding:5px 12px; border-radius:99px; font-size:.72rem; font-weight:600; background:rgba(247,246,242,.07); color:rgba(247,246,242,.55); border:1px solid rgba(247,246,242,.1); cursor:pointer; transition:all .15s; }
         .upload-pill-dark:hover { background:rgba(247,246,242,.12); color:rgba(247,246,242,.85); }
         .home-check { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; transition:all .15s; }
@@ -1072,7 +1040,7 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
         .home-stat { text-align:center; padding:0 20px; }
         .home-stat + .home-stat { border-left:1px solid var(--border); }
         .quick-pill { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:99px; font-size:.75rem; font-weight:600; background:var(--bg2); color:var(--ink2); border:1px solid var(--border); cursor:pointer; transition:all .15s; white-space:nowrap; }
-        .quick-pill:hover { background:var(--accent-dim); color:var(--accent); border-color:rgba(232,90,42,.3); }
+        .quick-pill:hover { background:var(--accent-dim); color:var(--accent); border-color:rgba(80,70,228,.3); }
         .scan-grid { display:grid; grid-template-columns:1fr 420px; gap:40px; align-items:center; position:relative; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
         @media(max-width:768px){
@@ -1100,7 +1068,7 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
 
           {/* Output badges */}
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6, marginBottom:14 }}>
-            {[["📊","ATS Score"],["🔍","Skill Gaps"],["💼","Job Matches"],["🏢","Interview Qs"]].map(([icon, label]) => (
+            {[["📊","ATS Score"],["🔍","Skill Gaps"],["💡","Career Roadmap"],["🏢","Interview Qs"]].map(([icon, label]) => (
               <div key={label} style={{ display:"flex", alignItems:"center", gap:7, background:"rgba(255,255,255,.04)", border:"1px solid rgba(247,246,242,.08)", borderRadius:8, padding:"7px 10px" }}>
                 <span style={{ fontSize:".85rem" }}>{icon}</span>
                 <span style={{ fontSize:".72rem", fontWeight:600, color:"rgba(247,246,242,.6)" }}>{label}</span>
@@ -1114,7 +1082,7 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
             <div className="upload-zone-dark">
               {uploading ? (
                 <>
-                  <span className="spin" style={{ width:24, height:24, borderColor:"rgba(232,90,42,.3)", borderTopColor:"#e85a2a", margin:"0 auto 10px", display:"block" }} />
+                  <span className="spin" style={{ width:24, height:24, borderColor:"rgba(80,70,228,.3)", borderTopColor:"#5046e4", margin:"0 auto 10px", display:"block" }} />
                   <div style={{ color:"rgba(247,246,242,.75)", fontSize:".85rem", fontWeight:600 }}>Analysing your resume...</div>
                   <div style={{ color:"rgba(247,246,242,.3)", fontSize:".72rem", marginTop:4 }}>Claude AI is reading every line</div>
                 </>
@@ -1123,7 +1091,7 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
                   <div style={{ fontSize:"1.8rem", marginBottom:8 }}>📄</div>
                   <div style={{ color:"rgba(247,246,242,.7)", fontSize:".85rem", fontWeight:700, marginBottom:4 }}>Drop PDF or DOCX here</div>
                   <div style={{ color:"rgba(247,246,242,.28)", fontSize:".7rem", marginBottom:14 }}>Max 10MB · Instant · Never stored</div>
-                  <div style={{ background:"#e85a2a", color:"#fff", padding:"10px 28px", borderRadius:9, fontWeight:700, fontSize:".85rem", display:"inline-block", boxShadow:"0 6px 20px rgba(232,90,42,.4)", letterSpacing:"-.01em" }}>
+                  <div style={{ background:"#5046e4", color:"#fff", padding:"10px 28px", borderRadius:9, fontWeight:700, fontSize:".85rem", display:"inline-block", boxShadow:"0 6px 20px rgba(80,70,228,.4)", letterSpacing:"-.01em" }}>
                     Get My ATS Score — Free →
                   </div>
                 </>
@@ -1139,10 +1107,10 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
 
           {/* Quick nav */}
           <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:14 }}>
-            {[["🎯 Jobs","jobs"],["🏢 Interview","interview"],["💰 Salary","salary"],["🗺️ Roadmap","roadmap"]].map(([l,p]) => (
+            {[["🏢 Interview","interview"],["💰 Salary","salary"],["🗺️ Roadmap","roadmap"]].map(([l,p]) => (
               <button key={p} className="upload-pill-dark" onClick={() => setPage(p)}>{l}</button>
             ))}
-            <a href="/interview-questions" style={{ padding:"5px 12px", borderRadius:99, fontSize:".72rem", fontWeight:700, background:"rgba(232,90,42,.15)", color:"#e85a2a", border:"1px solid rgba(232,90,42,.28)", textDecoration:"none" }}>📚 Free Q&A</a>
+            <a href="/interview-questions" style={{ padding:"5px 12px", borderRadius:99, fontSize:".72rem", fontWeight:700, background:"rgba(80,70,228,.15)", color:"#5046e4", border:"1px solid rgba(80,70,228,.28)", textDecoration:"none" }}>📚 Free Q&A</a>
           </div>
 
           {/* Footer */}
@@ -1156,7 +1124,7 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
 
         {/* RIGHT — Text & features */}
         <div>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".72rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"var(--accent)", background:"var(--accent-dim)", border:"1px solid rgba(232,90,42,.2)", padding:"4px 12px", borderRadius:99, marginBottom:16 }}>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".72rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"var(--accent)", background:"var(--accent-dim)", border:"1px solid rgba(80,70,228,.2)", padding:"4px 12px", borderRadius:99, marginBottom:16 }}>
             <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--accent)", display:"inline-block", animation:"pulse 2s infinite" }} />
             Free · Results in 60 seconds
           </div>
@@ -1219,10 +1187,10 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
       <section style={{ padding:"0 2rem 32px" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ background:"linear-gradient(135deg, #1a1916 0%, #252320 100%)", borderRadius:16, padding:"36px 32px", position:"relative", overflow:"hidden" }}>
-            <div style={{ position:"absolute", top:0, right:0, width:400, height:400, background:"radial-gradient(ellipse at 80% 20%, rgba(232,90,42,.12) 0%, transparent 60%)", pointerEvents:"none" }} />
+            <div style={{ position:"absolute", top:0, right:0, width:400, height:400, background:"radial-gradient(ellipse at 80% 20%, rgba(80,70,228,.12) 0%, transparent 60%)", pointerEvents:"none" }} />
             <div className="scan-grid">
               <div style={{ position:"relative" }}>
-                <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".68rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"#e85a2a", background:"rgba(232,90,42,.12)", border:"1px solid rgba(232,90,42,.25)", padding:"3px 10px", borderRadius:99, marginBottom:14 }}>
+                <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:".68rem", fontWeight:700, letterSpacing:".07em", textTransform:"uppercase", color:"#5046e4", background:"rgba(80,70,228,.12)", border:"1px solid rgba(80,70,228,.25)", padding:"3px 10px", borderRadius:99, marginBottom:14 }}>
                   ⚡ Instant · No signup needed
                 </div>
                 <h2 style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"clamp(1.3rem,2.5vw,2rem)", color:"#f7f6f2", letterSpacing:"-.04em", lineHeight:1.2, marginBottom:12 }}>
@@ -1261,7 +1229,7 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
           </div>
           <div className="features-grid">
             {features.map(f => (
-              <div key={f.name} className="feature-card" style={{ background:f.color, padding:"16px" }} onClick={() => setPage(f.name.includes("Resume") ? "resume" : f.name.includes("Job") ? "jobs" : f.name.includes("Interview") ? "interview" : f.name.includes("Coding") ? "coding" : f.name.includes("Salary") ? "salary" : "roadmap")}>
+              <div key={f.name} className="feature-card" style={{ background:f.color, padding:"16px" }} onClick={() => setPage(f.name.includes("Resume") ? "resume" : f.name.includes("Interview") ? "interview" : f.name.includes("Coding") ? "coding" : f.name.includes("Salary") ? "salary" : "roadmap")}>
                 <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
                   <div className="feature-icon" style={{ background:"rgba(255,255,255,.7)", width:36, height:36, fontSize:"1rem", marginBottom:0 }}>{f.icon}</div>
                   <span className={`feature-tag tag ${f.tagClass}`}>{f.tag}</span>
@@ -1279,11 +1247,11 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
         <a href="/interview-questions" style={{ textDecoration:"none", display:"block", maxWidth:1100, margin:"0 auto" }}>
           <div style={{ background:"linear-gradient(135deg,#1a1916,#2d2c28)", borderRadius:14, padding:"24px 28px", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16, cursor:"pointer" }}>
             <div>
-              <div style={{ fontSize:".7rem", fontWeight:700, letterSpacing:".08em", textTransform:"uppercase", color:"#e85a2a", marginBottom:6 }}>✦ 100% Free · No Login Required</div>
+              <div style={{ fontSize:".7rem", fontWeight:700, letterSpacing:".08em", textTransform:"uppercase", color:"#5046e4", marginBottom:6 }}>✦ 100% Free · No Login Required</div>
               <div style={{ color:"#f7f6f2", fontWeight:800, fontSize:"clamp(1rem,2.5vw,1.3rem)", letterSpacing:"-.03em", marginBottom:6 }}>Top Interview Questions for Every Technology</div>
               <div style={{ color:"rgba(247,246,242,.65)", fontSize:".82rem" }}>React, Java, Python, SQL, System Design, DSA, DBMS, OS, DevOps, AWS &amp; more — all free, with detailed answers.</div>
             </div>
-            <div style={{ background:"#e85a2a", color:"#fff", padding:"11px 24px", borderRadius:9, fontWeight:700, fontSize:".85rem", whiteSpace:"nowrap", flexShrink:0 }}>
+            <div style={{ background:"#5046e4", color:"#fff", padding:"11px 24px", borderRadius:9, fontWeight:700, fontSize:".85rem", whiteSpace:"nowrap", flexShrink:0 }}>
               Study Free →
             </div>
           </div>
@@ -1319,154 +1287,10 @@ function HomePage({ setPage, setResumeData, totalScans, onScanComplete }) {
         </div>
       </section>
 
-      <JobAlertSignup />
     </div>
   );
 }
 
-function JobAlertSignup() {
-  const [form, setForm] = useState({ email: "", role: "", city: "Bangalore" });
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState("");
-  const cities = ["Bangalore","Mumbai","Hyderabad","Delhi NCR","Pune","Chennai","Kolkata","Remote","Any"];
-
-  const submit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to subscribe");
-      setDone(true);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const inputStyle = {
-    width: "100%", padding: "10px 13px",
-    border: "1.5px solid rgba(247,246,242,.12)",
-    borderRadius: "var(--r)", fontSize: ".85rem",
-    background: "rgba(247,246,242,.07)", color: "var(--bg)",
-    outline: "none", transition: "border-color .2s",
-  };
-  const labelStyle = { display: "block", fontSize: ".72rem", fontWeight: 600, marginBottom: 5, color: "rgba(247,246,242,.5)", letterSpacing: ".03em", textTransform: "uppercase" };
-
-  return (
-    <section style={{ background: "var(--ink)", padding: "72px 2rem", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 80% at 70% 50%, rgba(232,90,42,.12) 0%, transparent 65%)", pointerEvents: "none" }} />
-      <div className="job-alert-grid" style={{ maxWidth: 1000, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center", position: "relative" }}>
-
-        {/* Left — value prop */}
-        <div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".72rem", fontWeight: 700, letterSpacing: ".07em", textTransform: "uppercase", color: "#e8a020", background: "rgba(232,160,32,.1)", border: "1px solid rgba(232,160,32,.25)", padding: "4px 12px", borderRadius: 99, marginBottom: 20 }}>📬 Free Weekly Job Alerts</div>
-          <h2 style={{ fontFamily: "var(--font-head)", fontSize: "clamp(1.7rem,3.5vw,2.4rem)", fontWeight: 800, letterSpacing: "-.04em", color: "var(--bg)", lineHeight: 1.15, marginBottom: 16 }}>
-            5 jobs picked for you,<br /><em style={{ color: "var(--accent)", fontStyle: "normal" }}>every Monday morning.</em>
-          </h2>
-          <p style={{ color: "rgba(247,246,242,.6)", fontSize: ".9rem", lineHeight: 1.7, marginBottom: 28 }}>
-            Stop scrolling Naukri for hours. CareerLens AI picks the best openings for your role and city and delivers them straight to your inbox — free, every week.
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
-            {[
-              ["🎯", "Personalised to your role & city", "Not generic listings — curated for you"],
-              ["⚡", "New openings + walk-in alerts", "Including last-minute walk-in drives"],
-              ["🔒", "One click to apply", "Each job links back to CareerLens with full details"],
-            ].map(([icon, title, sub]) => (
-              <div key={title} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <div style={{ width: 36, height: 36, borderRadius: 9, background: "rgba(247,246,242,.07)", border: "1px solid rgba(247,246,242,.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", flexShrink: 0 }}>{icon}</div>
-                <div>
-                  <div style={{ fontSize: ".85rem", fontWeight: 700, color: "var(--bg)", marginBottom: 2 }}>{title}</div>
-                  <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.45)" }}>{sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ display: "flex" }}>
-              {["👨‍💻","👩‍💼","👨‍🎓","👩‍💻","👨"].map((a, i) => (
-                <div key={i} style={{ width: 28, height: 28, borderRadius: "50%", background: `hsl(${i * 40 + 200},50%,55%)`, border: "2px solid var(--ink)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".8rem", marginLeft: i ? -8 : 0 }}>{a}</div>
-              ))}
-            </div>
-            <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.5)" }}><strong style={{ color: "rgba(247,246,242,.8)" }}>2,100+ job seekers</strong> already subscribed</div>
-          </div>
-        </div>
-
-        {/* Right — form */}
-        <div>
-          {done ? (
-            <div style={{ background: "rgba(247,246,242,.05)", border: "1px solid rgba(247,246,242,.12)", borderRadius: 16, padding: "40px 32px", textAlign: "center" }}>
-              <div style={{ width: 60, height: 60, borderRadius: "50%", background: "rgba(45,138,78,.15)", border: "1px solid rgba(45,138,78,.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.6rem", margin: "0 auto 16px" }}>✓</div>
-              <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: "1.2rem", color: "var(--bg)", marginBottom: 8 }}>You're subscribed!</div>
-              <div style={{ color: "rgba(247,246,242,.55)", fontSize: ".85rem", lineHeight: 1.65 }}>
-                First batch of <strong style={{ color: "rgba(247,246,242,.8)" }}>{form.role} jobs in {form.city}</strong> lands this Monday morning. Check your inbox.
-              </div>
-              <div style={{ marginTop: 20, padding: "10px 16px", background: "rgba(45,138,78,.1)", border: "1px solid rgba(45,138,78,.2)", borderRadius: 8, fontSize: ".78rem", color: "rgba(247,246,242,.5)" }}>
-                Add <strong style={{ color: "rgba(247,246,242,.7)" }}>onboarding@resend.dev</strong> to contacts so alerts don't go to spam.
-              </div>
-            </div>
-          ) : (
-            <div style={{ background: "rgba(247,246,242,.05)", border: "1px solid rgba(247,246,242,.12)", borderRadius: 16, padding: "32px 28px", backdropFilter: "blur(8px)" }}>
-              <div style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: "1rem", color: "var(--bg)", marginBottom: 4 }}>Get your free job alerts</div>
-              <div style={{ fontSize: ".78rem", color: "rgba(247,246,242,.4)", marginBottom: 24 }}>Takes 20 seconds. No card needed.</div>
-              <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                <div>
-                  <label style={labelStyle}>Your Email *</label>
-                  <input type="email" required placeholder="you@gmail.com" value={form.email}
-                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                    onFocus={e => e.target.style.borderColor = "var(--accent)"}
-                    onBlur={e => e.target.style.borderColor = "rgba(247,246,242,.12)"}
-                    style={inputStyle} />
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  <div>
-                    <label style={labelStyle}>Job Role *</label>
-                    <input type="text" required placeholder="Software Engineer" value={form.role}
-                      onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
-                      onFocus={e => e.target.style.borderColor = "var(--accent)"}
-                      onBlur={e => e.target.style.borderColor = "rgba(247,246,242,.12)"}
-                      style={inputStyle} />
-                  </div>
-                  <div>
-                    <label style={labelStyle}>City</label>
-                    <select value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                      style={{ ...inputStyle, appearance: "none", cursor: "pointer" }}>
-                      {cities.map(c => <option key={c} style={{ background: "#1a1916" }}>{c}</option>)}
-                    </select>
-                  </div>
-                </div>
-                {error && (
-                  <div style={{ background: "rgba(197,48,48,.12)", color: "#f87171", border: "1px solid rgba(197,48,48,.25)", borderRadius: "var(--r)", padding: "9px 13px", fontSize: ".8rem" }}>{error}</div>
-                )}
-                <button type="submit" className="btn btn-primary" disabled={loading}
-                  style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: ".88rem", marginTop: 4 }}>
-                  {loading ? <><span className="spin" />Subscribing…</> : "📬 Send me jobs every Monday — Free"}
-                </button>
-                <div style={{ textAlign: "center", fontSize: ".7rem", color: "rgba(247,246,242,.3)", lineHeight: 1.6 }}>
-                  No spam ever. Unsubscribe in one click.
-                </div>
-              </form>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Mobile override */}
-      <style>{`
-        @media (max-width: 768px) {
-          .job-alert-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
-        }
-      `}</style>
-    </section>
-  );
-}
 
 function ShareableCard({ title, shareText, children }) {
   const [copied, setCopied] = useState(false);
@@ -1541,7 +1365,7 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage, tota
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:760px;margin:0 auto;padding:40px 48px;color:#1a1916;line-height:1.6}
   @media print{body{padding:24px 32px}}
   h1{font-size:1.6rem;font-weight:800;letter-spacing:-.04em;margin:0 0 4px}
-  h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e85a2a;border-bottom:1px solid #e5e2de;padding-bottom:6px;margin:24px 0 12px}
+  h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#5046e4;border-bottom:1px solid #e5e2de;padding-bottom:6px;margin:24px 0 12px}
   .score{font-size:3rem;font-weight:900;color:${scoreColor};line-height:1}
   .meta{font-size:.85rem;color:#5a5650;margin-bottom:24px}
   .bar-row{margin-bottom:10px}
@@ -1551,12 +1375,12 @@ function ResumePage({ resumeData, setResumeData, showToast, isPro, setPage, tota
   .tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.72rem;font-weight:700;margin:2px}
   .tag-green{background:#dcfce7;color:#166534}
   .tag-red{background:#fee2e2;color:#991b1b}
-  .imp{padding:8px 12px;background:#fef2f2;border-left:3px solid #e85a2a;margin-bottom:8px;font-size:.83rem;border-radius:0 6px 6px 0}
+  .imp{padding:8px 12px;background:#fef2f2;border-left:3px solid #5046e4;margin-bottom:8px;font-size:.83rem;border-radius:0 6px 6px 0}
   .footer{margin-top:40px;padding-top:16px;border-top:1px solid #e5e2de;font-size:.72rem;color:#9a958f;text-align:center}
 </style></head><body>
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #1a1916">
   <div>
-    <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#e85a2a;margin-bottom:6px">CareerLens Resume Report</div>
+    <div style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5046e4;margin-bottom:6px">CareerLens Resume Report</div>
     <h1>${resumeData.name}</h1>
     <div class="meta">${resumeData.role} · ${resumeData.experience} · Generated ${new Date().toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</div>
   </div>
@@ -1868,82 +1692,6 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
         </div>
       </div>
 
-      {/* JOBS — full width */}
-      <div style={{ marginBottom: 16 }}>
-
-        {/* Job Match Section */}
-        <div style={{ background: "#fff", border: "2px solid var(--border)", borderRadius: "var(--r2)", overflow: "hidden" }}>
-          {/* Header */}
-          <div style={{ background: "linear-gradient(135deg, #1a1916, #2a1a0e)", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: "1.1rem" }}>🎯</span>
-              <div>
-                <div style={{ fontFamily: "var(--font-head)", fontWeight: 800, fontSize: ".9rem", color: "#f7f6f2", letterSpacing: "-.02em" }}>
-                  Jobs matched to your profile
-                </div>
-                <div style={{ fontSize: ".7rem", color: "rgba(247,246,242,.5)", marginTop: 1 }}>
-                  Live <strong style={{ color: "rgba(247,246,242,.75)" }}>{resumeData.role}</strong> openings — click to apply
-                </div>
-              </div>
-            </div>
-            <button onClick={() => setPage("jobs")} style={{ flexShrink: 0, background: "var(--accent)", color: "#fff", padding: "6px 12px", borderRadius: "var(--r)", fontWeight: 700, fontSize: ".74rem", border: "none", cursor: "pointer", whiteSpace: "nowrap" }}>
-              View All →
-            </button>
-          </div>
-
-          {/* Job Cards */}
-          <div style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 8 }}>
-            {MOCK_JOBS.slice(0, jobsExpanded ? 4 : 1).map(job => (
-              <a key={job.id} href={job.apply_url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "var(--bg)", border: "1.5px solid var(--border)", borderRadius: "var(--r2)", transition: "all .15s", cursor: "pointer" }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.background = "#fff"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(232,90,42,.1)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--bg)"; e.currentTarget.style.boxShadow = "none"; }}>
-                <div style={{ width: 38, height: 38, borderRadius: 8, background: "#fff", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
-                  {job.logo}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: "var(--font-head)", fontWeight: 700, fontSize: ".85rem", color: "var(--ink)", marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {job.title}
-                  </div>
-                  <div style={{ fontSize: ".72rem", color: "var(--ink2)", marginBottom: 3 }}>
-                    {job.company} · {job.location}
-                  </div>
-                  <span style={{ fontSize: ".68rem", fontWeight: 700, color: "var(--green)", background: "var(--green-dim)", padding: "2px 7px", borderRadius: 99 }}>
-                    {job.salary}
-                  </span>
-                </div>
-                <div style={{ flexShrink: 0, textAlign: "center" }}>
-                  <div style={{ fontFamily: "var(--font-head)", fontWeight: 900, fontSize: "1.1rem", color: job.match >= 90 ? "var(--green)" : job.match >= 80 ? "var(--amber)" : "var(--ink2)", lineHeight: 1 }}>
-                    {job.match}%
-                  </div>
-                  <div style={{ fontSize: ".58rem", color: "var(--ink3)", fontWeight: 600, marginTop: 1 }}>match</div>
-                  <div style={{ marginTop: 5, background: "var(--accent)", color: "#fff", padding: "3px 8px", borderRadius: 5, fontSize: ".65rem", fontWeight: 700 }}>
-                    Apply →
-                  </div>
-                </div>
-              </a>
-            ))}
-
-            {/* Expand / Collapse toggle */}
-            <button
-              onClick={() => setJobsExpanded(v => !v)}
-              style={{ width: "100%", background: "var(--bg2)", border: "1.5px dashed var(--border)", borderRadius: "var(--r2)", padding: "8px 12px", fontSize: ".75rem", fontWeight: 700, color: "var(--ink2)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 5, transition: "all .15s" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--accent)"; e.currentTarget.style.color = "var(--accent)"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--ink2)"; }}>
-              {jobsExpanded ? "▲ Show less" : `▼ See ${MOCK_JOBS.length - 1} more matched jobs`}
-            </button>
-          </div>
-
-          {/* Footer */}
-          <div style={{ padding: "8px 12px", borderTop: "1px solid var(--border)", background: "var(--bg2)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ fontSize: ".7rem", color: "var(--ink2)" }}>
-              {MOCK_JOBS.length} live openings matched
-            </div>
-            <button onClick={() => setPage("jobs")} style={{ background: "transparent", border: "1.5px solid var(--border2)", borderRadius: "var(--r)", padding: "4px 12px", fontSize: ".72rem", fontWeight: 700, color: "var(--ink)", cursor: "pointer" }}>
-              See all {MOCK_JOBS.length} →
-            </button>
-          </div>
-        </div>
-      </div>
 
       <div className="two-col">
         <div>
@@ -2046,7 +1794,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
               ))}
               <button
                 className="btn btn-primary w-full"
-                style={{ marginTop: 8, justifyContent: "center", background: isPro ? undefined : "linear-gradient(135deg,#e85a2a,#c94a1a)" }}
+                style={{ marginTop: 8, justifyContent: "center", background: isPro ? undefined : "linear-gradient(135deg,#5046e4,#c94a1a)" }}
                 onClick={generateResume}
                 disabled={generating}
               >
@@ -2105,9 +1853,9 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                         *{box-sizing:border-box;margin:0;padding:0}
                         body{font-family:Georgia,serif;color:#1a1916;padding:40px 48px;line-height:1.6;font-size:13px}
                         h1{font-size:22px;font-weight:700;margin-bottom:4px}
-                        .role{color:#e85a2a;font-weight:600;font-size:14px;margin-bottom:8px}
+                        .role{color:#5046e4;font-weight:600;font-size:14px;margin-bottom:8px}
                         .contact{font-size:11px;color:#5a5650;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:12px}
-                        h2{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#e85a2a;border-bottom:1px solid #e5e2de;padding-bottom:4px;margin:18px 0 8px}
+                        h2{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5046e4;border-bottom:1px solid #e5e2de;padding-bottom:4px;margin:18px 0 8px}
                         .section{margin-bottom:18px}
                         .exp-header{display:flex;justify-content:space-between;margin-bottom:2px}
                         .exp-title{font-weight:700;font-size:13px}
@@ -2156,7 +1904,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                   {/* Header */}
                   <div style={{ borderBottom: "2px solid #1a1916", paddingBottom: 16, marginBottom: 20 }}>
                     <h1 style={{ margin: 0, fontSize: "1.8rem", fontWeight: 700, letterSpacing: "-.02em" }}>{generatedResume.name}</h1>
-                    <div style={{ fontWeight: 600, fontSize: "1rem", color: "#e85a2a", marginBottom: 8 }}>{generatedResume.role}</div>
+                    <div style={{ fontWeight: 600, fontSize: "1rem", color: "#5046e4", marginBottom: 8 }}>{generatedResume.role}</div>
                     <div style={{ fontSize: ".8rem", color: "#5a5650", display: "flex", flexWrap: "wrap", gap: "8px 20px" }}>
                       <span>📧 {generatedResume.email}</span>
                       <span>📱 {generatedResume.phone}</span>
@@ -2167,14 +1915,14 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
 
                   {/* Summary */}
                   <div style={{ marginBottom: 20 }}>
-                    <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Professional Summary</h2>
+                    <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#5046e4", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Professional Summary</h2>
                     <p style={{ margin: 0, fontSize: ".88rem", lineHeight: 1.7 }}>{generatedResume.summary}</p>
                   </div>
 
                   {/* Experience */}
                   {generatedResume.experience?.length > 0 && (
                     <div style={{ marginBottom: 20 }}>
-                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 12px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Work Experience</h2>
+                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#5046e4", margin: "0 0 12px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Work Experience</h2>
                       {generatedResume.experience.map((exp, i) => (
                         <div key={i} style={{ marginBottom: 16 }}>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
@@ -2194,7 +1942,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
 
                   {/* Skills */}
                   <div style={{ marginBottom: 20 }}>
-                    <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 10px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Skills</h2>
+                    <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#5046e4", margin: "0 0 10px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Skills</h2>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 24px" }}>
                       <div>
                         <div style={{ fontSize: ".75rem", fontWeight: 700, color: "#5a5650", marginBottom: 4 }}>TECHNICAL</div>
@@ -2210,7 +1958,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                   {/* Education */}
                   {generatedResume.education && (
                     <div style={{ marginBottom: 20 }}>
-                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Education</h2>
+                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#5046e4", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Education</h2>
                       <div style={{ fontSize: ".88rem", fontWeight: 700 }}>{generatedResume.education.degree}</div>
                       <div style={{ fontSize: ".82rem", color: "#5a5650" }}>{generatedResume.education.institution} · {generatedResume.education.year}</div>
                     </div>
@@ -2219,7 +1967,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                   {/* Certifications */}
                   {generatedResume.certifications?.length > 0 && (
                     <div>
-                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Certifications</h2>
+                      <h2 style={{ fontSize: ".85rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#5046e4", margin: "0 0 8px", borderBottom: "1px solid #e5e2de", paddingBottom: 4 }}>Certifications</h2>
                       <ul style={{ margin: 0, paddingLeft: 18 }}>
                         {generatedResume.certifications.map((c, i) => (
                           <li key={i} style={{ fontSize: ".83rem", marginBottom: 3 }}>{c}</li>
@@ -2241,7 +1989,7 @@ Output the rewritten About section only, ready to paste into LinkedIn.`,
                     {/* Visible teaser — name + role only, rest blurred */}
                     <div style={{ padding: "24px 32px 12px", background: "#fff", borderBottom: "1px solid #e5e2de" }}>
                       <div style={{ fontSize: "1.4rem", fontWeight: 700 }}>{generatedResume.name}</div>
-                      <div style={{ color: "#e85a2a", fontWeight: 600, marginBottom: 4 }}>{generatedResume.role}</div>
+                      <div style={{ color: "#5046e4", fontWeight: 600, marginBottom: 4 }}>{generatedResume.role}</div>
                       <div style={{ fontSize: ".78rem", color: "#9a958f" }}>📧 {generatedResume.email} · 📍 {generatedResume.location}</div>
                     </div>
                     {/* Blurred content behind overlay */}
@@ -2752,7 +2500,7 @@ function JobsPage({ resumeData, isPro, setPage, defaultJobRole }) {
           {!loading && sortedJobs.map(job => (
             <div key={job.id}
               style={{ background:"#fff", border:"1.5px solid var(--border)", borderRadius:"var(--r2)", padding:"16px 18px", marginBottom:10, transition:"border-color .15s, box-shadow .15s" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor="var(--accent)"; e.currentTarget.style.boxShadow="0 2px 14px rgba(232,90,42,0.1)"; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor="var(--accent)"; e.currentTarget.style.boxShadow="0 2px 14px rgba(80,70,228,0.1)"; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor="var(--border)"; e.currentTarget.style.boxShadow="none"; }}
             >
               <div style={{ display:"flex", gap:14 }}>
@@ -3088,7 +2836,7 @@ function InterviewPage({ isPro, setPage }) {
                 </button>
                 {questionType !== "coding" && (
                   <button className="btn btn-sm" onClick={() => { setPracticeQ(practiceQ === i ? null : i); setPracticeFeedback(prev => ({ ...prev, [i]: null })); }}
-                    style={{ background: practiceQ === i ? "var(--accent)" : "var(--accent-dim)", color: practiceQ === i ? "#fff" : "var(--accent)", border: "1px solid rgba(232,90,42,.3)" }}>
+                    style={{ background: practiceQ === i ? "var(--accent)" : "var(--accent-dim)", color: practiceQ === i ? "#fff" : "var(--accent)", border: "1px solid rgba(80,70,228,.3)" }}>
                     {practiceQ === i ? "✕ Close" : "✍ Practice"}
                   </button>
                 )}
@@ -3819,7 +3567,7 @@ function ContactPage({ showToast }) {
   return (
     <div style={{ maxWidth: 640, margin: "0 auto", padding: "60px 1.5rem" }}>
       <div style={{ marginBottom: 32 }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".75rem", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--accent)", background: "var(--accent-dim)", border: "1px solid rgba(232,90,42,.2)", padding: "4px 12px", borderRadius: 99, marginBottom: 16 }}>✉ Contact</div>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: ".75rem", fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--accent)", background: "var(--accent-dim)", border: "1px solid rgba(80,70,228,.2)", padding: "4px 12px", borderRadius: 99, marginBottom: 16 }}>✉ Contact</div>
         <h1 style={{ fontFamily: "var(--font-head)", fontSize: "clamp(1.8rem,4vw,2.6rem)", fontWeight: 800, letterSpacing: "-.04em", marginBottom: 12 }}>Get in touch</h1>
         <p style={{ color: "var(--ink2)", lineHeight: 1.65, fontSize: ".95rem" }}>Have a question, want to collaborate, or just say hi? Fill in the form and I'll reply within 24 hours.</p>
       </div>
@@ -3900,10 +3648,10 @@ function Footer({ setPage }) {
         </div>
         <div>
           <div className="footer-heading">Product</div>
-          {[["Resume Analyser","resume"],["Job Matching","jobs"],["Interview Prep","interview"],["Coding Practice","coding"],["Salary Intel","salary"],["Career Roadmap","roadmap"]].map(([l,p]) => (
+          {[["Resume Analyser","resume"],["Interview Prep","interview"],["Coding Practice","coding"],["Salary Intel","salary"],["Career Roadmap","roadmap"]].map(([l,p]) => (
             <a key={l} className="footer-link" onClick={() => setPage(p)}>{l}</a>
           ))}
-          <a href="/interview-questions" className="footer-link" style={{ color: "#e85a2a" }}>Interview Q&amp;A (Free)</a>
+          <a href="/interview-questions" className="footer-link" style={{ color: "#5046e4" }}>Interview Q&amp;A (Free)</a>
           <a href="/blog" className="footer-link">Blog</a>
         </div>
         <div>
@@ -3970,7 +3718,6 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
   const NAV_ITEMS = [
     { id:"home", label:"Home" },
     { id:"resume", label:"Resume" },
-    { id:"jobs", label:"Jobs" },
     { id:"interview", label:"Interview Prep" },
     { id:"coding", label:"Coding" },
     { id:"salary", label:"Salary" },
@@ -3990,7 +3737,7 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
             {NAV_ITEMS.map(n => (
               <a key={n.id} href={n.id === "home" ? "/" : `/${n.id}`} className={`nav-link ${page === n.id ? "active" : ""}`} onClick={(e) => { e.preventDefault(); navigate(n.id); }}>{n.label}</a>
             ))}
-            <a href="/interview-questions" className="nav-link" style={{ color: "#e85a2a", fontWeight: 700 }}>Interview Q&amp;A ✦</a>
+            <a href="/interview-questions" className="nav-link" style={{ color: "#5046e4", fontWeight: 700 }}>Interview Q&amp;A ✦</a>
             <a href="/blog" className="nav-link">Blog</a>
           </div>
           <div className="nav-right">
@@ -4011,7 +3758,7 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
           {NAV_ITEMS.map(n => (
             <button key={n.id} className={`mobile-menu-link ${page === n.id ? "active" : ""}`} onClick={() => navigate(n.id)}>{n.label}</button>
           ))}
-          <a href="/interview-questions" className="mobile-menu-link" style={{ color: "#e85a2a", fontWeight: 700, textDecoration: "none", display: "block", padding: "10px 16px", fontSize: ".9rem" }}>Interview Q&amp;A ✦</a>
+          <a href="/interview-questions" className="mobile-menu-link" style={{ color: "#5046e4", fontWeight: 700, textDecoration: "none", display: "block", padding: "10px 16px", fontSize: ".9rem" }}>Interview Q&amp;A ✦</a>
           <a href="/blog" className="mobile-menu-link" style={{ textDecoration: "none", display: "block", padding: "10px 16px", fontSize: ".9rem", color: "#1a1916" }}>Blog</a>
           <div className="mobile-menu-divider" />
           {isPro ? (
@@ -4024,7 +3771,6 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
         <main style={{ flex: 1 }}>
           {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} totalScans={totalScans} onScanComplete={fetchStats} />}
           {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} setPage={navigate} totalScans={totalScans} onScanComplete={fetchStats} />}
-          {page === "jobs" && <JobsPage resumeData={resumeData} isPro={isPro} setPage={navigate} defaultJobRole={defaultJobRole} />}
           {page === "interview" && <InterviewPage isPro={isPro} setPage={navigate} />}
           {page === "coding" && <CodingPage isPro={isPro} />}
           {page === "salary" && <SalaryPage resumeData={resumeData} isPro={isPro} showToast={showToast} />}
