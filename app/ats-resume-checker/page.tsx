@@ -14,6 +14,27 @@ export const metadata: Metadata = {
   },
 };
 
+const appJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "CareerLens ATS Resume Checker",
+  url: "https://www.carrerlens.com/ats-resume-checker",
+  description: "Free ATS resume checker for Indian job seekers — instant ATS score, missing keywords and formatting fixes",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+};
+
+const relatedTools = [
+  { href: "/resume", label: "Resume Checker" },
+  { href: "/resume-score-checker", label: "Resume Score" },
+  { href: "/free-resume-review", label: "Free Review" },
+  { href: "/resume-keywords-scanner", label: "Keywords Scanner" },
+  { href: "/resume-optimization-tool", label: "Resume Optimizer" },
+  { href: "/fresher-resume-checker", label: "Fresher Resume" },
+  { href: "/software-engineer-resume-checker", label: "SDE Resume" },
+];
+
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -28,14 +49,21 @@ const faqJsonLd = {
 export default function ATSCheckerPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(appJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 20px 0", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
         <h1 style={{ fontWeight: 900, fontSize: "clamp(1.5rem,3vw,2.2rem)", color: "#1a1916", letterSpacing: "-.04em", lineHeight: 1.2, margin: "0 0 10px" }}>
           Free ATS Resume Checker
         </h1>
-        <p style={{ color: "#5a5650", fontSize: ".95rem", lineHeight: 1.7, margin: "0 0 6px" }}>
+        <p style={{ color: "#5a5650", fontSize: ".95rem", lineHeight: 1.7, margin: "0 0 10px" }}>
           72% of resumes are rejected by ATS before a human ever reads them. Upload yours below — get your ATS score, missing keywords, and exact fixes in 30 seconds. Free, no login.
         </p>
+        <div style={{ margin: "0 0 4px", fontSize: ".8rem", color: "#888" }}>
+          <strong style={{ color: "#555" }}>Related tools: </strong>
+          {relatedTools.map((t, i) => (
+            <span key={t.href}><a href={t.href} style={{ color: "#c26b3a", textDecoration: "none" }}>{t.label}</a>{i < relatedTools.length - 1 ? " · " : ""}</span>
+          ))}
+        </div>
       </div>
       <App defaultTab="resume" />
     </>

@@ -14,6 +14,26 @@ export const metadata: Metadata = {
   },
 };
 
+const appJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "CareerLens Resume ATS Score Checker",
+  url: "https://www.carrerlens.com/resume-ats-score",
+  description: "Free resume ATS score checker — find out your ATS score out of 100 and why your resume is being filtered out",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+};
+
+const relatedTools = [
+  { href: "/resume", label: "Resume Checker" },
+  { href: "/ats-resume-checker", label: "ATS Checker" },
+  { href: "/resume-score-checker", label: "Resume Score" },
+  { href: "/resume-keywords-scanner", label: "Keywords Scanner" },
+  { href: "/resume-optimization-tool", label: "Resume Optimizer" },
+  { href: "/fresher-resume-checker", label: "Fresher Resume" },
+];
+
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -27,14 +47,21 @@ const faqJsonLd = {
 export default function ResumeATSScorePage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(appJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 20px 0", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
         <h1 style={{ fontWeight: 900, fontSize: "clamp(1.5rem,3vw,2.2rem)", color: "#1a1916", letterSpacing: "-.04em", lineHeight: 1.2, margin: "0 0 10px" }}>
           Resume ATS Score Checker
         </h1>
-        <p style={{ color: "#5a5650", fontSize: ".95rem", lineHeight: 1.7, margin: "0 0 6px" }}>
+        <p style={{ color: "#5a5650", fontSize: ".95rem", lineHeight: 1.7, margin: "0 0 10px" }}>
           Find out your resume's ATS score in 30 seconds. See exactly which keywords are missing, what formatting issues are hurting you, and how to fix it.
         </p>
+        <div style={{ margin: "0 0 4px", fontSize: ".8rem", color: "#888" }}>
+          <strong style={{ color: "#555" }}>Related tools: </strong>
+          {relatedTools.map((t, i) => (
+            <span key={t.href}><a href={t.href} style={{ color: "#c26b3a", textDecoration: "none" }}>{t.label}</a>{i < relatedTools.length - 1 ? " · " : ""}</span>
+          ))}
+        </div>
       </div>
       <App defaultTab="resume" />
     </>

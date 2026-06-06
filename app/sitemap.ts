@@ -10,6 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "ats-resume-checker","resume-score-checker","resume-keywords-scanner",
     "free-resume-review","resume-optimization-tool",
     "software-engineer-resume-checker","resume-ats-score",
+    "fresher-resume-checker","data-scientist-resume-checker",
+    "product-manager-resume-checker","marketing-resume-checker","mba-resume-checker",
   ].map(slug => ({ url: `${base}/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.92 }));
 
   const appPages: MetadataRoute.Sitemap = [
