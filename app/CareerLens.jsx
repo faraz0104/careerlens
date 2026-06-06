@@ -3739,6 +3739,478 @@ function ContactPage({ showToast }) {
   );
 }
 
+/* ── RESUME TEMPLATES ────────────────────────────── */
+const TEMPLATES = [
+  { id:"modern-pro",    category:"Modern",      name:"Modern Professional", desc:"Clean header band, indigo accents. Built for tech and consulting.",           color:"#5046e4" },
+  { id:"contemporary", category:"Modern",      name:"Contemporary",        desc:"Two-column with sidebar stats. Perfect for senior engineers.",                color:"#2563eb" },
+  { id:"tech-forward", category:"Modern",      name:"Tech Forward",        desc:"Monospace accents, GitHub-style. Made for developers.",                       color:"#0891b2" },
+  { id:"classic",      category:"Traditional", name:"Classic Professional", desc:"Centred header, bold caps sections. Works with every ATS.",                  color:"#1e293b" },
+  { id:"executive",    category:"Traditional", name:"Executive",           desc:"Solid dividers, structured layout. For senior and C-suite candidates.",       color:"#374151" },
+  { id:"corporate",    category:"Traditional", name:"Corporate",           desc:"Conservative and clean. Finance, law, banking — no surprises.",               color:"#1d4ed8" },
+  { id:"bold-sidebar", category:"Creative",    name:"Bold Sidebar",        desc:"Coloured left panel with skills and contact. Great for design and marketing.",color:"#7c3aed" },
+  { id:"designer-pro", category:"Creative",    name:"Designer Pro",        desc:"Asymmetric layout, strong typography. For UI/UX and brand roles.",            color:"#db2777" },
+  { id:"infographic",  category:"Creative",    name:"Infographic",         desc:"Skill bars and icon accents. Stands out in creative application stacks.",     color:"#059669" },
+  { id:"clean-slate",  category:"Simple",      name:"Clean Slate",         desc:"Text-first, maximum ATS pass rate. Let achievements speak.",                  color:"#0f172a" },
+  { id:"essential",    category:"Simple",      name:"Essential",           desc:"Single column, crystal clear hierarchy. Works for any role.",                 color:"#475569" },
+  { id:"minimal",      category:"Simple",      name:"Minimal",             desc:"Ultra-clean, thin dividers. Modern simplicity that recruiters love.",          color:"#64748b" },
+];
+
+const CATEGORY_DESC = {
+  Modern:      "The latest resume design trends — clean layouts, subtle colour accents, and optimised whitespace that feel fresh to a recruiter who's seen thousands of PDFs.",
+  Traditional: "Conservative formats that work in every industry. Banks, law firms, and government roles expect this — don't overthink it.",
+  Creative:    "Stand out in design, marketing, advertising, and media. Bold layouts that capture attention before a word is read.",
+  Simple:      "Maximum ATS compatibility. Prioritises your skills and achievements over decoration. Smart choice for any industry.",
+};
+
+function TemplateMiniPreview({ template }) {
+  const { category, color } = template;
+
+  if (category === "Creative") return (
+    <div style={{ width:"100%", height:"100%", display:"flex", background:"#fff", overflow:"hidden" }}>
+      <div style={{ width:"36%", background:color, padding:"6px 4px", display:"flex", flexDirection:"column", gap:3 }}>
+        <div style={{ width:20, height:20, borderRadius:"50%", background:"rgba(255,255,255,.3)", margin:"0 auto 4px" }} />
+        <div style={{ height:3, background:"rgba(255,255,255,.7)", borderRadius:2 }} />
+        <div style={{ height:2, background:"rgba(255,255,255,.4)", borderRadius:2, marginBottom:5 }} />
+        {["SKILLS","CONTACT","TOOLS"].map(s => (
+          <div key={s} style={{ marginBottom:4 }}>
+            <div style={{ height:2, width:"70%", background:"rgba(255,255,255,.7)", borderRadius:1, marginBottom:2 }} />
+            {[1,2,3].map(i => <div key={i} style={{ height:2, background:"rgba(255,255,255,.35)", borderRadius:1, marginBottom:1 }} />)}
+          </div>
+        ))}
+      </div>
+      <div style={{ flex:1, padding:"6px 5px" }}>
+        {["EXPERIENCE","EDUCATION","AWARDS"].map(s => (
+          <div key={s} style={{ marginBottom:5 }}>
+            <div style={{ height:2.5, width:"65%", background:color, borderRadius:1, marginBottom:2 }} />
+            {[1,2].map(i => (
+              <div key={i} style={{ marginBottom:2 }}>
+                <div style={{ height:2, width:"90%", background:"#ccc", borderRadius:1, marginBottom:1 }} />
+                <div style={{ height:1.5, width:"70%", background:"#ddd", borderRadius:1 }} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  if (category === "Traditional") return (
+    <div style={{ width:"100%", height:"100%", background:"#fff", padding:"6px 7px" }}>
+      <div style={{ textAlign:"center", borderBottom:"1.5px solid #222", paddingBottom:5, marginBottom:5 }}>
+        <div style={{ height:6, width:"55%", background:"#222", borderRadius:2, margin:"0 auto 2px" }} />
+        <div style={{ height:3, width:"40%", background:"#555", borderRadius:1, margin:"0 auto 2px" }} />
+        <div style={{ height:2, width:"65%", background:"#aaa", borderRadius:1, margin:"0 auto" }} />
+      </div>
+      {["OBJECTIVE","EXPERIENCE","EDUCATION","SKILLS"].map(s => (
+        <div key={s} style={{ marginBottom:4 }}>
+          <div style={{ height:2.5, background:"#222", borderRadius:1, marginBottom:3 }} />
+          {[1,2].map(i => (
+            <div key={i} style={{ marginBottom:2 }}>
+              <div style={{ height:2, width:"85%", background:"#ccc", borderRadius:1, marginBottom:1 }} />
+              <div style={{ height:1.5, width:"65%", background:"#ddd", borderRadius:1 }} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+
+  if (category === "Simple") return (
+    <div style={{ width:"100%", height:"100%", background:"#fff", padding:"6px 7px" }}>
+      <div style={{ marginBottom:6 }}>
+        <div style={{ height:7, width:"60%", background:"#111", borderRadius:2, marginBottom:2 }} />
+        <div style={{ height:3, width:"40%", background:"#888", borderRadius:1, marginBottom:3 }} />
+        <div style={{ height:1, background:"#ddd" }} />
+      </div>
+      {["Experience","Education","Skills","Awards"].map(s => (
+        <div key={s} style={{ marginBottom:5 }}>
+          <div style={{ height:2.5, width:"38%", background:"#444", borderRadius:1, marginBottom:2 }} />
+          {[1,2].map(i => (
+            <div key={i} style={{ display:"flex", gap:2, marginBottom:2, paddingLeft:4 }}>
+              <div style={{ width:2, height:2, borderRadius:"50%", background:"#999", flexShrink:0, marginTop:1 }} />
+              <div style={{ flex:1, height:2, background:"#ddd", borderRadius:1 }} />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+
+  // Modern (default)
+  return (
+    <div style={{ width:"100%", height:"100%", background:"#fff", overflow:"hidden" }}>
+      <div style={{ background:color, padding:"5px 7px", display:"flex", alignItems:"center", gap:5, marginBottom:5 }}>
+        <div>
+          <div style={{ height:6, width:80, background:"rgba(255,255,255,.9)", borderRadius:2, marginBottom:2 }} />
+          <div style={{ height:3, width:55, background:"rgba(255,255,255,.55)", borderRadius:1 }} />
+        </div>
+      </div>
+      <div style={{ padding:"0 7px" }}>
+        {["EXPERIENCE","SKILLS","EDUCATION"].map(s => (
+          <div key={s} style={{ marginBottom:5 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:3, marginBottom:2 }}>
+              <div style={{ height:3, width:4, background:color, borderRadius:1 }} />
+              <div style={{ height:2.5, width:38, background:color, borderRadius:1 }} />
+            </div>
+            {[1,2].map(i => (
+              <div key={i} style={{ marginBottom:2, paddingLeft:7 }}>
+                <div style={{ height:2.5, width:"80%", background:"#ccc", borderRadius:1, marginBottom:1 }} />
+                <div style={{ height:2, width:"60%", background:"#e0e0e0", borderRadius:1 }} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TemplatesPage({ setPage }) {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const filtered = activeCategory === "All" ? TEMPLATES : TEMPLATES.filter(t => t.category === activeCategory);
+
+  return (
+    <div className="page">
+      <style>{`
+        .tpl-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; padding:0 2rem 2rem; }
+        .tpl-card { border:1.5px solid var(--border); border-radius:var(--r2); overflow:hidden; cursor:pointer; transition:all .18s; background:#fff; }
+        .tpl-card:hover { border-color:var(--accent); box-shadow:0 4px 20px rgba(80,70,228,.12); transform:translateY(-2px); }
+        .tpl-thumb { height:160px; overflow:hidden; border-bottom:1.5px solid var(--border); background:#f8f9ff; }
+        .tpl-info { padding:12px 13px; }
+        @media(max-width:600px){ .tpl-grid { grid-template-columns:1fr 1fr; gap:12px; padding:0 1rem 1rem; } .tpl-thumb { height:120px; } }
+      `}</style>
+
+      <div className="page-header">
+        <div className="page-title">Resume Templates</div>
+        <div className="page-sub">12 professional templates across 4 styles — all ATS-friendly, all free</div>
+      </div>
+
+      {/* Category filter */}
+      <div style={{ display:"flex", gap:8, flexWrap:"wrap", padding:"0 2rem 20px" }}>
+        {["All","Modern","Traditional","Creative","Simple"].map(cat => (
+          <button key={cat} onClick={() => setActiveCategory(cat)} className="btn btn-sm"
+            style={{ background:activeCategory === cat ? "var(--accent)" : "var(--bg2)", color:activeCategory === cat ? "#fff" : "var(--ink2)", fontWeight:activeCategory === cat ? 700 : 500 }}>
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Category description */}
+      {activeCategory !== "All" && (
+        <div style={{ margin:"0 2rem 20px", padding:"10px 14px", background:"var(--accent-dim)", border:"1px solid rgba(80,70,228,.15)", borderRadius:"var(--r)", fontSize:".82rem", color:"var(--ink2)" }}>
+          {CATEGORY_DESC[activeCategory]}
+        </div>
+      )}
+
+      {/* Template grid */}
+      <div className="tpl-grid">
+        {filtered.map(tpl => (
+          <div key={tpl.id} className="tpl-card" onClick={() => setPage("resume")}>
+            <div className="tpl-thumb">
+              <TemplateMiniPreview template={tpl} />
+            </div>
+            <div className="tpl-info">
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
+                <div style={{ fontWeight:700, fontSize:".85rem", color:"var(--ink)" }}>{tpl.name}</div>
+                <span style={{ fontSize:".64rem", fontWeight:700, padding:"2px 7px", borderRadius:99, background:"var(--accent-dim)", color:"var(--accent)" }}>{tpl.category}</span>
+              </div>
+              <div style={{ fontSize:".74rem", color:"var(--ink2)", lineHeight:1.5, marginBottom:10 }}>{tpl.desc}</div>
+              <div style={{ display:"flex", gap:6 }}>
+                <button className="btn btn-primary btn-sm" style={{ flex:1, justifyContent:"center", fontSize:".72rem" }}
+                  onClick={e => { e.stopPropagation(); setPage("resume"); }}>
+                  Use Template →
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom CTA */}
+      <div style={{ margin:"0 2rem 2rem", padding:"24px", background:"linear-gradient(135deg,#1a1916,#2d2c28)", borderRadius:"var(--r2)", display:"flex", alignItems:"center", justifyContent:"space-between", gap:16, flexWrap:"wrap" }}>
+        <div>
+          <div style={{ fontFamily:"var(--font-head)", fontWeight:800, fontSize:"1.05rem", color:"#f7f6f2", marginBottom:4 }}>Not sure which template to pick?</div>
+          <div style={{ fontSize:".82rem", color:"rgba(247,246,242,.55)" }}>Upload your resume first — we'll tell you which format works best for your industry and role.</div>
+        </div>
+        <button className="btn btn-primary" onClick={() => setPage("resume")}>Analyse My Resume →</button>
+      </div>
+    </div>
+  );
+}
+
+/* ── RESUME EXAMPLES ─────────────────────────────── */
+const RESUME_EXAMPLES = [
+  {
+    id:"pm", role:"Project Manager", icon:"📋", exp:"5 years", score:82,
+    data:{
+      name:"Rohan Kapoor", role:"Senior Project Manager",
+      email:"rohan.kapoor@gmail.com", phone:"+91 98765 43210", location:"Bangalore, India", linkedin:"linkedin.com/in/rohankapoor",
+      summary:"PMP-certified Project Manager with 5+ years delivering enterprise software projects for Fortune 500 clients. Managed cross-functional teams of 15+ across 3 time zones, consistently delivering on time and under budget.",
+      experience:[
+        { title:"Senior Project Manager", company:"Infosys", duration:"2021 – Present", bullets:[
+          "Led ₹12 Cr ERP migration for a banking client — completed 3 weeks ahead of schedule",
+          "Managed distributed team of 18 engineers and QAs across India and US, reducing defect rate by 34%",
+          "Implemented Agile/Scrum across 3 parallel projects, improving sprint velocity by 28%",
+          "Saved ₹1.8 Cr annually through resource optimisation and vendor renegotiation",
+        ]},
+        { title:"Project Manager", company:"Wipro", duration:"2019 – 2021", bullets:[
+          "Delivered 6 mid-scale web application projects with a combined budget of ₹4.5 Cr on time",
+          "Introduced automated status reporting saving 8 hours/week of manual effort",
+        ]},
+      ],
+      skills:{ technical:["Jira","MS Project","Confluence","Agile","Scrum","Waterfall","Risk Management","Stakeholder Management"], soft:["Leadership","Communication","Negotiation"] },
+      education:{ degree:"B.Tech Computer Science", institution:"VIT University", year:"2019" },
+      certifications:["PMP (Project Management Professional)","Certified Scrum Master (CSM)","PRINCE2 Practitioner"],
+    }
+  },
+  {
+    id:"ds", role:"Data Scientist", icon:"📊", exp:"3 years", score:78,
+    data:{
+      name:"Ananya Singh", role:"Data Scientist",
+      email:"ananya.singh@gmail.com", phone:"+91 99887 76655", location:"Hyderabad, India", linkedin:"linkedin.com/in/ananyasingh-ds",
+      summary:"Data Scientist with 3 years of experience building production ML models at scale. Specialised in NLP and recommendation systems; deployed models serving 5M+ daily active users at Flipkart.",
+      experience:[
+        { title:"Data Scientist II", company:"Flipkart", duration:"2022 – Present", bullets:[
+          "Built a real-time product recommendation model (XGBoost + collaborative filtering) that lifted GMV by ₹22 Cr/month",
+          "Reduced customer churn prediction latency from 400ms to 45ms by migrating to ONNX runtime",
+          "Led A/B testing framework for 12 ML experiments, resulting in 3 features shipped to 50M users",
+          "Mentored 2 junior data scientists; established team's feature engineering best practices",
+        ]},
+        { title:"Data Analyst", company:"MakeMyTrip", duration:"2021 – 2022", bullets:[
+          "Built dashboards in Tableau tracking ₹300 Cr in hotel booking revenue across 14 cities",
+          "Automated weekly reporting pipeline using Python + Airflow, saving 12 hours/week",
+        ]},
+      ],
+      skills:{ technical:["Python","PyTorch","TensorFlow","Scikit-learn","SQL","Spark","Airflow","Tableau","MLflow"], soft:["Analytical Thinking","Communication","Mentoring"] },
+      education:{ degree:"M.Tech Data Science", institution:"IIT Hyderabad", year:"2021" },
+      certifications:["AWS Certified Machine Learning – Specialty","Google Professional Data Engineer"],
+    }
+  },
+  {
+    id:"sm", role:"Scrum Master", icon:"🔄", exp:"4 years", score:75,
+    data:{
+      name:"Vikram Patel", role:"Senior Scrum Master",
+      email:"vikram.patel@outlook.com", phone:"+91 97654 32109", location:"Pune, India", linkedin:"linkedin.com/in/vikrampatel-agile",
+      summary:"CSM and SAFe-certified Scrum Master with 4 years coaching Agile teams at mid-to-large scale. Facilitated 200+ sprints across 5 squads, reducing time-to-delivery by an average of 30% through continuous improvement.",
+      experience:[
+        { title:"Senior Scrum Master", company:"Cognizant", duration:"2021 – Present", bullets:[
+          "Coached 4 cross-functional squads (32 members total) transitioning from Waterfall to SAFe Agile",
+          "Facilitated PI Planning for 5 Agile Release Trains, aligning delivery roadmap for 80+ engineers",
+          "Reduced average sprint carry-over from 22% to 7% over 6 months through impediment removal",
+          "Implemented team health metrics dashboard in Jira, cutting retrospective prep time by 60%",
+        ]},
+        { title:"Scrum Master", company:"Capgemini", duration:"2020 – 2021", bullets:[
+          "Ran daily standups, retrospectives, and sprint reviews for 2 teams of 8–10 engineers",
+          "Introduced Definition of Done standards that reduced QA re-work by 18%",
+        ]},
+      ],
+      skills:{ technical:["Scrum","SAFe Agile","Kanban","Jira","Confluence","Rally","Lean","DevOps"], soft:["Facilitation","Coaching","Conflict Resolution","Servant Leadership"] },
+      education:{ degree:"B.E. Information Technology", institution:"University of Pune", year:"2020" },
+      certifications:["Certified Scrum Master (CSM)","SAFe 5 Scrum Master","PMI-ACP"],
+    }
+  },
+  {
+    id:"ba", role:"Business Analyst", icon:"📈", exp:"2 years", score:71,
+    data:{
+      name:"Priya Mehta", role:"Business Analyst",
+      email:"priya.mehta@gmail.com", phone:"+91 96543 21098", location:"Mumbai, India", linkedin:"linkedin.com/in/priyamehta-ba",
+      summary:"Business Analyst with 2 years at a Big 4 consulting firm translating complex stakeholder requirements into clear product specs. Delivered process improvements saving clients $1.2M combined in FY2023.",
+      experience:[
+        { title:"Business Analyst", company:"Deloitte India", duration:"2022 – Present", bullets:[
+          "Gathered and documented requirements for a ₹8 Cr digital transformation project for a retail bank (150+ user stories)",
+          "Mapped AS-IS and TO-BE processes using BPMN, identifying 7 automation opportunities saving 2,400 hours/year",
+          "Created Tableau dashboards for C-suite tracking KPIs across 5 business units, adopted by 300+ users",
+          "Facilitated 40+ stakeholder workshops with business and tech teams across 3 countries",
+        ]},
+        { title:"Junior Business Analyst", company:"KPMG India", duration:"2021 – 2022", bullets:[
+          "Supported end-to-end UAT for a payments module handling ₹500 Cr/month in transactions",
+          "Produced BRD and FRS documents adopted as gold standard by the team of 12 analysts",
+        ]},
+      ],
+      skills:{ technical:["SQL","Excel (advanced)","Tableau","Power BI","JIRA","Confluence","BPMN","Figma (prototyping)"], soft:["Requirements Gathering","Stakeholder Management","Presentation","Documentation"] },
+      education:{ degree:"MBA Finance & Strategy", institution:"NMIMS Mumbai", year:"2021" },
+      certifications:["CBAP (Certified Business Analysis Professional)","Tableau Desktop Specialist"],
+    }
+  },
+];
+
+function ExampleResumeCard({ data }) {
+  const r = data;
+  return (
+    <div style={{ fontFamily:"Georgia,serif", color:"#1a1916", lineHeight:1.6, background:"#fff", border:"1px solid var(--border)", borderRadius:"var(--r2)", overflow:"hidden" }}>
+      {/* Header */}
+      <div style={{ borderBottom:"2px solid #1a1916", padding:"18px 24px 14px", background:"#fafafa" }}>
+        <div style={{ fontSize:"1.4rem", fontWeight:700, letterSpacing:"-.02em", marginBottom:2 }}>{r.name}</div>
+        <div style={{ fontWeight:600, fontSize:".9rem", color:"#5046e4", marginBottom:6 }}>{r.role}</div>
+        <div style={{ fontSize:".75rem", color:"#5a5650", display:"flex", flexWrap:"wrap", gap:"4px 16px" }}>
+          <span>📧 {r.email}</span><span>📱 {r.phone}</span><span>📍 {r.location}</span><span>🔗 {r.linkedin}</span>
+        </div>
+      </div>
+      {/* Body */}
+      <div style={{ padding:"16px 24px" }}>
+        {/* Summary */}
+        <div style={{ marginBottom:14 }}>
+          <div style={{ fontSize:".7rem", fontWeight:800, letterSpacing:".08em", textTransform:"uppercase", color:"#5046e4", borderBottom:"1px solid #e5e2de", paddingBottom:3, marginBottom:7 }}>Professional Summary</div>
+          <p style={{ margin:0, fontSize:".82rem", lineHeight:1.7, color:"#333" }}>{r.summary}</p>
+        </div>
+        {/* Experience */}
+        <div style={{ marginBottom:14 }}>
+          <div style={{ fontSize:".7rem", fontWeight:800, letterSpacing:".08em", textTransform:"uppercase", color:"#5046e4", borderBottom:"1px solid #e5e2de", paddingBottom:3, marginBottom:7 }}>Work Experience</div>
+          {r.experience.map((exp, i) => (
+            <div key={i} style={{ marginBottom:12 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:1 }}>
+                <div style={{ fontWeight:700, fontSize:".85rem" }}>{exp.title}</div>
+                <div style={{ fontSize:".75rem", color:"#888", flexShrink:0 }}>{exp.duration}</div>
+              </div>
+              <div style={{ fontStyle:"italic", fontSize:".78rem", color:"#666", marginBottom:4 }}>{exp.company}</div>
+              <ul style={{ margin:0, paddingLeft:16 }}>
+                {exp.bullets.map((b, j) => <li key={j} style={{ fontSize:".8rem", marginBottom:3, lineHeight:1.6, color:"#333" }}>{b}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+        {/* Skills */}
+        <div style={{ marginBottom:14 }}>
+          <div style={{ fontSize:".7rem", fontWeight:800, letterSpacing:".08em", textTransform:"uppercase", color:"#5046e4", borderBottom:"1px solid #e5e2de", paddingBottom:3, marginBottom:7 }}>Skills</div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"4px 20px" }}>
+            <div><div style={{ fontSize:".68rem", fontWeight:700, color:"#888", marginBottom:2 }}>TECHNICAL</div><div style={{ fontSize:".78rem" }}>{r.skills.technical.join(" · ")}</div></div>
+            <div><div style={{ fontSize:".68rem", fontWeight:700, color:"#888", marginBottom:2 }}>SOFT SKILLS</div><div style={{ fontSize:".78rem" }}>{r.skills.soft.join(" · ")}</div></div>
+          </div>
+        </div>
+        {/* Education */}
+        {r.education && (
+          <div style={{ marginBottom:14 }}>
+            <div style={{ fontSize:".7rem", fontWeight:800, letterSpacing:".08em", textTransform:"uppercase", color:"#5046e4", borderBottom:"1px solid #e5e2de", paddingBottom:3, marginBottom:7 }}>Education</div>
+            <div style={{ fontWeight:700, fontSize:".82rem" }}>{r.education.degree}</div>
+            <div style={{ fontSize:".78rem", color:"#666" }}>{r.education.institution} · {r.education.year}</div>
+          </div>
+        )}
+        {/* Certifications */}
+        {r.certifications?.length > 0 && (
+          <div>
+            <div style={{ fontSize:".7rem", fontWeight:800, letterSpacing:".08em", textTransform:"uppercase", color:"#5046e4", borderBottom:"1px solid #e5e2de", paddingBottom:3, marginBottom:7 }}>Certifications</div>
+            <ul style={{ margin:0, paddingLeft:16 }}>
+              {r.certifications.map((c,i) => <li key={i} style={{ fontSize:".8rem", marginBottom:2 }}>{c}</li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExamplesPage({ setPage }) {
+  const [active, setActive] = useState("pm");
+  const ex = RESUME_EXAMPLES.find(e => e.id === active);
+
+  const downloadPDF = () => {
+    const r = ex.data;
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>${r.role} Resume Example — CareerLens</title><style>
+      *{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;color:#1a1916;padding:40px 48px;line-height:1.6;font-size:13px;max-width:760px;margin:0 auto}
+      h1{font-size:22px;font-weight:700;margin-bottom:3px}.role{color:#5046e4;font-weight:600;font-size:14px;margin-bottom:7px}
+      .contact{font-size:11px;color:#5a5650;display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+      h2{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#5046e4;border-bottom:1px solid #e5e2de;padding-bottom:3px;margin:16px 0 8px}
+      ul{padding-left:16px}li{margin-bottom:3px;font-size:12px}.exp-row{display:flex;justify-content:space-between;margin-bottom:1px}
+      .exp-title{font-weight:700;font-size:13px}.exp-dur{font-size:11px;color:#888}.exp-co{font-style:italic;font-size:12px;color:#666;margin-bottom:4px}
+      p{font-size:12px;line-height:1.7}
+    </style></head><body>
+      <h1>${r.name}</h1><div class="role">${r.role}</div>
+      <div class="contact"><span>📧 ${r.email}</span><span>📱 ${r.phone}</span><span>📍 ${r.location}</span><span>🔗 ${r.linkedin}</span></div>
+      <h2>Professional Summary</h2><p>${r.summary}</p>
+      <h2>Work Experience</h2>${r.experience.map(e=>`<div style="margin-bottom:12px"><div class="exp-row"><span class="exp-title">${e.title}</span><span class="exp-dur">${e.duration}</span></div><div class="exp-co">${e.company}</div><ul>${e.bullets.map(b=>`<li>${b}</li>`).join("")}</ul></div>`).join("")}
+      <h2>Skills</h2><p><strong>Technical:</strong> ${r.skills.technical.join(" · ")}</p><p><strong>Soft Skills:</strong> ${r.skills.soft.join(" · ")}</p>
+      ${r.education?`<h2>Education</h2><div class="exp-title">${r.education.degree}</div><div class="exp-co">${r.education.institution} · ${r.education.year}</div>`:""}
+      ${r.certifications?.length?`<h2>Certifications</h2><ul>${r.certifications.map(c=>`<li>${c}</li>`).join("")}</ul>`:""}
+    </body></html>`;
+    const win = window.open("","_blank");
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => { win.print(); }, 400);
+  };
+
+  return (
+    <div className="page">
+      <div className="page-header">
+        <div className="page-title">Resume Examples</div>
+        <div className="page-sub">Real-world resume examples for 4 popular roles — ready to adapt</div>
+      </div>
+
+      {/* Role tabs */}
+      <div style={{ display:"flex", gap:8, flexWrap:"wrap", padding:"0 2rem 20px" }}>
+        {RESUME_EXAMPLES.map(e => (
+          <button key={e.id} onClick={() => setActive(e.id)} className="btn btn-sm"
+            style={{ background:active === e.id ? "var(--accent)" : "var(--bg2)", color:active === e.id ? "#fff" : "var(--ink2)", gap:5, fontWeight:active === e.id ? 700 : 500 }}>
+            <span>{e.icon}</span>{e.role}
+          </button>
+        ))}
+      </div>
+
+      {ex && (
+        <div style={{ padding:"0 2rem 2rem", display:"grid", gridTemplateColumns:"300px 1fr", gap:24, alignItems:"start" }}>
+
+          {/* Left — meta + tips */}
+          <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+            <div className="card">
+              <div className="card-body">
+                <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
+                  <div style={{ fontSize:"2rem" }}>{ex.icon}</div>
+                  <div>
+                    <div style={{ fontWeight:800, fontSize:"1rem" }}>{ex.role}</div>
+                    <div style={{ fontSize:".78rem", color:"var(--ink2)" }}>{ex.exp} experience · Score {ex.score}/100</div>
+                  </div>
+                </div>
+                <div style={{ marginBottom:12 }}>
+                  <div style={{ fontSize:".7rem", fontWeight:700, color:"var(--ink3)", textTransform:"uppercase", letterSpacing:".05em", marginBottom:6 }}>Why this resume works</div>
+                  {({
+                    pm:  ["Quantified every achievement (₹, %, weeks ahead)","PMP cert listed prominently above the fold","Scrum + Agile keywords throughout for ATS","Specific team sizes and budgets mentioned"],
+                    ds:  ["Impact metrics tied to business outcomes (₹ GMV)","Technical stack listed precisely for ATS parsing","Model performance improvements quantified","Progression from Analyst → Data Scientist shown"],
+                    sm:  ["Facilitation numbers (200+ sprints, 5 squads)","Impediment metrics before/after comparison","SAFe certification — top filter for large companies","Soft skills like coaching and servant leadership"],
+                    ba:  ["Stakeholder count and project value included","Process improvement with hours/year saved","Both business and technical tools listed","Consulting firm background highlighted upfront"],
+                  }[active] || []).map((tip, i) => (
+                    <div key={i} style={{ display:"flex", gap:7, marginBottom:6 }}>
+                      <span style={{ color:"var(--green)", fontWeight:800, flexShrink:0 }}>✓</span>
+                      <span style={{ fontSize:".78rem", color:"var(--ink2)", lineHeight:1.5 }}>{tip}</span>
+                    </div>
+                  ))}
+                </div>
+                <button className="btn btn-primary w-full" style={{ justifyContent:"center", marginBottom:8 }} onClick={downloadPDF}>
+                  ⬇ Download as PDF
+                </button>
+                <button className="btn btn-ghost w-full" style={{ justifyContent:"center" }} onClick={() => setPage("resume")}>
+                  Check my resume →
+                </button>
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="card-body">
+                <div style={{ fontWeight:700, fontSize:".85rem", marginBottom:8 }}>Key skills for {ex.role}</div>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
+                  {ex.data.skills.technical.map(s => (
+                    <span key={s} className="skill-pill skill-have" style={{ fontSize:".7rem" }}>✓ {s}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — full resume */}
+          <div>
+            <ExampleResumeCard data={ex.data} />
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @media(max-width:768px){
+          [style*="grid-template-columns:300px 1fr"] { grid-template-columns:1fr !important; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 function Footer({ setPage }) {
   return (
     <footer className="footer">
@@ -3749,7 +4221,7 @@ function Footer({ setPage }) {
         </div>
         <div>
           <div className="footer-heading">Product</div>
-          {[["Resume Analyser","resume"],["Interview Prep","interview"],["Coding Practice","coding"],["Salary Intel","salary"],["Career Roadmap","roadmap"]].map(([l,p]) => (
+          {[["Resume Analyser","resume"],["Resume Templates","templates"],["Resume Examples","examples"],["Interview Prep","interview"],["Coding Practice","coding"],["Salary Intel","salary"],["Career Roadmap","roadmap"]].map(([l,p]) => (
             <a key={l} className="footer-link" onClick={() => setPage(p)}>{l}</a>
           ))}
           <a href="/interview-questions" className="footer-link" style={{ color: "#5046e4" }}>Interview Q&amp;A (Free)</a>
@@ -3819,6 +4291,8 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
   const NAV_ITEMS = [
     { id:"home", label:"Home" },
     { id:"resume", label:"Resume" },
+    { id:"templates", label:"Templates" },
+    { id:"examples", label:"Examples" },
     { id:"interview", label:"Interview Prep" },
     { id:"coding", label:"Coding" },
     { id:"salary", label:"Salary" },
@@ -3872,6 +4346,8 @@ export default function App({ defaultTab = "home", defaultJobRole = "" } = {}) {
         <main style={{ flex: 1 }}>
           {page === "home" && <HomePage setPage={navigate} setResumeData={setResumeData} totalScans={totalScans} onScanComplete={fetchStats} />}
           {page === "resume" && <ResumePage resumeData={resumeData} setResumeData={setResumeData} showToast={showToast} isPro={isPro} setPage={navigate} totalScans={totalScans} onScanComplete={fetchStats} />}
+          {page === "templates" && <TemplatesPage setPage={navigate} />}
+          {page === "examples" && <ExamplesPage setPage={navigate} />}
           {page === "interview" && <InterviewPage isPro={isPro} setPage={navigate} />}
           {page === "coding" && <CodingPage isPro={isPro} />}
           {page === "salary" && <SalaryPage resumeData={resumeData} isPro={isPro} showToast={showToast} />}
