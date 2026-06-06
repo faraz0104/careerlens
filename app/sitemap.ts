@@ -25,6 +25,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/salary`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/roadmap`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    // Templates & builder
+    { url: `${base}/templates`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${base}/builder`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${base}/examples`, lastModified: now, changeFrequency: "weekly", priority: 0.93 },
+    // Template category pages
+    { url: `${base}/modern-resume-templates`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/creative-resume-templates`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/traditional-resume-templates`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/simple-resume-templates`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    // Resume example pages
+    { url: `${base}/project-manager-resume-example`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/data-scientist-resume-example`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/scrum-master-resume-example`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/business-analyst-resume-example`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
   ];
 
   const interviewIndex: MetadataRoute.Sitemap = [
