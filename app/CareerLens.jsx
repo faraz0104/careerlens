@@ -466,10 +466,46 @@ function Toast({ msg, onDone }) {
   return <div className="toast">✓ {msg}</div>;
 }
 
-function AdSlot({ type = "leaderboard", label = "Advertisement" }) {
+const ADSENSE_AD_SLOTS = {
+  leaderboard: "1234567890",
+  rectangle: "0987654321",
+  sidebar: "5678901234",
+};
+
+function AdSlot({
+  type = "leaderboard",
+  label = "Advertisement",
+  adSlot,
+}) {
+  const slotId = adSlot || ADSENSE_AD_SLOTS[type] || ADSENSE_AD_SLOTS.leaderboard;
+  const slotStyle = type === "leaderboard"
+    ? { display: "block", width: "100%", height: "90px" }
+    : type === "rectangle"
+    ? { display: "block", width: "100%", minHeight: "250px" }
+    : type === "sidebar"
+    ? { display: "block", width: "100%", minHeight: "600px" }
+    : { display: "block", width: "100%" };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (error) {
+      // Ignore duplicate initialization errors or script load timing issues
+    }
+  }, []);
+
   return (
-    <div className={`ad-slot ad-${type}`} style={{ fontSize: ".7rem", color: "var(--ink3)" }}>
-      {label} · Google AdSense
+    <div className={`ad-slot ad-${type}`}>
+      <ins
+        className="adsbygoogle"
+        style={slotStyle}
+        data-ad-client="ca-pub-8544436311250234"
+        data-ad-slot={slotId}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+        aria-label={label}
+      />
     </div>
   );
 }
