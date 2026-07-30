@@ -17,9 +17,9 @@ const FEATURED_TOPIC_LINKS = [
     href: "/blog/why-your-resume-gets-rejected-ats",
   },
   {
-    title: "Salary benchmarks",
-    description: "Compare compensation patterns across experience levels and company types.",
-    href: "/blog/software-engineer-salary-india-2025",
+    title: "Global remote roles",
+    description: "Explore how developers are getting hired for remote and distributed teams across multiple countries.",
+    href: "/blog/how-to-get-hired-for-global-remote-tech-jobs-2025",
   },
   {
     title: "System design prep",
