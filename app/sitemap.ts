@@ -8,7 +8,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const toolPages: MetadataRoute.Sitemap = [
     "ats-resume-checker","resume-score-checker","resume-keywords-scanner",
-    "free-resume-review","resume-optimization-tool",
+    "free-resume-review","resume-optimization-tool","best-ai-resume-tool",
+    "resume-vs-ats-checker",
     "software-engineer-resume-checker","resume-ats-score",
     "fresher-resume-checker","data-scientist-resume-checker",
     "product-manager-resume-checker","marketing-resume-checker","mba-resume-checker",
