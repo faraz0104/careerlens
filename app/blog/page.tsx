@@ -5,13 +5,78 @@ import { getAllPosts, getAllCategories } from "@/lib/mdx";
 const BLOG_POSTS = getAllPosts();
 const BLOG_CATEGORIES = getAllCategories();
 
+const FEATURED_TOPIC_LINKS = [
+  {
+    title: "AI careers and automation",
+    description: "Practical guides for developers adapting to AI-assisted workflows and new role expectations.",
+    href: "/blog/ai-tools-every-developer-must-know-2025",
+  },
+  {
+    title: "ATS-friendly resumes",
+    description: "Learn how to make your resume readable to recruiters, hiring systems, and global employers.",
+    href: "/blog/why-your-resume-gets-rejected-ats",
+  },
+  {
+    title: "Salary benchmarks",
+    description: "Compare compensation patterns across experience levels and company types.",
+    href: "/blog/software-engineer-salary-india-2025",
+  },
+  {
+    title: "System design prep",
+    description: "Build a repeatable study plan for top-tier engineering interviews.",
+    href: "/blog/system-design-interview-30-day-prep",
+  },
+];
+
+const VIRAL_POST = {
+  title: "The 7 Career Mistakes That Make Smart Developers Invisible in 2025",
+  href: "/blog/the-7-career-mistakes-that-make-smart-developers-invisible",
+  description: "A highly shareable guide on why strong professionals get overlooked and how to stand out in a crowded market.",
+};
+
+const ENGAGEMENT_HIGHLIGHTS = [
+  {
+    title: "Built for global readers",
+    text: "Clear advice for developers in Europe, North America, Asia, the Middle East, Africa, and Latin America.",
+  },
+  {
+    title: "Research-led articles",
+    text: "Each article is written with current hiring patterns, skill trends, and practical examples in mind.",
+  },
+  {
+    title: "Easy to scan",
+    text: "Short sections, bold takeaways, and topic clusters help readers find the right answer quickly.",
+  },
+];
+
+const GLOBAL_FAQS = [
+  {
+    q: "What topics does CareerLens cover for global tech professionals?",
+    a: "CareerLens publishes practical guides on AI and automation careers, cybersecurity, salary benchmarks, interview prep, and resume strategy for developers and tech teams worldwide.",
+  },
+  {
+    q: "Is the blog useful for both early-career and experienced professionals?",
+    a: "Yes. The blog includes beginner-friendly career roadmaps, role-specific growth advice, and deeper interview and system design content for experienced engineers.",
+  },
+  {
+    q: "How often is the content updated?",
+    a: "CareerLens refreshes posts around changing market conditions, tool adoption, and hiring patterns so readers can rely on current guidance rather than outdated advice.",
+  },
+];
+
+const GLOBAL_RESOURCES = [
+  { label: "World Economic Forum Future of Jobs", href: "https://www.weforum.org/reports/the-future-of-jobs-report-2023" },
+  { label: "LinkedIn Work Trend Index", href: "https://economicgraph.linkedin.com/research/linkedins-work-trend-index" },
+];
+
 export const metadata: Metadata = {
-  title: "CareerLens Blog — Career Tips, Salary Insights & Tech Trends 2026",
-  description: "Expert articles on tech careers in India — salary data, in-demand skills, resume tips, interview prep, and the latest trends shaping the IT job market in 2026.",
+  title: "CareerLens Blog | Global Tech Career Insights",
+  description: "Global career guidance for developers on AI careers, salary trends, cybersecurity, remote hiring, resumes, and interview prep.",
+  keywords: ["tech careers", "AI careers", "cybersecurity", "remote hiring", "resume advice", "interview prep"],
   alternates: { canonical: "https://www.carrerlens.com/blog" },
   openGraph: {
-    title: "CareerLens Blog — Career Tips, Salary Insights & Tech Trends",
-    description: "Expert articles on tech careers, salary data, interview prep, and the skills driving India's IT job market in 2026.",
+    title: "CareerLens Blog | Global Tech Career Insights",
+    description: "Practical career advice for developers and tech professionals worldwide on AI, cybersecurity, salaries, resumes, and hiring trends.",
     url: "https://www.carrerlens.com/blog",
   },
 };
@@ -41,8 +106,8 @@ export default function BlogPage() {
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "CareerLens Blog — Career Tips, Salary Insights & Tech Trends",
-    description: "Expert articles on tech careers, salary data, interview prep, and the skills shaping the IT job market.",
+    name: "CareerLens Blog — Global Tech Career Insights",
+    description: "Expert articles on AI careers, cybersecurity, remote hiring, salary trends, resumes, and interview preparation for tech professionals worldwide.",
     url: "https://www.carrerlens.com/blog",
     numberOfItems: BLOG_POSTS.length,
     itemListElement: BLOG_POSTS.map((post, i) => ({
@@ -53,10 +118,21 @@ export default function BlogPage() {
     })),
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: GLOBAL_FAQS.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <div style={{ minHeight: "100vh", background: "#f7f6f2", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
         {/* NAV */}
@@ -78,16 +154,58 @@ export default function BlogPage() {
         <div style={{ background: "#1a1916", padding: "52px 2rem 44px" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
             <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: "#e85a2a", marginBottom: 12 }}>CareerLens Blog</div>
-            <h1 style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 4vw, 2.8rem)", color: "#f7f6f2", letterSpacing: "-.04em", lineHeight: 1.15, margin: "0 0 14px", maxWidth: 640 }}>
-              Career insights, salary data &amp; tech trends for India's job market
+            <h1 style={{ fontWeight: 900, fontSize: "clamp(1.8rem, 4vw, 2.8rem)", color: "#f7f6f2", letterSpacing: "-.04em", lineHeight: 1.15, margin: "0 0 14px", maxWidth: 680 }}>
+              Global tech career insights for developers, AI specialists, and security professionals
             </h1>
-            <p style={{ color: "rgba(247,246,242,.65)", fontSize: ".95rem", lineHeight: 1.7, margin: 0, maxWidth: 560 }}>
-              Real data. No fluff. Articles written to help you land better jobs, earn more, and stay ahead of what's changing in tech.
+            <p style={{ color: "rgba(247,246,242,.65)", fontSize: ".95rem", lineHeight: 1.7, margin: "0 0 18px", maxWidth: 640 }}>
+              Practical guidance on AI careers, cybersecurity, remote hiring, salary trends, resume strategy, and interview prep for professionals working in fast-moving global markets.
             </p>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
+              {['AI careers', 'Cybersecurity', 'Remote hiring', 'Resume strategy', 'Interview prep'].map((keyword) => (
+                <span key={keyword} style={{ background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.14)", borderRadius: 999, padding: "7px 12px", color: "#f7f6f2", fontSize: ".76rem", fontWeight: 600 }}>
+                  {keyword}
+                </span>
+              ))}
+            </div>
+            <div style={{ display: "inline-block", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.14)", borderRadius: 999, padding: "8px 14px", color: "#f7f6f2", fontSize: ".82rem", fontWeight: 600 }}>
+              <strong style={{ color: "#f7c75e" }}>Direct answer:</strong> CareerLens helps you find the most relevant career growth advice for AI, cybersecurity, hiring, resume optimization, and interview readiness.
+            </div>
           </div>
         </div>
 
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 2rem" }}>
+
+          <div style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", marginBottom: 24 }}>
+            {FEATURED_TOPIC_LINKS.map((topic) => (
+              <Link key={topic.title} href={topic.href} style={{ textDecoration: "none", display: "block" }}>
+                <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 18px 16px", height: "100%" }}>
+                  <div style={{ fontWeight: 800, color: "#1a1916", fontSize: ".92rem", marginBottom: 8 }}>{topic.title}</div>
+                  <div style={{ color: "#6a6460", fontSize: ".82rem", lineHeight: 1.6 }}>{topic.description}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div style={{ background: "linear-gradient(135deg, #fff8e8, #ffffff)", border: "1px solid #f0e2c2", borderRadius: 14, padding: "22px 24px", marginBottom: 32 }}>
+            <div style={{ fontSize: ".72rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#b36a00", marginBottom: 10 }}>Why this blog keeps readers coming back</div>
+            <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+              {ENGAGEMENT_HIGHLIGHTS.map((item) => (
+                <div key={item.title}>
+                  <div style={{ fontWeight: 800, color: "#1a1916", fontSize: ".9rem", marginBottom: 4 }}>{item.title}</div>
+                  <div style={{ color: "#5a5650", fontSize: ".82rem", lineHeight: 1.6 }}>{item.text}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Link href={VIRAL_POST.href} style={{ textDecoration: "none", display: "block", marginBottom: 32 }}>
+            <div style={{ background: "linear-gradient(135deg, #1a1916, #244060)", borderRadius: 16, padding: "24px 24px", color: "#fff" }}>
+              <div style={{ fontSize: ".72rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#f7c75e", marginBottom: 8 }}>High-share article</div>
+              <h2 style={{ fontWeight: 800, fontSize: "clamp(1.1rem, 2.3vw, 1.5rem)", margin: "0 0 10px", lineHeight: 1.3 }}>{VIRAL_POST.title}</h2>
+              <p style={{ color: "rgba(255,255,255,.8)", fontSize: ".9rem", lineHeight: 1.7, margin: "0 0 12px" }}>{VIRAL_POST.description}</p>
+              <span style={{ color: "#f7c75e", fontWeight: 700, fontSize: ".84rem" }}>Read it and share it →</span>
+            </div>
+          </Link>
 
           {/* FEATURED POST */}
           <Link href={`/blog/${featured.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 40 }}>
@@ -178,8 +296,21 @@ export default function BlogPage() {
             ))}
           </div>
 
-          {/* BOTTOM CTA */}
-          <div style={{ background: "linear-gradient(135deg, #1a1916, #2d2c28)", borderRadius: 14, padding: "28px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
+          <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 14, padding: "24px 26px", marginBottom: 30 }}>
+            <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: "#e85a2a", marginBottom: 8 }}>Global career resources</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+              {GLOBAL_RESOURCES.map((resource) => (
+                <a key={resource.href} href={resource.href} target="_blank" rel="noopener noreferrer" style={{ color: "#1a1916", fontWeight: 600, textDecoration: "none", border: "1px solid #e5e2de", borderRadius: 999, padding: "7px 12px", fontSize: ".78rem" }}>
+                  {resource.label} ↗
+                </a>
+              ))}
+            </div>
+            <div style={{ color: "#5a5650", fontSize: ".9rem", lineHeight: 1.7 }}>
+              CareerLens combines practical career guidance with real hiring patterns so you can make stronger decisions across AI, cybersecurity, remote roles, and salary conversations.
+            </div>
+          </div>
+
+          <div style={{ background: "linear-gradient(135deg, #1a1916, #2d2c28)", borderRadius: 14, padding: "28px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap", marginBottom: 24 }}>
             <div>
               <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".07em", textTransform: "uppercase", color: "#e8a020", marginBottom: 6 }}>Free for all freshers</div>
               <div style={{ color: "#f7f6f2", fontWeight: 700, fontSize: "1rem", marginBottom: 4 }}>Check your resume's ATS score before your next application</div>
@@ -189,6 +320,18 @@ export default function BlogPage() {
               Scan My Resume Free →
             </Link>
           </div>
+
+          <section style={{ marginTop: 8, marginBottom: 8 }}>
+            <h2 style={{ fontWeight: 800, fontSize: "1.1rem", color: "#1a1916", margin: "0 0 16px" }}>Frequently asked questions</h2>
+            <div style={{ display: "grid", gap: 10 }}>
+              {GLOBAL_FAQS.map((faq) => (
+                <details key={faq.q} style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 10, padding: "12px 14px" }}>
+                  <summary style={{ cursor: "pointer", fontWeight: 700, color: "#1a1916", listStyle: "none" }}>{faq.q}</summary>
+                  <p style={{ color: "#5a5650", fontSize: ".86rem", lineHeight: 1.7, margin: "10px 0 0" }}>{faq.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
         </div>
 
         {/* FOOTER */}

@@ -30,12 +30,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!catName) return {};
   const posts = BLOG_POSTS.filter(p => p.category === catName);
   return {
-    title: `${catName} Articles — CareerLens Blog`,
-    description: `${posts.length} expert articles on ${catName.toLowerCase()} — salary data, career tips, interview prep, and the latest tech industry insights for developers.`,
+    title: `${catName} Articles | CareerLens Blog`,
+    description: `${posts.length} practical articles on ${catName.toLowerCase()} for developers and tech professionals worldwide.`,
+    keywords: ["tech careers", catName.toLowerCase(), "career advice", "interview prep"],
     alternates: { canonical: `https://www.carrerlens.com/blog/category/${category}` },
     openGraph: {
       title: `${catName} Articles | CareerLens Blog`,
-      description: `Expert articles on ${catName.toLowerCase()} for developers and tech professionals.`,
+      description: `Practical career guides on ${catName.toLowerCase()} for developers, AI specialists, and hiring professionals worldwide.`,
       url: `https://www.carrerlens.com/blog/category/${category}`,
     },
   };
@@ -109,9 +110,19 @@ export default async function CategoryPage({ params }: Props) {
             <h1 style={{ fontWeight: 900, fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)", color: "#f7f6f2", letterSpacing: "-.04em", lineHeight: 1.15, margin: "0 0 10px" }}>
               {catName}
             </h1>
-            <p style={{ color: "rgba(247,246,242,.6)", fontSize: ".9rem", margin: 0 }}>
-              {posts.length} article{posts.length !== 1 ? "s" : ""} — expert insights for developers and tech professionals
+            <p style={{ color: "rgba(247,246,242,.6)", fontSize: ".9rem", margin: "0 0 12px", maxWidth: 680 }}>
+              {posts.length} article{posts.length !== 1 ? "s" : ""} focused on practical growth advice for developers, AI professionals, cybersecurity talent, and remote-ready teams worldwide.
             </p>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 10 }}>
+              {['AI careers', 'Remote work', 'Resume tips', 'Salary trends'].map((chip) => (
+                <span key={chip} style={{ background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.14)", borderRadius: 999, padding: "6px 10px", color: "#f7f6f2", fontSize: ".74rem", fontWeight: 600 }}>
+                  {chip}
+                </span>
+              ))}
+            </div>
+            <div style={{ display: "inline-block", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.14)", borderRadius: 999, padding: "7px 12px", color: "#f7f6f2", fontSize: ".78rem", fontWeight: 600 }}>
+              Explore guides built for global hiring patterns, modern skill demands, and fast-moving career decisions.
+            </div>
           </div>
         </div>
 
@@ -143,6 +154,11 @@ export default async function CategoryPage({ params }: Props) {
         </div>
 
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 2rem" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 24 }}>
+            <Link href="/blog/ai-tools-every-developer-must-know-2025" style={{ textDecoration: "none", color: "#1a1916", background: "#fff", border: "1px solid #e5e2de", borderRadius: 999, padding: "8px 12px", fontSize: ".78rem", fontWeight: 700 }}>AI workflow guides</Link>
+            <Link href="/blog/why-your-resume-gets-rejected-ats" style={{ textDecoration: "none", color: "#1a1916", background: "#fff", border: "1px solid #e5e2de", borderRadius: 999, padding: "8px 12px", fontSize: ".78rem", fontWeight: 700 }}>Resume optimization</Link>
+            <Link href="/blog/system-design-interview-30-day-prep" style={{ textDecoration: "none", color: "#1a1916", background: "#fff", border: "1px solid #e5e2de", borderRadius: 999, padding: "8px 12px", fontSize: ".78rem", fontWeight: 700 }}>Interview prep</Link>
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 20 }}>
             {posts.map(post => (
               <Link key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration: "none" }} className="cat-card-link">

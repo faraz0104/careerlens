@@ -107,6 +107,7 @@ export default async function BlogPostPage({ params }: Props) {
   const faqs = BLOG_FAQS[slug] ?? [];
   const headings = extractHeadings(post.content);
   const wc = wordCount(post.content);
+  const readingHighlights = headings.slice(0, 3).map((heading) => heading.replace(/^\d+\.\s/, ""));
   const categorySlug = post.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   const articleJsonLd = {
@@ -251,6 +252,9 @@ export default async function BlogPostPage({ params }: Props) {
               <span style={{ color: "rgba(247,246,242,.3)" }}>·</span>
               <span style={{ color: "rgba(247,246,242,.6)", fontSize: ".78rem" }}>{wc.toLocaleString()} words</span>
             </div>
+            <div style={{ color: "rgba(247,246,242,.68)", fontSize: ".78rem", marginTop: 10, maxWidth: 700 }}>
+              Research-led editorial guidance for professionals navigating changing hiring patterns, role expectations, and global career growth.
+            </div>
           </div>
         </div>
 
@@ -264,9 +268,22 @@ export default async function BlogPostPage({ params }: Props) {
             <meta itemProp="author" content={post.author} />
 
             {/* Intro callout */}
-            <p style={{ fontSize: "1.05rem", color: "#3a3632", lineHeight: 1.85, fontWeight: 500, margin: "0 0 32px", borderLeft: "3px solid #e85a2a", paddingLeft: 20 }}>
+            <p style={{ fontSize: "1.05rem", color: "#3a3632", lineHeight: 1.85, fontWeight: 500, margin: "0 0 24px", borderLeft: "3px solid #e85a2a", paddingLeft: 20 }}>
               {post.intro}
             </p>
+
+            {readingHighlights.length > 0 && (
+              <div style={{ background: "#fff8e8", border: "1px solid #f0e2c2", borderRadius: 12, padding: "18px 20px", margin: "0 0 28px" }}>
+                <div style={{ fontWeight: 800, color: "#1a1916", fontSize: ".92rem", marginBottom: 10 }}>What you’ll learn in this guide</div>
+                <div style={{ display: "grid", gap: 8, gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
+                  {readingHighlights.map((item) => (
+                    <div key={item} style={{ color: "#5a5650", fontSize: ".84rem", lineHeight: 1.6, padding: "8px 10px", background: "rgba(255,255,255,.8)", borderRadius: 8 }}>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* MDX Content */}
             <MDXRemote source={post.content} components={mdxComponents} />
