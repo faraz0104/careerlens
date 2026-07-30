@@ -381,6 +381,7 @@ export default async function BlogPostPage({ params }: Props) {
             <div style={{ background: "#fff", border: "1px solid #e5e2de", borderRadius: 12, padding: "18px 20px", marginBottom: 16 }}>
               <div style={{ fontWeight: 700, fontSize: ".82rem", color: "#1a1916", marginBottom: 12 }}>Free CareerLens Tools</div>
               {[
+                ["🧠 AI Resume Checker", "/resume", "ATS score + keyword gaps"],
                 ["📄 ATS Resume Scanner", "/", "Get your score in 30 sec"],
                 ["📚 Interview Questions", "/interview-questions", "500+ Q&A by topic"],
                 ["🏢 AI Interview Prep", "/interview", "Company-specific rounds"],

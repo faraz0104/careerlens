@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.carrerlens.com"),
+  applicationName: "CareerLens",
+  category: "Career Development",
+  classification: "BusinessApplication",
   title: {
     template: "%s | CareerLens",
     default: "CareerLens – Free AI Resume Analyzer, ATS Score, Interview Prep & Career Tools",
@@ -82,6 +85,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://www.carrerlens.com",
+  },
+  other: {
+    "llms.txt": "https://www.carrerlens.com/llms.txt",
   },
 };
 
@@ -157,6 +163,20 @@ const webAppJsonLd = {
   },
 };
 
+const toolDirectoryJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "CareerLens Core Tools",
+  description: "Free AI-powered career tools for resume review, interview prep, salary insights and job search support.",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Resume Checker", url: "https://www.carrerlens.com/resume" },
+    { "@type": "ListItem", position: 2, name: "ATS Resume Scanner", url: "https://www.carrerlens.com/" },
+    { "@type": "ListItem", position: 3, name: "Interview Questions Library", url: "https://www.carrerlens.com/interview-questions" },
+    { "@type": "ListItem", position: 4, name: "Salary Intelligence", url: "https://www.carrerlens.com/salary" },
+    { "@type": "ListItem", position: 5, name: "Career Blog", url: "https://www.carrerlens.com/blog" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -171,6 +191,7 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolDirectoryJsonLd) }} />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8544436311250234"

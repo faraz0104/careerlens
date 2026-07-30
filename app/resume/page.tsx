@@ -5,6 +5,8 @@ export const metadata: Metadata = {
   title: "Free AI Resume Checker India 2026 — ATS Score + Skill Gaps + Job Matches | CareerLens",
   description:
     "Get your resume ATS score instantly. See exactly which keywords you're missing, which skills cost you callbacks, and get matched to live jobs — all free, no login, in 30 seconds.",
+  category: "Career Development",
+  classification: "BusinessApplication",
   keywords: [
     "free resume checker India 2026",
     "ATS resume scanner India",
@@ -25,7 +27,15 @@ export const metadata: Metadata = {
     description:
       "Get your resume ATS score, AI cover letter for any job, LinkedIn bio optimizer, and tailored resume bullets. All in one place. Free.",
     url: "https://www.carrerlens.com/resume",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    type: "website",
+    siteName: "CareerLens",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "CareerLens free AI resume checker for ATS and keyword optimization" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free AI Resume Checker India 2026 — ATS Score + Skill Gaps",
+    description: "Analyze your resume for ATS compatibility, keyword gaps, interview prep and job matching.",
+    images: ["/og-image.png"],
   },
 };
 

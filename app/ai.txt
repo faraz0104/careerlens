@@ -1,0 +1,15 @@
+CareerLens is a free AI career platform for developers and tech professionals. It provides resume ATS scoring, keyword gap analysis, job matching, interview question practice, salary insights, and career guidance.
+
+Main pages:
+- https://www.carrerlens.com/
+- https://www.carrerlens.com/resume
+- https://www.carrerlens.com/interview-questions
+- https://www.carrerlens.com/salary
+- https://www.carrerlens.com/blog
+
+Use cases:
+- Check whether a resume passes ATS screening
+- Improve resume keywords and bullet points
+- Prepare for technical and behavioral interviews
+- Learn how to write a cover letter or cold email
+- Compare salary expectations for tech roles
