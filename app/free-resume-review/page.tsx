@@ -49,13 +49,36 @@ export default function FreeResumeReviewPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(appJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 20px 0", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "32px 20px 0", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
         <h1 style={{ fontWeight: 900, fontSize: "clamp(1.5rem,3vw,2.2rem)", color: "#1a1916", letterSpacing: "-.04em", lineHeight: 1.2, margin: "0 0 10px" }}>
           Free Resume Review — Instant AI Feedback
         </h1>
-        <p style={{ color: "#5a5650", fontSize: ".95rem", lineHeight: 1.7, margin: "0 0 10px" }}>
+        <p style={{ color: "#5a5650", fontSize: ".95rem", lineHeight: 1.7, margin: "0 0 12px" }}>
           Get an honest AI review of your resume in 30 seconds. No sugarcoating — see your ATS score, what keywords are missing, and the exact changes that will get you more callbacks.
         </p>
+
+        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", marginBottom: 20 }}>
+          {[
+            ["ATS fit", "Compare your resume against the job description and note if your experience matches the required skills and responsibilities."],
+            ["Keyword gaps", "Spot missing terms, tools, and domain language recruiters expect to see on a shortlist-ready CV."],
+            ["Content quality", "Check whether bullets are specific, quantified, and written in a way hiring teams can easily understand."],
+          ].map(([title, text]) => (
+            <div key={title} style={{ background: "#fff", border: "1px solid rgba(15,23,42,0.08)", borderRadius: 14, padding: 18 }}>
+              <div style={{ fontWeight: 800, marginBottom: 8 }}>{title}</div>
+              <p style={{ margin: 0, color: "#5a5650", fontSize: ".82rem", lineHeight: 1.7 }}>{text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ background: "#f5f3ff", border: "1px solid rgba(80,70,228,.12)", borderRadius: 16, padding: 18, marginBottom: 18 }}>
+          <div style={{ fontSize: ".72rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#5046e4", marginBottom: 8 }}>What good feedback should include</div>
+          <ul style={{ margin: 0, paddingLeft: 18, color: "#374151", fontSize: ".84rem", lineHeight: 1.8 }}>
+            <li>Resume clarity and readability for both ATS and human recruiters.</li>
+            <li>Role-specific keyword alignment instead of generic résumé language.</li>
+            <li>Actionable improvements tied to actual hiring criteria and target roles.</li>
+          </ul>
+        </div>
+
         <div style={{ margin: "0 0 4px", fontSize: ".8rem", color: "#888" }}>
           <strong style={{ color: "#555" }}>Related tools: </strong>
           {relatedTools.map((t, i) => (

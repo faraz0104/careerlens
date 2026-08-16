@@ -77,6 +77,32 @@ export default function InterviewPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "32px 20px 0" }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#eef0ff", color: "#5046e4", borderRadius: 999, padding: "6px 12px", fontSize: ".72rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase" }}>
+            Interview prep strategy
+          </div>
+          <h1 style={{ fontSize: "clamp(1.8rem, 3vw, 2.7rem)", lineHeight: 1.15, letterSpacing: "-.04em", margin: "16px 0 10px" }}>
+            Prepare for real interview rounds instead of random question lists.
+          </h1>
+          <p style={{ maxWidth: 740, margin: "0 auto", color: "#4b5568", fontSize: ".96rem", lineHeight: 1.7 }}>
+            Strong interview prep is not only about solving coding questions. It is also about showing structured thinking, aligning your examples to the role, and communicating trade-offs clearly in technical and behavioral rounds.
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", marginBottom: 20 }}>
+          {[
+            ["Technical rounds", "Practice fundamentals, system design, debugging, and communication so your answers feel precise and deliberate."],
+            ["Behavioral rounds", "Prepare STAR stories that connect leadership, conflict, ownership, and measurable impact to the target job."],
+            ["Company-specific prep", "Match examples to the company’s values, role expectations, and patterns in recent hiring rounds."],
+          ].map(([title, text]) => (
+            <div key={title} style={{ background: "#fff", border: "1px solid rgba(15,23,42,0.08)", borderRadius: 14, padding: 18 }}>
+              <div style={{ fontWeight: 800, marginBottom: 8 }}>{title}</div>
+              <p style={{ margin: 0, color: "#5a5650", fontSize: ".82rem", lineHeight: 1.7 }}>{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
       <App defaultTab="interview" />
     </>
   );
