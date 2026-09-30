@@ -98,6 +98,20 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+
+        <div style={{ background: "#fff", border: "1px solid rgba(17,24,39,0.08)", borderRadius: 16, padding: "20px 22px", marginBottom: 28 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+            <div>
+              <div style={{ fontSize: ".72rem", fontWeight: 800, letterSpacing: ".08em", textTransform: "uppercase", color: "#5046e4" }}>Explore the tools</div>
+              <div style={{ fontWeight: 800, fontSize: "1.2rem", letterSpacing: "-.04em", marginTop: 6 }}>Start with the tool that matches your job-search problem.</div>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <a href="/ai-resume-checker" style={{ background: "#111827", color: "#fff", textDecoration: "none", padding: "10px 14px", borderRadius: 10, fontWeight: 700 }}>AI Resume Checker</a>
+              <a href="/tools" style={{ background: "#eef0ff", color: "#4338ca", textDecoration: "none", padding: "10px 14px", borderRadius: 10, fontWeight: 700 }}>View all tools</a>
+              <a href="/salary" style={{ background: "#f3f4f6", color: "#111827", textDecoration: "none", padding: "10px 14px", borderRadius: 10, fontWeight: 700 }}>Salary guide</a>
+            </div>
+          </div>
+        </div>
       </div>
       <App />
     </>

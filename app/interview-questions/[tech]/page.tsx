@@ -7,13 +7,23 @@ interface Props {
   params: Promise<{ tech: string }>;
 }
 
+const TECH_ALIASES: Record<string, string> = {
+  dsa: "data-structures",
+  frontend: "html-css",
+  "front-end": "html-css",
+};
+
+const getResolvedTech = (tech: string) => TECH_ALIASES[tech] ?? tech;
+
 export async function generateStaticParams() {
-  return Object.keys(TECHS).map((tech) => ({ tech }));
+  const techSlugs = new Set([...Object.keys(TECHS), ...Object.keys(TECH_ALIASES)]);
+  return [...techSlugs].map((tech) => ({ tech }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { tech } = await params;
-  const data = TECHS[tech];
+  const resolvedTech = getResolvedTech(tech);
+  const data = TECHS[resolvedTech];
   if (!data) return {};
   return {
     title: `${data.metaTitle} | CareerLens`,
@@ -29,7 +39,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TechInterviewPage({ params }: Props) {
   const { tech } = await params;
-  const data = TECHS[tech];
+  const resolvedTech = getResolvedTech(tech);
+  const data = TECHS[resolvedTech];
   if (!data) notFound();
 
   const faqJsonLd = {

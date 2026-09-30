@@ -7,12 +7,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   const toolPages: MetadataRoute.Sitemap = [
-    "ats-resume-checker","resume-score-checker","resume-keywords-scanner",
+    "ai-resume-checker","ats-resume-checker","resume-score-checker","resume-keywords-scanner",
     "free-resume-review","resume-optimization-tool","best-ai-resume-tool",
-    "resume-vs-ats-checker",
+    "resume-vs-ats-checker","tools",
     "software-engineer-resume-checker","resume-ats-score",
     "fresher-resume-checker","data-scientist-resume-checker",
     "product-manager-resume-checker","marketing-resume-checker","mba-resume-checker",
+    "notice-period-calculator",
     // new role checkers
     "frontend-developer-resume-checker","backend-developer-resume-checker",
     "devops-resume-checker","full-stack-developer-resume-checker",
@@ -20,6 +21,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "resume-format-for-freshers","free-resume-maker",
     "how-to-write-a-resume","resume-tips",
   ].map(slug => ({ url: `${base}/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.92 }));
+
+  const toolSubPages: MetadataRoute.Sitemap = [
+    "tools/ai-resume-checker",
+    "tools/ats-resume-checker",
+    "tools/resume-job-match",
+    "tools/resume-keyword-checker",
+  ].map((slug) => ({ url: `${base}/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.88 }));
 
   const appPages: MetadataRoute.Sitemap = [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
@@ -31,6 +39,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/interview`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/salary`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/roadmap`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/career-comparison`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/software-engineer-vs-data-scientist`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/bangalore-vs-hyderabad-for-software-engineers`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     // Templates & builder
     { url: `${base}/templates`, lastModified: now, changeFrequency: "weekly", priority: 0.95 },
@@ -124,5 +135,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...toolPages, ...appPages, ...salaryPages, ...companyInterviewPages, ...jobCategoryPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
+  return [...toolPages, ...toolSubPages, ...appPages, ...salaryPages, ...companyInterviewPages, ...jobCategoryPages, ...interviewIndex, ...interviewPages, ...topNPages, ...blogIndex, ...blogPages, ...blogCategoryPages];
 }
