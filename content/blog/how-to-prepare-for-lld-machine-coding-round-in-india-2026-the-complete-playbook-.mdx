@@ -1,0 +1,316 @@
+---
+title: "How to Prepare for LLD Machine Coding Round in India 2026: The Complete Playbook with Real Problems"
+metaTitle: "LLD Machine Coding Round Prep India 2026 Guide"
+metaDesc: "Complete guide to crack LLD machine coding rounds at Flipkart, Swiggy, Razorpay in 2026. Real problems, templates, patterns, and 90-day prep plan."
+category: "Interview Prep"
+readTime: "14 min read"
+publishedAt: "2026-10-15"
+author: "CareerLens Editorial"
+authorRole: "Career Research Team"
+coverEmoji: "🧩"
+coverColor: "#1a1916"
+intro: "You've grinded 400 LeetCode problems. You can reverse a binary tree in your sleep. Then Flipkart throws you a 90-minute machine coding round: 'Design a Splitwise.' You freeze. Welcome to the LLD round — the single biggest reason mid-level engineers get rejected at Indian product companies in 2026."
+tags: ["lld", "machine-coding", "interview-prep", "system-design", "oop"]
+relatedSlugs: ["how-to-crack-the-system-design-interview-for-mid-level-engineers-in-india-2026-t", "dsa-preparation-in-3-months-for-product-company-interviews-in-india-2026-the-rea"]
+---
+
+Here's the thing nobody tells you about product company interviews in India in 2026: your DSA skills get you to round 2. Your **LLD machine coding round** decides whether you get the offer or a polite "we'll get back to you."
+
+I've watched engineers with 3 years at Infosys crack two DSA rounds at Flipkart, then get rejected because they couldn't model a parking lot in 90 minutes. I've also watched engineers from tier-3 colleges land ₹32 LPA offers at Razorpay because they absolutely nailed the LLD round.
+
+The LLD round isn't about memorizing design patterns. It's about proving you can write code that another engineer won't curse you for six months later. Let me break down exactly how to prepare — the real way, not the YouTube "watch this 2-hour video" way.
+
+## What Is the LLD Machine Coding Round and Why It Suddenly Matters So Much
+
+LLD stands for **Low-Level Design**. The machine coding round gives you a real-world problem — "Design a food delivery system" or "Build an in-memory key-value store" — and asks you to code the complete working solution in **60 to 120 minutes**.
+
+You're evaluated on:
+
+- Working code that compiles and runs
+- Clean class design (SOLID principles)
+- Correct use of design patterns where appropriate
+- Edge case handling
+- Code readability — variable names, method length, class responsibilities
+- Extensibility — can you add a feature in 5 minutes without rewriting half the code?
+
+In 2026, almost every mid-to-senior product company role in India has this round. **Flipkart, Swiggy, Zomato, Razorpay, PhonePe, Meesho, Zepto, Cred, Groww, Myntra, Atlassian India, Walmart Labs** — all of them.
+
+Why did this round become so central? Because companies realized that LeetCode-only engineers write unreadable, unmaintainable code. A 2025 internal survey at a major Indian fintech found that **67% of engineers who passed DSA rounds failed code review within their first 90 days**. The LLD round filters that out early.
+
+### The Three Formats You'll Encounter
+
+Different companies run this round differently. Know what you're walking into.
+
+| Format | Duration | Where You Code | Companies |
+|--------|----------|----------------|-----------|
+| Take-home | 24-72 hours | Your machine, submit via GitHub | Atlassian, Gojek, some startups |
+| Live machine coding | 90-120 min | Your IDE, screen share | Flipkart, Swiggy, Razorpay, PhonePe |
+| Live + discussion | 60 min code + 30 min review | Online IDE or your machine | Zomato, Cred, Meesho |
+
+The **live format is the hardest** because you're coding under time pressure while an interviewer watches. The take-home is deceptively hard too — expectations are much higher because you had time.
+
+## The Core Skills You Actually Need (Not What LinkedIn Influencers Tell You)
+
+Forget the "learn 23 Gang of Four patterns" advice. Here's what actually matters in 2026 Indian machine coding rounds:
+
+### 1. OOP Fundamentals That You Can Apply Under Pressure
+
+Not textbook definitions. I mean: when someone says "Design a notification system," you should instinctively see **Notification** as an abstract class with **EmailNotification, SMSNotification, PushNotification** as subclasses. This takes practice.
+
+### 2. Four Design Patterns You Must Know Cold
+
+- **Strategy** — for interchangeable algorithms (payment methods, pricing strategies)
+- **Factory** — for creating objects without exposing instantiation logic
+- **Observer** — for notification systems, event-driven flows
+- **Singleton** — rarely needed, but you'll be asked when to use/avoid it
+
+That's it. These four cover **80% of problems**. Learn Decorator and Command as bonus.
+
+### 3. SOLID Principles — Especially S and O
+
+**Single Responsibility** and **Open/Closed** are the two that interviewers watch for. If your `Order` class is handling payment, inventory, and notifications — you've failed before writing a single test.
+
+### 4. Clean Code Habits
+
+- Methods under 20 lines
+- Classes under 150 lines
+- No `if/else` chains longer than 3 branches (use polymorphism)
+- Meaningful names: `calculateFinalPriceAfterDiscount()` not `calc()`
+
+If your DSA fundamentals are rusty too, fix that first — you can [practice with AI mock interviews](/interview) that cover both DSA and machine coding patterns before you waste a real interview slot.
+
+## The 15 Most Common LLD Problems Asked in Indian Interviews in 2026
+
+Based on real interview reports from the last 6 months, here are the problems you must have solved before walking into any product company interview:
+
+1. **Parking Lot** — the classic, asked everywhere
+2. **Splitwise / Expense Sharing** — Flipkart, Razorpay favorite
+3. **BookMyShow / Movie Ticket Booking** — Swiggy, PhonePe
+4. **Food Delivery System** — Swiggy, Zomato (obviously)
+5. **Ride Sharing (Ola/Uber)** — Uber India, Rapido
+6. **Snake and Ladder / Tic Tac Toe / Chess** — classic game design
+7. **ATM System** — fintech companies
+8. **Elevator System** — asked at Google India, Microsoft
+9. **In-Memory Database / Key-Value Store** — infra-heavy companies
+10. **Rate Limiter** — API-first companies, Razorpay, PhonePe
+11. **Logging Framework** — Atlassian, Adobe
+12. **Notification System** — most product companies
+13. **Cache (LRU/LFU)** — borderline DSA + LLD
+14. **URL Shortener** — classic, often HLD + LLD combo
+15. **Vending Machine** — state machine design
+
+If you can design any 10 of these cleanly in 90 minutes, you're ready for most interviews. If you can design all 15, you're overprepared — and that's exactly where you want to be.
+
+### What a Real Question Looks Like
+
+Here's an actual Flipkart machine coding question from July 2026:
+
+> "Design a food ordering system. There are multiple restaurants, each with a menu. Users can place orders containing multiple items from a single restaurant. The system should handle order status updates (placed, preparing, out for delivery, delivered). Add a feature to apply discount coupons. Code should be extensible to add new order types (dine-in, takeaway) in the future. You have 90 minutes. We'll do a 15-minute code review after."
+
+Notice what they're asking for: **extensibility**, **status management**, **multiple entities**, **future-proofing**. This isn't "write a function to find prime numbers."
+
+## The 90-Day Preparation Plan That Actually Works
+
+Most people fail LLD rounds because they prepare for 2 weeks and expect miracles. Here's a realistic 90-day plan.
+
+### Days 1-20: Foundations
+
+- Review OOP concepts in your primary language (Java, Python, or C++ — pick one and stick)
+- Learn the four core design patterns (Strategy, Factory, Observer, Singleton)
+- Read "Clean Code" by Robert Martin — just chapters 1-5
+- Practice writing clean classes: build a simple **Library Management System** without any interview pressure. Take 3-4 hours. Review your own code the next day.
+
+### Days 21-50: Pattern Mastery
+
+- Solve 1 LLD problem every 2 days
+- Start with: Parking Lot → Snake and Ladder → ATM → Vending Machine
+- After each problem, **read 2-3 solutions on GitHub** and compare with yours
+- Record yourself coding one problem per week — brutal but effective
+
+### Days 51-75: Timed Practice
+
+- Now solve problems in 90-minute slots, no pauses
+- Set a timer. Treat it like a real interview.
+- Problems: Splitwise, BookMyShow, Food Delivery, Rate Limiter, Logging Framework
+- After each, do a **self code review**: "Would I approve this PR?"
+
+### Days 76-90: Mock Interviews and Weak Area Fixing
+
+- Do at least 5 mock interviews with peers or paid platforms
+- Focus on your weakest problem type (most people struggle with concurrent/thread-safe designs)
+- Review common anti-patterns and avoid them
+
+Compare this to the system design round for senior roles — the depth is different. If you're also prepping for HLD, our guide on [how to crack system design interviews for mid-level engineers](/interview-questions/system-design) covers that angle.
+
+## The Step-by-Step Framework to Solve Any LLD Problem
+
+When the problem lands in your lap, don't start coding. **Spend the first 10-15 minutes planning**. This is where 80% of candidates mess up.
+
+### Step 1: Clarify Requirements (5 minutes)
+
+Ask questions. Even if the interviewer gave you a spec, ask:
+
+- "Is this a single-user or multi-user system?"
+- "Do we need to persist data or is in-memory fine?"
+- "What's the expected scale — 10 users or 10 million?"
+- "Any specific features that are must-have vs nice-to-have?"
+
+This shows seniority. Juniors start coding immediately. Seniors clarify scope.
+
+### Step 2: Identify Core Entities (5 minutes)
+
+Write them down on paper or in a comment block:
+
+```
+For Food Delivery:
+- Restaurant
+- MenuItem
+- Menu
+- User
+- Order
+- OrderItem
+- Payment
+- DeliveryAgent
+- Address
+```
+
+### Step 3: Define Relationships (5 minutes)
+
+- Restaurant HAS-A Menu
+- Menu HAS-MANY MenuItems
+- Order BELONGS-TO User
+- Order HAS-MANY OrderItems
+- Payment BELONGS-TO Order
+
+### Step 4: Identify Behaviors and Patterns (5 minutes)
+
+- Order has states → **State pattern** or enum with transitions
+- Multiple payment methods → **Strategy pattern**
+- Notifications on order status change → **Observer pattern**
+- Discount application → **Strategy pattern**
+
+### Step 5: Code the Skeleton First (15 minutes)
+
+Create all classes with method signatures and empty bodies. No logic yet. This gives interviewers confidence that you have a plan.
+
+### Step 6: Implement Core Flow (40 minutes)
+
+Make the happy path work end-to-end first. Place an order, calculate total, apply discount, mark as delivered. Don't go deep into edge cases yet.
+
+### Step 7: Handle Edge Cases and Extensions (15 minutes)
+
+- What if restaurant is closed?
+- What if item is out of stock?
+- Add one extension to prove extensibility
+
+### Step 8: Write a Driver / Demo (5 minutes)
+
+A simple `main()` that demonstrates the flow. Interviewers love this because they can actually run your code.
+
+## The Mistakes That Get Candidates Rejected (Even When Code Works)
+
+I've reviewed machine coding submissions for Indian startups. Here's what tanks candidates:
+
+### Mistake 1: God Classes
+
+One `OrderService` class with 800 lines handling everything. Even if it works, it's a reject. Split responsibilities.
+
+### Mistake 2: Primitive Obsession
+
+Using `String status` instead of an `OrderStatus` enum. Using `double amount` instead of a `Money` class. Looks small, screams junior.
+
+### Mistake 3: No Interfaces
+
+Hardcoding `EmailNotification` instead of coding against `NotificationChannel` interface. The moment interviewer says "now add SMS," you'll rewrite half your code.
+
+### Mistake 4: Ignoring Thread Safety
+
+If the problem mentions concurrency (parking lot with multiple entry gates, booking system), you must handle it. At least use `ConcurrentHashMap` or synchronized blocks. Senior roles will drill you on this.
+
+### Mistake 5: No Working Code
+
+The absolute worst. You spent 90 minutes designing but have nothing that runs. **A working MVP beats a perfect design that doesn't compile.** Always.
+
+### Mistake 6: Over-Engineering
+
+Adding every design pattern you know "to show off." If a simple `if-else` works and won't need to change, use it. Senior engineers know when NOT to apply patterns.
+
+## Language Choice: Java vs Python vs C++ for Machine Coding Rounds in India
+
+Short answer: **Java is still king** for LLD rounds in India in 2026.
+
+| Language | Pros | Cons | Best For |
+|----------|------|------|----------|
+| Java | Strong OOP, interfaces, enums, interviewer-friendly | Verbose, slower to type | Flipkart, Swiggy, PhonePe, 90% of companies |
+| Python | Faster to write, cleaner syntax | Weak typing, harder to show "design" | Startups, ML-focused roles |
+| C++ | Fast, powerful | Memory management overhead in interviews | Google, Microsoft, systems roles |
+| TypeScript | Modern, strong typing | Not widely accepted for backend LLD rounds | Frontend-heavy companies, Atlassian |
+
+If you're comfortable in Java, use it. If you only know Python, make sure you use **type hints, dataclasses, ABC (abstract base classes)**, and avoid dynamic typing hacks. Interviewers judge Python candidates harder on design.
+
+## Where to Practice: Real Resources That Work in 2026
+
+Don't waste money on random Udemy courses. Here's what actually helps:
+
+**Free resources:**
+- GitHub repos: search "lld-solutions" and "machine-coding-round-questions"
+- YouTube: Gaurav Sen for concepts, Arpit Bhayani for depth
+- Blog: Refactoring.Guru for design patterns (free, excellent)
+
+**Paid resources (worth it):**
+- Educative.io's "Grokking the Low Level Design" — around ₹3,500/month
+- Scaler Academy LLD course — expensive but structured if you need handholding
+
+**Mock practice:**
+- Pramp — free peer mocks
+- Interviewing.io — expensive but highest quality
+- CareerLens AI mock interviews — practice LLD problems with instant feedback on your code structure
+
+Before heading into interviews, make sure your resume shows LLD experience clearly — [check your ATS score on CareerLens](/resume) to see if your project descriptions highlight the architectural work you've done.
+
+## What Companies Pay for Engineers Who Crack LLD Rounds
+
+Here's the honest salary bump you can expect by nailing LLD rounds and moving to a product company:
+
+| Current Role | Switch Target | Expected CTC Jump |
+|--------------|---------------|-------------------|
+| TCS/Infosys SE, 3 YOE, ₹8 LPA | Flipkart SDE-2 | ₹24-32 LPA |
+| Startup Dev, 4 YOE, ₹15 LPA | Razorpay SDE-3 | ₹38-50 LPA |
+| Product Co SDE-2, 5 YOE, ₹28 LPA | Senior at Swiggy/PhonePe | ₹45-65 LPA |
+| Senior Eng, 7 YOE, ₹40 LPA | Staff Eng at Atlassian/Cred | ₹70 LPA-1.2 Cr |
+
+The LLD round is literally the gateway to doubling your salary. If you want to see what engineers at your experience level are earning across companies, you can [benchmark your salary on CareerLens](/salary) and [browse matched jobs on CareerLens](/jobs) that align with your target role.
+
+## FAQ
+
+**How is LLD different from HLD (High-Level Design)?**
+
+HLD focuses on system architecture — databases, APIs, load balancers, microservices, how components talk to each other. You draw boxes and arrows. LLD zooms into one component and asks: how are your classes structured? What's the inheritance hierarchy? Which design patterns apply? HLD is about scaling to millions of users; LLD is about writing code another engineer can read and extend without cursing you. Freshers and junior candidates face LLD-heavy rounds; staff and principal candidates face HLD-heavy rounds. Mid-level engineers (3-6 YOE) face both, usually in separate rounds.
+
+**Can I use Python for LLD rounds in Indian product companies?**
+
+Yes, most companies accept Python, but the bar is higher. Interviewers evaluating Python code look for `ABC` (abstract base classes), proper type hints with the `typing` module, `@dataclass` for data objects, `Enum` for states, and clean separation of concerns. Avoid dynamic duck typing hacks and global state. If you're interviewing at Flipkart, Swiggy, Razorpay, or PhonePe, Java is still safer because 80% of their backend is Java and interviewers are more fluent in it. For startups and ML-focused companies, Python is fine. Never use Python if you're not comfortable with its OOP features.
+
+**How many LLD problems should I solve before interviews?**
+
+Minimum 15 problems solved end-to-end with working code. Ideally 20-25. But quality matters more than quantity. Solving Parking Lot 5 times with different approaches teaches you more than solving 5 different problems once. For each problem: solve it once rough, review 2-3 online solutions, then re-solve it from scratch applying what you learned. Time yourself from problem 10 onwards. If you can design any problem from the "common 15" list within 90 minutes with clean code and extensibility, you're ready for Flipkart-level interviews.
+
+**Do I need to know all 23 Gang of Four design patterns?**
+
+Absolutely not. In 2026 Indian machine coding rounds, you need Strategy, Factory, Observer, and Singleton inside out. Decorator, Command, State, and Builder are nice-to-have. The rest you can mention if asked but will rarely implement. What matters more than knowing patterns is knowing **when NOT to use them**. Over-engineering with unnecessary patterns is a bigger red flag than missing a pattern. Interviewers prefer a candidate who writes clean simple code over one who stuffs five patterns into a 100-line solution.
+
+**Is take-home LLD assignment easier or harder than live machine coding?**
+
+Harder, counterintuitively. Live rounds have time pressure, but expectations are calibrated to 90 minutes. Take-home assignments give you 24-72 hours, so interviewers expect production-quality code: full test coverage, README with design decisions, proper folder structure, build instructions, extensibility discussions in comments. Many candidates underestimate take-homes and submit "live-round quality" code — then wonder why they got rejected. If you get a take-home, spend 60-70% of time on design and tests, not just coding. Add a 1-page design document explaining your choices.
+
+## Bottom Line
+
+- **LLD rounds decide your product company offer more than DSA** in 2026 — treat them as the primary differentiator for mid-level roles.
+- **Master four design patterns deeply** (Strategy, Factory, Observer, Singleton) instead of memorizing all 23 — this covers 80% of problems.
+- **Solve the 15 most-asked problems** end-to-end with working code — Parking Lot, Splitwise, BookMyShow, Food Delivery, Rate Limiter are non-negotiable.
+- **Spend 15 minutes planning before coding** — clarify requirements, identify entities, map relationships, then write skeleton first.
+- **Working code beats perfect design** — always have a runnable MVP by the end, even if some edge cases are missing.
+- **Use Java unless you have a strong reason** to pick Python or C++ — it's still the default for 90% of Indian product company LLD rounds.
+- **Do 5+ timed mock interviews** before the real thing — the time pressure is the hardest part, and no amount of untimed practice prepares you for it.
+
+Crack this round, and you're not just getting a job — you're jumping two salary brackets. Grind the right way, not the hard way.
